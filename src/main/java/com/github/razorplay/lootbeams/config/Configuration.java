@@ -6,6 +6,7 @@ import com.github.razorplay.lootbeams.features.BeamSizeOnApproach;
 import com.github.razorplay.lootbeams.managers.GlowEffectManager;
 import com.github.razorplay.lootbeams.managers.ParticleManager;
 import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
+
 import java.util.ArrayList;
 import java.util.List;
 

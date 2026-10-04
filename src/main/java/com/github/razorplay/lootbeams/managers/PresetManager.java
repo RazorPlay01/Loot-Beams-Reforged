@@ -4,7 +4,6 @@ import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.events.PresetEvents;
 import com.github.razorplay.lootbeams.helpers.FileHelper;
 import com.github.razorplay.lootbeams.helpers.StringHelper;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
@@ -78,8 +77,9 @@ public class PresetManager {
       if (presetList != null && !presetList.isEmpty()) {
          for (Preset preset : presetList) {
             if (preset.type() == PresetType.IDENTIFIER) {
-               defaultPresetMap.put(preset.displayName(), preset.identifier());
-            }
+               defaultPresetMap.put(preset.displayName(), preset./*? fabric {*//*location()*//*}? else {*/identifier /*?} */);
+
+			}
          }
 
          return defaultPresetMap;
@@ -115,7 +115,7 @@ public class PresetManager {
       }
 
       try {
-         Path presetDirPath = FabricLoader.getInstance().getConfigDir().resolve(PRESET_CONFIG_DIRECTORY);
+         Path presetDirPath = ModTemplate.xplat().getConfigDir().resolve(PRESET_CONFIG_DIRECTORY);
          if (Files.exists(presetDirPath)) {
             Files.list(presetDirPath)
                .filter(x$0 -> Files.isRegularFile(x$0))
@@ -146,7 +146,7 @@ public class PresetManager {
    }
 
    public static void savePreset(String presetName) {
-      Path newPresetPath = FabricLoader.getInstance().getConfigDir().resolve(PRESET_CONFIG_DIRECTORY + "/" + presetName + PRESET_EXTENSION);
+      Path newPresetPath = ModTemplate.xplat().getConfigDir().resolve(PRESET_CONFIG_DIRECTORY + "/" + presetName + PRESET_EXTENSION);
       File newPresetFile = FileHelper.createPathIfNotExists(newPresetPath.toString());
 	   ModTemplate.configManager.save(newPresetFile);
       Minecraft client = Minecraft.getInstance();

@@ -6,6 +6,8 @@ package com.github.razorplay.lootbeams.platform.forge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 
+import java.nio.file.Path;
+
 public class ForgePlatform implements Platform {
 
 	@Override
@@ -26,6 +28,11 @@ public class ForgePlatform implements Platform {
 	@Override
 	public boolean isDevelopmentEnvironment() {
 		return !FMLLoader.isProduction();
+	}
+
+	@Override
+	public Path getConfigDir() {
+    	return FMLPaths.CONFIGDIR.get();
 	}
 }
 *///?}

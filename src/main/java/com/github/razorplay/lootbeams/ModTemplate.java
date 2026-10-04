@@ -4,7 +4,6 @@ import com.github.razorplay.lootbeams.compat.iceberg.IcebergCompat;
 import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.config.JsonConfigAdapter;
 import com.github.razorplay.lootbeams.dconfig.DynamicConfig;
-import com.github.razorplay.lootbeams.managers.ParticleManager;
 import com.github.razorplay.lootbeams.platform.Platform;
 
 import net.minecraft.resources.ResourceLocation;
@@ -12,11 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 //? fabric {
-import com.github.razorplay.lootbeams.platform.fabric.FabricPlatform;
-//?} neoforge {
-/*import com.github.razorplay.lootbeams.lootbeams.platform.neoforge.NeoforgePlatform;
- *///?} forge {
-/*import com.github.razorplay.lootbeams.lootbeams.platform.forge.ForgePlatform;
+/*import com.github.razorplay.lootbeams.platform.fabric.FabricPlatform;
+*///?} neoforge {
+import com.github.razorplay.lootbeams.platform.neoforge.NeoforgePlatform;
+ //?} forge {
+/*import com.github.razorplay.lootbeams.platform.forge.ForgePlatform;
  *///?}
 
 @SuppressWarnings("LoggingSimilarMessage")
@@ -38,22 +37,14 @@ public class ModTemplate {
 		if (IcebergCompat.isIcebergLoaded()) {
 			LOGGER.info(IcebergCompat.getPlatformName());
 		}
-		LOGGER.info("Initializing {} on {}", MOD_ID, ModTemplate.xplat().loader());
+		LOGGER.info("Initializing {} on {}", MOD_ID, xplat().loader());
 		LOGGER.debug("{}: { version: {}; friendly_name: {} }", MOD_ID, MOD_VERSION, MOD_FRIENDLY_NAME);
 	}
 
 	public static void onInitializeClient() {
-		LOGGER.info("Initializing {} Client on {}", MOD_ID, ModTemplate.xplat().loader());
+		LOGGER.info("Initializing {} Client on {}", MOD_ID, xplat().loader());
 		LOGGER.debug("{}: { version: {}; friendly_name: {} }", MOD_ID, MOD_VERSION, MOD_FRIENDLY_NAME);
-		ClientSetup.registerCoreShaderRegistrationEvents();
-		ClientSetup.registerHudRenderEvents();
-		ClientSetup.registerWorldRenderEvents();
-		ClientSetup.registerEntityEvents();
-		ClientSetup.registerCommands();
-		ClientSetup.registerKeyBindings();
-		ClientSetup.registerClientEvents();
-		ClientSetup.registerCustomEvents();
-		ParticleManager.registerParticles();
+		ClientSetup.registerCommonEvents();
 	}
 
 	public static Platform xplat() {
@@ -62,10 +53,10 @@ public class ModTemplate {
 
 	private static Platform createPlatformInstance() {
 		//? fabric {
-		return new FabricPlatform();
-		//?} neoforge {
-		/*return new NeoforgePlatform();
-		 *///?} forge {
+		/*return new FabricPlatform();
+		*///?} neoforge {
+		return new NeoforgePlatform();
+		 //?} forge {
 		/*return new ForgePlatform();
 		 *///?}
 	}

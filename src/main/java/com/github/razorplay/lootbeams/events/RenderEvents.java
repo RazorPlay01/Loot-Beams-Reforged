@@ -1,68 +1,38 @@
 package com.github.razorplay.lootbeams.events;
 
 import com.github.razorplay.lootbeams.contexts.WorldRendererContext;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 
 public interface RenderEvents {
-   Event<HudRender> HUD = EventFactory.createArrayBacked(HudRender.class, listeners -> (drawContext, tickCounter) -> {
-      for (HudRender listener : listeners) {
-         listener.onHud(drawContext, tickCounter);
-      }
-   });
-   Event<BeforeParticles> BEFORE_PARTICLES = EventFactory.createArrayBacked(
-      BeforeParticles.class, listeners -> worldRendererContext -> {
-         for (BeforeParticles listener : listeners) {
-            listener.beforeParticles(worldRendererContext);
-         }
-      }
-   );
-   Event<AfterTranslucent> AFTER_TRANSLUCENT = EventFactory.createArrayBacked(
-      AfterTranslucent.class, listeners -> worldRendererContext -> {
-         for (AfterTranslucent listener : listeners) {
-            listener.afterTranslucent(worldRendererContext);
-         }
-      }
-   );
-   Event<AfterWeather> AFTER_WEATHER = EventFactory.createArrayBacked(AfterWeather.class, listeners -> worldRendererContext -> {
-      for (AfterWeather listener : listeners) {
-         listener.afterWeather(worldRendererContext);
-      }
-   });
-   Event<BeforeEnd> BEFORE_END = EventFactory.createArrayBacked(BeforeEnd.class, listeners -> worldRendererContext -> {
-      for (BeforeEnd listener : listeners) {
-         listener.beforeEnd(worldRendererContext);
-      }
-   });
-   Event<End> END = EventFactory.createArrayBacked(End.class, listeners -> worldRendererContext -> {
-      for (End listener : listeners) {
-         listener.onEnd(worldRendererContext);
-      }
-   });
+	SimpleEvent<HudRender> HUD = new SimpleEvent<>(listeners -> (drawContext, tickCounter) -> {
+		for (HudRender listener : listeners) listener.onHud(drawContext, tickCounter);
+	});
 
-   interface AfterTranslucent {
-      void afterTranslucent(WorldRendererContext var1);
-   }
+	SimpleEvent<BeforeParticles> BEFORE_PARTICLES = new SimpleEvent<>(listeners -> ctx -> {
+		for (BeforeParticles listener : listeners) listener.beforeParticles(ctx);
+	});
 
-   interface AfterWeather {
-      void afterWeather(WorldRendererContext var1);
-   }
+	SimpleEvent<AfterTranslucent> AFTER_TRANSLUCENT = new SimpleEvent<>(listeners -> ctx -> {
+		for (AfterTranslucent listener : listeners) listener.afterTranslucent(ctx);
+	});
 
-   interface BeforeEnd {
-      void beforeEnd(WorldRendererContext var1);
-   }
+	SimpleEvent<AfterWeather> AFTER_WEATHER = new SimpleEvent<>(listeners -> ctx -> {
+		for (AfterWeather listener : listeners) listener.afterWeather(ctx);
+	});
 
-   interface BeforeParticles {
-      void beforeParticles(WorldRendererContext var1);
-   }
+	SimpleEvent<BeforeEnd> BEFORE_END = new SimpleEvent<>(listeners -> ctx -> {
+		for (BeforeEnd listener : listeners) listener.beforeEnd(ctx);
+	});
 
-   interface End {
-      void onEnd(WorldRendererContext var1);
-   }
+	SimpleEvent<End> END = new SimpleEvent<>(listeners -> ctx -> {
+		for (End listener : listeners) listener.onEnd(ctx);
+	});
 
-   interface HudRender {
-      void onHud(GuiGraphics var1, DeltaTracker var2);
-   }
+	interface AfterTranslucent { void afterTranslucent(WorldRendererContext ctx); }
+	interface AfterWeather     { void afterWeather(WorldRendererContext ctx); }
+	interface BeforeEnd        { void beforeEnd(WorldRendererContext ctx); }
+	interface BeforeParticles  { void beforeParticles(WorldRendererContext ctx); }
+	interface End              { void onEnd(WorldRendererContext ctx); }
+	interface HudRender        { void onHud(GuiGraphics g, DeltaTracker t); }
 }

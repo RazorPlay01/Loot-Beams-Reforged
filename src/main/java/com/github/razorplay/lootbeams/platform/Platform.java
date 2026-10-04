@@ -1,5 +1,7 @@
 package com.github.razorplay.lootbeams.platform;
 
+import java.nio.file.Path;
+
 public interface Platform {
 	boolean isModLoaded(String modId);
 
@@ -8,6 +10,8 @@ public interface Platform {
 	String mcVersion();
 
 	boolean isDevelopmentEnvironment();
+
+	Path getConfigDir();
 
 	default boolean isDebug() {
 		return isDevelopmentEnvironment();

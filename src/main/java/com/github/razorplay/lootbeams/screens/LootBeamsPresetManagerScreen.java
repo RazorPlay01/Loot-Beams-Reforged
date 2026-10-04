@@ -5,8 +5,6 @@ import com.github.razorplay.lootbeams.managers.PresetManager;
 import com.github.razorplay.lootbeams.screens.widgets.PresetButtonWidget;
 import com.github.razorplay.lootbeams.screens.widgets.PresetListWidget;
 import com.github.razorplay.lootbeams.screens.widgets.PresetTextFieldWidget;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -14,7 +12,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-@Environment(EnvType.CLIENT)
 public class LootBeamsPresetManagerScreen extends Screen {
    private static final ResourceLocation MODAL_TEXTURE = ModTemplate.id("textures/gui/screen/modal.png");
    private static final int BACKGROUND_WIDTH = 184;

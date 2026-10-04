@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.neoforge;
 
 //? neoforge {
 
-/*import com.github.razorplay.lootbeams.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.ModTemplate;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -15,4 +15,4 @@ public class NeoforgeClientEventSubscriber {
 		ModTemplate.onInitializeClient();
 	}
 }
-*///?}
+//?}

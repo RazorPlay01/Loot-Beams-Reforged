@@ -9,8 +9,6 @@ import com.github.razorplay.lootbeams.render.LootBeamRenderLayers;
 import com.github.razorplay.lootbeams.render.ParticleRenderType;
 import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -321,7 +319,6 @@ public class VFXParticle extends TextureSheetParticle {
                 : RENDER_TYPE.setTexture(this.sprite.atlasLocation());
     }
 
-    @Environment(EnvType.CLIENT)
     public static class Factory implements ParticleProvider<SimpleParticleType> {
         public Factory(SpriteSet spriteSet) {
         }

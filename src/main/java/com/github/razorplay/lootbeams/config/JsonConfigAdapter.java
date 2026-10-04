@@ -1,5 +1,6 @@
 package com.github.razorplay.lootbeams.config;
 
+import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.dconfig.DynamicConfig;
 import com.github.razorplay.lootbeams.dconfig.interfaces.DynamicConfigAdapter;
 import com.github.razorplay.lootbeams.features.BeamOpacityOnApproach;
@@ -15,7 +16,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.GsonHelper;
 
 import java.io.File;
@@ -53,7 +53,7 @@ public class JsonConfigAdapter implements DynamicConfigAdapter<Configuration> {
 
     @Override
     public File getConfigFile() {
-        return FabricLoader.getInstance().getConfigDir().resolve(this.getConfigFilePath()).toFile();
+        return ModTemplate.xplat().getConfigDir().resolve(this.getConfigFilePath()).toFile();
     }
 
     private JsonArray toArray(List<String> list) {

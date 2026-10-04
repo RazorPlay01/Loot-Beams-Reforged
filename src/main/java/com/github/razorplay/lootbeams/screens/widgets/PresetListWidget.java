@@ -3,8 +3,6 @@ package com.github.razorplay.lootbeams.screens.widgets;
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.helpers.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -19,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@Environment(EnvType.CLIENT)
 public class PresetListWidget extends ContainerObjectSelectionList<PresetListWidget.PresetEntry> {
    private PresetEntry selectedEntry;
    private boolean isScrolling = false;

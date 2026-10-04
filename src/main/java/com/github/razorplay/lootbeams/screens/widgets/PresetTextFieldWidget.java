@@ -3,8 +3,6 @@ package com.github.razorplay.lootbeams.screens.widgets;
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.helpers.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -32,7 +30,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-@Environment(EnvType.CLIENT)
 public class PresetTextFieldWidget extends AbstractWidget implements Renderable {
    private static final WidgetSprites TEXTURES = new WidgetSprites(
       ModTemplate.id("textures/gui/text_field/normal.png"), ModTemplate.id("textures/gui/text_field/highlighted.png")

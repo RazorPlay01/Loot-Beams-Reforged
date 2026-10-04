@@ -2,8 +2,10 @@ package com.github.razorplay.lootbeams.platform.fabric;
 
 //? fabric {
 
-import com.github.razorplay.lootbeams.platform.Platform;
+/*import com.github.razorplay.lootbeams.platform.Platform;
 import net.fabricmc.loader.api.FabricLoader;
+
+import java.nio.file.Path;
 
 public class FabricPlatform implements Platform {
 
@@ -26,5 +28,10 @@ public class FabricPlatform implements Platform {
 	public boolean isDevelopmentEnvironment() {
 		return FabricLoader.getInstance().isDevelopmentEnvironment();
 	}
+
+	@Override
+	public Path getConfigDir() {
+    	return FabricLoader.getInstance().getConfigDir();
+	}
 }
-//?}
+*///?}

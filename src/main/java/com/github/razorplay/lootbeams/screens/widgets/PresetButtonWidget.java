@@ -3,8 +3,6 @@ package com.github.razorplay.lootbeams.screens.widgets;
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.helpers.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
-@Environment(EnvType.CLIENT)
 public class PresetButtonWidget extends Button {
    private static final WidgetSprites DEFAULT_TEXTURES = new WidgetSprites(
       ModTemplate.id("textures/gui/preset_button/default/normal.png"),
@@ -77,7 +74,6 @@ public class PresetButtonWidget extends Button {
       return new Builder(message, onPress);
    }
 
-   @Environment(EnvType.CLIENT)
    public static class Builder {
       private final Component message;
       private final OnPress onPress;
