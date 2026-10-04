@@ -1,0 +1,7 @@
+accessWidener v2 named
+
+accessible field net/minecraft/client/particle/ParticleEngine textureAtlas Lnet/minecraft/client/renderer/texture/TextureAtlas;
+accessible field net/minecraft/client/renderer/LevelRenderer entityEffect Lnet/minecraft/client/renderer/PostChain;
+accessible field net/minecraft/client/renderer/LevelRenderer renderBuffers Lnet/minecraft/client/renderer/RenderBuffers;
+accessible field net/minecraft/client/renderer/texture/TextureAtlas texturesByName Ljava/util/Map;
+accessible method net/minecraft/client/renderer/GameRenderer getFov (Lnet/minecraft/client/Camera;FZ)D

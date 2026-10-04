@@ -1,0 +1,22 @@
+{
+  "package": "com.github.razorplay.lootbeams.mixin",
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "${java}",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "ItemStackMixin"
+  ],
+  "client": [
+    "BufferBuilderMixin",
+    "DrawContextMixin",
+    "EntityRendererMixin",
+    "InGameHudMixin",
+    "ItemEntityRendererMixin",
+    "ItemRendererMixin",
+    "ParticleManagerMixin",
+    "WorldRendererMixin"
+  ]
+}
