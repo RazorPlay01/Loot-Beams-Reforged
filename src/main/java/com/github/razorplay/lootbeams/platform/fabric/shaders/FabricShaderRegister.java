@@ -1,7 +1,7 @@
 package com.github.razorplay.lootbeams.platform.fabric.shaders;
 //? fabric {
 
-/*import com.github.razorplay.lootbeams.shaders.ShaderRegister;
+import com.github.razorplay.lootbeams.shaders.ShaderRegister;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback.RegistrationContext;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -25,5 +25,5 @@ public class FabricShaderRegister implements ShaderRegister {
 			throw new RuntimeException(e);
 		}
 	}
-}*/
+}
 //?}

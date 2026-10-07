@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.neoforge;
 
 //? neoforge {
 
-import com.github.razorplay.lootbeams.ModTemplate;
+/*import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.dconfig.DynamicConfig;
 import com.github.razorplay.lootbeams.features.BeamOpacityOnApproach;
@@ -106,4 +106,4 @@ public final class NeoForgeClientCommands {
         }
     }
 }
-//?}
+*///?}

@@ -53,12 +53,12 @@ public class ClientSetup {
 	 * Helpers comunes que cada loader dispara desde su hook nativo.
 	 */
 	public static void onEntityLoad(ItemEntity itemEntity, Level world) {
-		TooltipManager.onEntityLoad(itemEntity, (ClientLevel) world);
-		RenderManager.onEntityLoad(itemEntity, (ClientLevel) world);
+		TooltipManager.onEntityLoad(itemEntity, world);
+		RenderManager.onEntityLoad(itemEntity, world);
 	}
 
 	public static void onEntityUnload(ItemEntity itemEntity, Level world) {
-		TooltipManager.onEntityUnload(itemEntity, (ClientLevel) world);
-		RenderManager.onEntityUnload(itemEntity, (ClientLevel) world);
+		TooltipManager.onEntityUnload(itemEntity, world);
+		RenderManager.onEntityUnload(itemEntity, world);
 	}
 }

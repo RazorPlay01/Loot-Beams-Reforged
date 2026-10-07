@@ -4,9 +4,9 @@ import com.github.razorplay.lootbeams.contexts.WorldRendererContext;
 import com.github.razorplay.lootbeams.extensions.LootbeamsParticleManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -56,13 +56,13 @@ public class RenderManager {
       END_RENDERS.clear();
    }
 
-   public static void onEntityLoad(ItemEntity itemEntity, ClientLevel world) {
+   public static void onEntityLoad(ItemEntity itemEntity, Level world) {
       if (!LIGHT_CACHE.contains(itemEntity)) {
          LIGHT_CACHE.add(itemEntity);
       }
    }
 
-   public static void onEntityUnload(ItemEntity itemEntity, ClientLevel world) {
+   public static void onEntityUnload(ItemEntity itemEntity, Level world) {
       LIGHT_CACHE.remove(itemEntity);
    }
 

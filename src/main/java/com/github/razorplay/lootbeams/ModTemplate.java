@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 //? fabric {
-/*import com.github.razorplay.lootbeams.platform.fabric.FabricPlatform;
-*///?} neoforge {
-import com.github.razorplay.lootbeams.platform.neoforge.NeoforgePlatform;
- //?} forge {
+import com.github.razorplay.lootbeams.platform.fabric.FabricPlatform;
+//?} neoforge {
+/*import com.github.razorplay.lootbeams.platform.neoforge.NeoforgePlatform;
+ *///?} forge {
 /*import com.github.razorplay.lootbeams.platform.forge.ForgePlatform;
  *///?}
 
@@ -53,10 +53,10 @@ public class ModTemplate {
 
 	private static Platform createPlatformInstance() {
 		//? fabric {
-		/*return new FabricPlatform();
-		*///?} neoforge {
-		return new NeoforgePlatform();
-		 //?} forge {
+		return new FabricPlatform();
+		//?} neoforge {
+		/*return new NeoforgePlatform();
+		 *///?} forge {
 		/*return new ForgePlatform();
 		 *///?}
 	}

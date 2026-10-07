@@ -1,0 +1,92 @@
+package com.github.razorplay.lootbeams.platform.fabric;
+
+//? fabric {
+
+import com.github.razorplay.lootbeams.ClientSetup;
+import com.github.razorplay.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.listeners.ResourceReloadListener;
+import com.github.razorplay.lootbeams.managers.ParticleManager;
+import com.github.razorplay.lootbeams.platform.fabric.shaders.FabricShaderRegister;
+import com.github.razorplay.lootbeams.screens.LootBeamsPresetManagerScreen;
+import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
+import com.github.razorplay.lootbeams.shaders.ShaderRegister;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.entity.item.ItemEntity;
+
+public final class FabricClientSetup {
+    private FabricClientSetup() {}
+
+    public static KeyMapping keyBinding;
+
+    public static void registerAll() {
+		ParticleManager.GLOW_PARTICLE = Registry.register(
+				BuiltInRegistries.PARTICLE_TYPE,
+				ParticleManager.GLOW_TEXTURE_ID,
+				ParticleManager.createGlowParticleType()
+		);
+
+        // 1. Shaders
+        CoreShaderRegistrationCallback.EVENT.register(context -> {
+            ShaderRegister registrar = new FabricShaderRegister(context);
+            LootBeamShaders.registerCoreShaders(registrar);
+            LootBeamShaders.registerDroplightCoreShaders(registrar);
+            LootBeamShaders.registerCustomCoreShaders(registrar);
+        });
+
+        // 2. Keybind
+        keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "lootbeams.keybindings.savePreset",
+                InputConstants.Type.KEYSYM,
+                325,
+                "lootbeams.title"));
+
+        // 3. Entity load/unload
+        ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+            if (entity instanceof ItemEntity ie) {
+                ClientSetup.onEntityLoad(ie, world);
+            }
+        });
+        ClientEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+            if (entity instanceof ItemEntity ie) {
+                ClientSetup.onEntityUnload(ie, world);
+            }
+        });
+
+        // 4. Tick (abrir pantalla con la keybind)
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            while (keyBinding.consumeClick()) {
+                Minecraft.getInstance().setScreen(
+                        new LootBeamsPresetManagerScreen(Minecraft.getInstance().screen));
+            }
+        });
+
+        // 5. Reload listener
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
+                .registerReloadListener(new ResourceReloadListener());
+
+        // 6. Resource pack de ejemplos
+        ResourceManagerHelper.registerBuiltinResourcePack(
+                ModTemplate.id("loot_beams_examples"),
+                FabricLoader.getInstance().getModContainer(ModTemplate.MOD_ID).orElseThrow(),
+                ResourcePackActivationType.NORMAL);
+
+        // 7. Partículas
+		ParticleManager.registerParticleProviders(new FabricParticleRegistrar());
+
+        // 8. Comandos
+        FabricClientCommands.register();
+    }
+}
+//?}

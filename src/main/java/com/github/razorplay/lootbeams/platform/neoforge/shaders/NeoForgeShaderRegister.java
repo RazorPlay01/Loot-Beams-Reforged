@@ -1,7 +1,7 @@
 package com.github.razorplay.lootbeams.platform.neoforge.shaders;
 //? neoforge {
 
-import com.github.razorplay.lootbeams.shaders.ShaderRegister;
+/*import com.github.razorplay.lootbeams.shaders.ShaderRegister;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
@@ -27,4 +27,4 @@ public class NeoForgeShaderRegister implements ShaderRegister {
 		}
 	}
 }
-//?}
+*///?}

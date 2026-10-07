@@ -6,10 +6,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Map;
@@ -22,14 +22,14 @@ public class TooltipManager {
       TOOLTIP_CACHE.clear();
    }
 
-   public static void onEntityLoad(ItemEntity item, ClientLevel world) {
+   public static void onEntityLoad(ItemEntity item, Level world) {
       ItemStack itemStack = item.getItem();
       if (!TOOLTIP_CACHE.containsKey(itemStack)) {
          TOOLTIP_CACHE.put(itemStack, getItemStackTooltip(item.getItem()));
       }
    }
 
-   public static void onEntityUnload(ItemEntity item, ClientLevel world) {
+   public static void onEntityUnload(ItemEntity item, Level world) {
       TOOLTIP_CACHE.remove(item.getItem());
    }
 

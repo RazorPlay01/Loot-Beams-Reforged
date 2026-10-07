@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.neoforge;
 
 //? neoforge {
 
-import com.github.razorplay.lootbeams.ModTemplate;
+/*import com.github.razorplay.lootbeams.ModTemplate;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
@@ -27,4 +27,4 @@ public final class NeoForgeKeyMappings {
         event.register(OPEN_PRESET_SCREEN);
     }
 }
-//?}
+*///?}

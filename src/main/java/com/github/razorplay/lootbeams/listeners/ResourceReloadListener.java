@@ -1,15 +1,19 @@
 package com.github.razorplay.lootbeams.listeners;
 
+import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.events.ResourceEvents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class ResourceReloadListener implements PreparableReloadListener {
+public class ResourceReloadListener implements PreparableReloadListener /*? fabric { */, net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener/*?} */ {
 	public CompletableFuture<Void> reload(
 			PreparationBarrier synchronizer, ResourceManager manager, ProfilerFiller prepareProfiler, ProfilerFiller applyProfiler, Executor prepareExecutor, Executor applyExecutor
 	) {
@@ -25,4 +29,14 @@ public class ResourceReloadListener implements PreparableReloadListener {
 	public void reload(PreparationBarrier synchronizer, ResourceManager manager, Executor prepareExecutor, Executor applyExecutor) {
 		ResourceEvents.RESOURCE_RELOAD.invoker().onResourceReload(synchronizer, manager, prepareExecutor, applyExecutor);
 	}
+
+	/*? fabric { */
+	public ResourceLocation getFabricId() {
+		return ModTemplate.id("reload_resources");
+	}
+
+	public Collection<ResourceLocation> getFabricDependencies() {
+		return Collections.emptyList();
+	}
+	/*?} */
 }

@@ -71,13 +71,24 @@ public class WorldRendererMixin {
         return matrixStack;
     }
 
-    @Inject(
+	//? neoforge {
+    /*@Inject(
+            method = "renderLevel(Lnet/minecraft/client/DeltaTracker;ZLnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/GameRenderer;Lnet/minecraft/client/renderer/LightTexture;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/particle/ParticleEngine;render(Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/culling/Frustum;Ljava/util/function/Predicate;)V"
+            )
+    )
+			*///?}
+	//? fabric{
+	@Inject(
             method = "renderLevel(Lnet/minecraft/client/DeltaTracker;ZLnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/GameRenderer;Lnet/minecraft/client/renderer/LightTexture;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/particle/ParticleEngine;render(Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;F)V"
             )
     )
+			//?}
     private void beforeParticles(CallbackInfo ci) {
         RenderEvents.BEFORE_PARTICLES.invoker().beforeParticles(this.context);
     }
