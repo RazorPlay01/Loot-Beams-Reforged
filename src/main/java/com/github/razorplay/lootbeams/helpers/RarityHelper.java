@@ -6,7 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -39,7 +39,7 @@ public class RarityHelper {
       }
 
       for (String name : overrides.stream().filter(s -> !s.isEmpty()).toList()) {
-         ResourceLocation registry = ResourceLocation.tryParse(name.replace("#", ""));
+         Identifier registry = Identifier.tryParse(name.replace("#", ""));
          if (!name.contains(":") && BuiltInRegistries.ITEM.getKey(item.getItem()).getNamespace().equals(name)) {
             return true;
          }
@@ -48,7 +48,7 @@ public class RarityHelper {
             if (name.startsWith("#")) {
                Optional<Named<Item>> tag = BuiltInRegistries.ITEM
                   .getTags()
-                  .filter(pair -> pair.getFirst().location().equals(registry))
+                  .filter(pair -> pair.getFirst().identifier().equals(registry))
                   .findFirst()
                   .map(Pair::getSecond);
                if (tag.isPresent()

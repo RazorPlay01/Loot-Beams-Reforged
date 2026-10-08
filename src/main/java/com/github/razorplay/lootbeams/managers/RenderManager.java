@@ -17,7 +17,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class RenderManager {
-   public static final List<ItemEntity> LIGHT_CACHE = new ArrayList<>();
+   private RenderManager() {
+      /* This utility class should not be instantiated */
+   }
+
+   protected static final List<ItemEntity> LIGHT_CACHE = new ArrayList<>();
    private static final List<BiConsumer<PoseStack, MultiBufferSource.BufferSource>> RENDER_BEFORE_PARTICLES = new ArrayList<>();
    private static final List<BiConsumer<PoseStack, MultiBufferSource.BufferSource>> RENDER_AFTER_TRANSLUCENT = new ArrayList<>();
    private static final List<BiConsumer<PoseStack, MultiBufferSource.BufferSource>> RENDER_AFTER_WEATHER = new ArrayList<>();
@@ -26,15 +30,16 @@ public class RenderManager {
    private static final Map<Class<?>, Consumer<WorldRendererContext>> END_RENDERS = new HashMap<>();
 
    public static void onWorldRenderBeforeParticles(WorldRendererContext worldRendererContext) {
-      renderBeforeParticles(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera().getPosition(), worldRendererContext.getConsumers());
+      renderBeforeParticles(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */, worldRendererContext.getConsumers());
    }
 
+
    public static void onWorldRenderAfterTranslucent(WorldRendererContext worldRendererContext) {
-      renderAfterTranslucent(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera().getPosition(), worldRendererContext.getConsumers());
+      renderAfterTranslucent(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */, worldRendererContext.getConsumers());
    }
 
    public static void onWorldRenderAfterWeather(WorldRendererContext worldRendererContext) {
-      renderAfterWeather(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera().getPosition(), worldRendererContext.getConsumers());
+      renderAfterWeather(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */, worldRendererContext.getConsumers());
       LootbeamsParticleManager particleManager = (LootbeamsParticleManager)Minecraft.getInstance().particleEngine;
       if (particleManager != null) {
          particleManager.renderCustomParticles(
@@ -44,7 +49,7 @@ public class RenderManager {
    }
 
    public static void onWorldRenderBeforeEnd(WorldRendererContext worldRendererContext) {
-      renderBeforeEnd(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera().getPosition(), worldRendererContext.getConsumers());
+      renderBeforeEnd(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */, worldRendererContext.getConsumers());
    }
 
    public static void onWorldRenderEnd(WorldRendererContext worldRendererContext) {

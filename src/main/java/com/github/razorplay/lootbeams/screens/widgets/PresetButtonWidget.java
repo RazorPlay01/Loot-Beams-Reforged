@@ -10,7 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,7 +61,7 @@ public class PresetButtonWidget extends Button {
       context.setColor(1.0F, 1.0F, 1.0F, this.alpha);
       RenderSystem.enableBlend();
       RenderSystem.enableDepthTest();
-      ResourceLocation texture = this.getButtonTextures().get(this.active, this.isHoveredOrFocused());
+      Identifier texture = this.getButtonTextures().get(this.active, this.isHoveredOrFocused());
       RenderHelper.blit(context, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
       RenderSystem.setShaderTexture(0, texture);
       context.blit(texture, this.getX(), this.getY(), 0, 0.0F, 0.0F, this.getWidth(), this.getHeight(), 76, 19);

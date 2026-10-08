@@ -10,10 +10,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class LootBeamsPresetManagerScreen extends Screen {
-   private static final ResourceLocation MODAL_TEXTURE = ModTemplate.id("textures/gui/screen/modal.png");
+   private static final Identifier MODAL_TEXTURE = ModTemplate.id("textures/gui/screen/modal.png");
    private static final int BACKGROUND_WIDTH = 184;
    private static final int BACKGROUND_HEIGHT = 152;
    private Screen parent;

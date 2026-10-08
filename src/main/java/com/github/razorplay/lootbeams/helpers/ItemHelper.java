@@ -1,7 +1,7 @@
 package com.github.razorplay.lootbeams.helpers;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.BrushItem;
@@ -28,7 +28,7 @@ public class ItemHelper {
                return true;
             }
 
-            ResourceLocation itemResource = ResourceLocation.tryParse(id);
+            Identifier itemResource = Identifier.tryParse(id);
             if (itemResource != null && BuiltInRegistries.ITEM.get(itemResource).asItem() == item.asItem()) {
                return true;
             }

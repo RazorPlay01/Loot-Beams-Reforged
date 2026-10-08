@@ -10,14 +10,14 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.opengl.GL11;
 
 public class ParticleRenderType implements net.minecraft.client.particle.ParticleRenderType {
-   private ResourceLocation texture;
+   private Identifier texture;
    private LootBeamShaders.Shader shader = LootBeamShaders.Shader.PARTICLE_OVERLAY;
 
-   public ParticleRenderType setTexture(ResourceLocation texture) {
+   public ParticleRenderType setTexture(Identifier texture) {
       this.texture = texture;
       return this;
    }

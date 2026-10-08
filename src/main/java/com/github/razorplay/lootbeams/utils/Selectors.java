@@ -12,7 +12,7 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.FormattedCharSink;
 import net.minecraft.world.item.Item;
@@ -73,7 +73,7 @@ public class Selectors {
         } else if (value.contentEquals("*")) {
             return true;
         } else if (value.startsWith("$")) {
-            return ResourceLocation.tryParse(value.substring(1)) != null;
+            return Identifier.tryParse(value.substring(1)) != null;
         } else if (value.startsWith("@")) {
             return value.substring(1).matches("^[a-z][a-z0-9_-]{1,63}$");
         } else if (value.startsWith("!")) {
@@ -83,7 +83,7 @@ public class Selectors {
         } else if (value.startsWith("%") || value.startsWith("^")) {
             return true;
         } else {
-            return value.startsWith("&") ? true : value == null || value == "" || ResourceLocation.tryParse(value) != null;
+            return value.startsWith("&") ? true : value == null || value == "" || Identifier.tryParse(value) != null;
         }
     }
 
@@ -109,10 +109,10 @@ public class Selectors {
                 return true;
             }
 
-            String itemResourceLocation = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
-            if (!selector.equals(itemResourceLocation) && !selector.equals(itemResourceLocation.replace("minecraft:", ""))) {
+            String itemIdentifier = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
+            if (!selector.equals(itemIdentifier) && !selector.equals(itemIdentifier.replace("minecraft:", ""))) {
                 if (selector.startsWith("@")) {
-                    if (itemResourceLocation.startsWith(selector.substring(1) + ":")) {
+                    if (itemIdentifier.startsWith(selector.substring(1) + ":")) {
                         return true;
                     }
                 } else if (selector.startsWith("#")) {
@@ -127,7 +127,7 @@ public class Selectors {
                 } else if (selector.startsWith("$")) {
                     Optional<TagKey<Item>> matchingTag = BuiltInRegistries.ITEM
                             .getTagNames()
-                            .filter(tagKey -> tagKey.location().equals(ResourceLocation.parse(selector.substring(1))))
+                            .filter(tagKey -> tagKey.identifier().equals(Identifier.parse(selector.substring(1))))
                             .findFirst();
                     if (matchingTag.isPresent() && item.is(matchingTag.get())) {
                         return true;

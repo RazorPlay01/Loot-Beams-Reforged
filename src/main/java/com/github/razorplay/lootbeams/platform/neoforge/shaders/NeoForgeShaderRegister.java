@@ -3,8 +3,8 @@ package com.github.razorplay.lootbeams.platform.neoforge.shaders;
 
 /*import com.github.razorplay.lootbeams.shaders.ShaderRegister;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.ShaderManager;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 
 import java.io.IOException;
@@ -18,9 +18,9 @@ public class NeoForgeShaderRegister implements ShaderRegister {
 	}
 
 	@Override
-	public void register(ResourceLocation id, VertexFormat format, Consumer<ShaderInstance> onLoaded) {
+	public void register(Identifier id, VertexFormat format, Consumer<ShaderManager> onLoaded) {
 		try {
-			ShaderInstance instance = new ShaderInstance(event.getResourceProvider(), id, format);
+			ShaderManager instance = new ShaderManager(event.getResourceProvider(), id, format);
 			event.registerShader(instance, onLoaded);
 		} catch (IOException e) {
 			throw new RuntimeException(e);

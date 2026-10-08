@@ -7,9 +7,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.ShaderManager;
+import net.minecraft.resources.Identifier;
+
+//? <= 1.21.1 {
+/*import net.minecraft.client.renderer.RenderType;
+*///?} else {
+import net.minecraft.client.renderer.rendertype.RenderType;
+//?}
 
 public class LootBeamRenderLayers {
    private LootBeamRenderLayers() {
@@ -34,7 +39,7 @@ public class LootBeamRenderLayers {
       return RenderType.create("loot_beam_lightning", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 1536, false, true, state);
    }
 
-   public static RenderType lootBeam(ResourceLocation texture) {
+   public static RenderType lootBeam(Identifier texture) {
       RenderType.CompositeState state = RenderType.CompositeState.builder()
          .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
          .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
@@ -55,7 +60,7 @@ public class LootBeamRenderLayers {
       return RenderType.create("loot_beam_center", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 1536, false, true, state);
    }
 
-   public static RenderType droplight(ResourceLocation texture) {
+   public static RenderType droplight(Identifier texture) {
       if (IrisCompat.isShaderPackInUse()) {
          return RenderType.entityTranslucentEmissive(texture, false);
       }
@@ -72,7 +77,7 @@ public class LootBeamRenderLayers {
       );
    }
 
-   public static RenderType droplightAnimated(ResourceLocation texture) {
+   public static RenderType droplightAnimated(Identifier texture) {
       RenderType.CompositeState state = RenderType.CompositeState.builder()
          .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
          .setShaderState(new RenderStateShard.ShaderStateShard(() -> LootBeamShaders.getShader(LootBeamShaders.DroplightShader.DROPLIGHT_ANIMATED)))
@@ -85,12 +90,12 @@ public class LootBeamRenderLayers {
       );
    }
 
-   public static RenderType groundGlowEffect(ResourceLocation texture, boolean isColored, boolean useGlowGradient, LootBeamShaders.CustomShader customShader) {
+   public static RenderType groundGlowEffect(Identifier texture, boolean isColored, boolean useGlowGradient, LootBeamShaders.CustomShader customShader) {
       if (IrisCompat.isShaderPackInUse()) {
          return RenderType.entityTranslucentEmissive(texture, false);
       }
 
-      ShaderInstance customShaderProgram = LootBeamShaders.getShader(customShader);
+      ShaderManager customShaderProgram = LootBeamShaders.getShader(customShader);
       RenderStateShard.ShaderStateShard shaderProgram;
       VertexFormat vertexFormat;
       if (customShader != LootBeamShaders.CustomShader.NONE && customShaderProgram != null) {
@@ -117,7 +122,7 @@ public class LootBeamRenderLayers {
       return RenderType.create("loot_beam_ground_glow", vertexFormat, VertexFormat.Mode.QUADS, 1536, false, true, state);
    }
 
-   public static RenderType translucentNoCull(ResourceLocation texture) {
+   public static RenderType translucentNoCull(Identifier texture) {
       RenderType.CompositeState state = RenderType.CompositeState.builder()
          .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
          .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)

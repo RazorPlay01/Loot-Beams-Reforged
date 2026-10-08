@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringDecomposer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -108,7 +108,7 @@ public class TextColorHelper {
          String[] configValue = unparsed.split("=");
          if (configValue.length == 2) {
             String nameIn = configValue[0];
-            ResourceLocation registry = ResourceLocation.tryParse(nameIn.replace("#", ""));
+            Identifier registry = Identifier.tryParse(nameIn.replace("#", ""));
             TextColor colorIn = null;
 
             try {
@@ -136,7 +136,7 @@ public class TextColorHelper {
                if (nameIn.startsWith("#")) {
                   Optional<HolderSet.Named<Item>> tag = BuiltInRegistries.ITEM
                      .getTags()
-                     .filter(pair -> pair.getFirst().location().equals(registry))
+                     .filter(pair -> pair.getFirst().identifier().equals(registry))
                      .findFirst()
                      .map(Pair::getSecond);
                   if (tag.isPresent()

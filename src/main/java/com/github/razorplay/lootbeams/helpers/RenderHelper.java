@@ -15,11 +15,11 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix4f;
 
 public class RenderHelper {
-   public static void bindTexture(ResourceLocation texture) {
+   public static void bindTexture(Identifier texture) {
       Minecraft minecraft = Minecraft.getInstance();
       AbstractTexture abstractTexture = minecraft.getTextureManager().getTexture(texture);
       abstractTexture.bind();
@@ -35,17 +35,17 @@ public class RenderHelper {
       return new Rect2i(sprite.getX(), sprite.getY(), sprite.contents().width(), sprite.contents().height());
    }
 
-   public static void blit(GuiGraphics context, ResourceLocation texture, int x, int y, int width, int height, int texX, int texY, int regionWidth, int regionHeight) {
+   public static void blit(GuiGraphics context, Identifier texture, int x, int y, int width, int height, int texX, int texY, int regionWidth, int regionHeight) {
       bindTexture(texture);
       Rect2i textureSize = getCurrentTextureSize();
       blit(context, texture, x, y, width, height, texX, texY, regionWidth, regionHeight, textureSize.getWidth(), textureSize.getHeight());
    }
 
-   public static void blit(GuiGraphics context, ResourceLocation texture, int x, int y, int width, int height, int texX, int texY) {
+   public static void blit(GuiGraphics context, Identifier texture, int x, int y, int width, int height, int texX, int texY) {
       blit(context, texture, x, y, width, height, texX, texY, width, height);
    }
 
-   public static void blit(GuiGraphics context, ResourceLocation texture, int x, int y) {
+   public static void blit(GuiGraphics context, Identifier texture, int x, int y) {
       bindTexture(texture);
       Rect2i textureSize = getCurrentTextureSize();
       blit(context, texture, x, y, textureSize.getWidth(), textureSize.getHeight(), 0, 0);
@@ -53,7 +53,7 @@ public class RenderHelper {
 
    public static void blit(
       GuiGraphics context,
-      ResourceLocation texture,
+      Identifier texture,
       int x,
       int y,
       int width,
@@ -70,7 +70,7 @@ public class RenderHelper {
 
    public static void drawColored(
       GuiGraphics context,
-      ResourceLocation texture,
+      Identifier texture,
       int x,
       int y,
       int width,
@@ -87,7 +87,7 @@ public class RenderHelper {
    }
 
    public static void drawColored(
-      GuiGraphics context, ResourceLocation texture, int x, int y, int width, int height, int texX, int texY, int regionWidth, int regionHeight, String color
+      GuiGraphics context, Identifier texture, int x, int y, int width, int height, int texX, int texY, int regionWidth, int regionHeight, String color
    ) {
       bindTexture(texture);
       Rect2i textureSize = getCurrentTextureSize();
@@ -96,7 +96,7 @@ public class RenderHelper {
 
    public static void drawColored(
       GuiGraphics context,
-      ResourceLocation texture,
+      Identifier texture,
       int x0,
       int x1,
       int y0,
@@ -127,7 +127,7 @@ public class RenderHelper {
    }
 
    public static void drawColoredBlit(
-      GuiGraphics context, ResourceLocation texture, int x0, int x1, int y0, int y1, int z, float u0, float u1, float v0, float v1, String color
+      GuiGraphics context, Identifier texture, int x0, int x1, int y0, int y1, int z, float u0, float u1, float v0, float v1, String color
    ) {
       RenderSystem.setShaderTexture(0, texture);
       RenderSystem.setShader(() -> LootBeamShaders.getShader(LootBeamShaders.Shader.PARTICLE_OVERLAY));
@@ -179,7 +179,7 @@ public class RenderHelper {
       BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
    }
 
-   public static void drawTextureAt(GuiGraphics context, ResourceLocation texture, int x, int y) {
+   public static void drawTextureAt(GuiGraphics context, Identifier texture, int x, int y) {
       blit(context, texture, x, y);
    }
 }

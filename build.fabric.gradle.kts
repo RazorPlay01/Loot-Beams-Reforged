@@ -8,8 +8,21 @@ stonecutter {
 		replace("ResourceLocation", "Identifier")
 		replace("location()", "identifier()")
 	}
+	replacements.string(current.parsed < "1.21.11") {
+		replace("Identifier", "ResourceLocation")
+		replace("identifier()", "location()")
+	}
 	replacements.string(current.parsed >= "26.1.2") {
 		replace("FabricDataOutput", "FabricPackOutput")
+	}
+	replacements.string(current.parsed < "26.1.2") {
+		replace("FabricPackOutput", "FabricDataOutput")
+	}
+	replacements.string(current.parsed > "1.21.1") {
+		replace("ShaderInstance", "ShaderManager")
+	}
+	replacements.string(current.parsed <= "1.21.1") {
+		replace("ShaderManager", "ShaderInstance")
 	}
 }
 

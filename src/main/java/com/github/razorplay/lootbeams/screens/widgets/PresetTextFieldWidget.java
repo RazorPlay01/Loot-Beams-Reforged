@@ -3,7 +3,6 @@ package com.github.razorplay.lootbeams.screens.widgets;
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.helpers.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,12 +13,11 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
@@ -29,6 +27,14 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+
+//? <= 1.21.1 {
+/*import net.minecraft.Util;
+import net.minecraft.client.renderer.RenderType;
+*///?} else {
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.util.Util;
+//?}
 
 public class PresetTextFieldWidget extends AbstractWidget implements Renderable {
    private static final WidgetSprites TEXTURES = new WidgetSprites(
@@ -364,7 +370,7 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
       if (this.isVisible()) {
          if (this.drawsBackground()) {
-            ResourceLocation texture = TEXTURES.get(this.isActive(), this.isFocused());
+            Identifier texture = TEXTURES.get(this.isActive(), this.isFocused());
             RenderSystem.setShaderTexture(0, texture);
             RenderHelper.blit(context, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
          }

@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.listeners;
 
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.events.ResourceEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
@@ -31,11 +31,11 @@ public class ResourceReloadListener implements PreparableReloadListener /*? fabr
 	}
 
 	/*? fabric { */
-	public ResourceLocation getFabricId() {
+	public Identifier getFabricId() {
 		return ModTemplate.id("reload_resources");
 	}
 
-	public Collection<ResourceLocation> getFabricDependencies() {
+	public Collection<Identifier> getFabricDependencies() {
 		return Collections.emptyList();
 	}
 	/*?} */

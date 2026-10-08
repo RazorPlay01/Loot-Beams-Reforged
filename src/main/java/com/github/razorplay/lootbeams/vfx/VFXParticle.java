@@ -19,7 +19,7 @@ import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -36,7 +36,7 @@ public class VFXParticle extends TextureSheetParticle {
     private boolean stoppedByCollision;
     private boolean hasTrail = false;
     private float yHeightCompensation = 0.5F;
-    private static final ResourceLocation TEXTURE = ModTemplate.id("textures/trail/white.png");
+    private static final Identifier TEXTURE = ModTemplate.id("textures/trail/white.png");
     Trail trail;
     Vec3 particleCenter = Vec3.ZERO;
     Vec3 axis;

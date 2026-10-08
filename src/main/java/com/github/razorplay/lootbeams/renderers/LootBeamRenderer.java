@@ -10,23 +10,26 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.joml.Matrix3f;
-
+//? <= 1.21.1 {
+/*import net.minecraft.client.renderer.RenderType;
+*///?} else {
+import net.minecraft.client.renderer.rendertype.RenderType;
+//?}
 import java.util.List;
 
 public class LootBeamRenderer {
-   private static final ResourceLocation LOOT_BEAM_TEXTURE = ModTemplate.id("textures/lootbeam/lootbeam.png");
-   private static final ResourceLocation LOOT_BEAM_WHITE_TEXTURE = ModTemplate.id("textures/lootbeam/lootbeam_white.png");
+   private static final Identifier LOOT_BEAM_TEXTURE = ModTemplate.id("textures/lootbeam/lootbeam.png");
+   private static final Identifier LOOT_BEAM_WHITE_TEXTURE = ModTemplate.id("textures/lootbeam/lootbeam_white.png");
    private static final RenderType LOOT_BEAM_CENTER_LAYER = LootBeamRenderLayers.lootBeamCenter();
    private static RenderType LOOT_BEAM_LAYER = updateLootBeamLayer();
 
    private static RenderType updateLootBeamLayer() {
-      ResourceLocation beamTexture = !ModTemplate.config.solidBeam ? LOOT_BEAM_TEXTURE : LOOT_BEAM_WHITE_TEXTURE;
+      Identifier beamTexture = !ModTemplate.config.solidBeam ? LOOT_BEAM_TEXTURE : LOOT_BEAM_WHITE_TEXTURE;
       return ModTemplate.config.glowingBeam ? LootBeamRenderLayers.lootBeamLightning() : LootBeamRenderLayers.lootBeam(beamTexture);
    }
 

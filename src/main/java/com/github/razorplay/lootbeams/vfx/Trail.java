@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -27,7 +27,7 @@ public class Trail {
    private TilingMode tilingMode = TilingMode.STRETCH;
    private int frequency = 1;
    private float minDistance = 0.0F;
-   private ResourceLocation texture = null;
+   private Identifier texture = null;
    private boolean parentRotation = false;
    private ItemStack stack = null;
    private Configuration config;
@@ -51,7 +51,7 @@ public class Trail {
       this.tilingMode = tilingMode;
    }
 
-   public void setTexture(ResourceLocation texture) {
+   public void setTexture(Identifier texture) {
       this.texture = texture;
    }
 
@@ -106,7 +106,7 @@ public class Trail {
       this.widthFunction = widthFunction;
    }
 
-   public ResourceLocation getTexture() {
+   public Identifier getTexture() {
       return this.texture;
    }
 
