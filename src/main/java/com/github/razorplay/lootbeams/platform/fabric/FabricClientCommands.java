@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.fabric;
 
 //? fabric {
 
-import com.github.razorplay.lootbeams.ModTemplate;
+/*import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.dconfig.DynamicConfig;
 import com.github.razorplay.lootbeams.features.BeamOpacityOnApproach;
@@ -102,8 +102,12 @@ public final class FabricClientCommands {
             }
 
             desc = desc.append(Component.literal(" ]").withStyle(s -> s.withColor(ChatFormatting.WHITE)));
-            player.sendSystemMessage(fieldText.append(desc));
+			/^? <=1.21.1 {^/
+			player.sendSystemMessage(fieldText.append(desc));
+			/^?} else {^/
+			/^player.displayClientMessage(fieldText.append(desc),false);
+			^//^?} ^/
         }
     }
 }
-//?}
+*///?}

@@ -46,6 +46,9 @@ public class ClientSetup {
 			CustomRarity.onResourcesReload(rm);
 			PresetManager.onResourcesReload(rm);
 			GlowEffectManager.onResourceManagerReload(rm, prep);
+			//? if >= 1.21.11 {
+			/*com.github.razorplay.lootbeams.shaders.LootBeamShaders.onCustomShadersReload(null, rm);
+			*///?}
 		});
 	}
 

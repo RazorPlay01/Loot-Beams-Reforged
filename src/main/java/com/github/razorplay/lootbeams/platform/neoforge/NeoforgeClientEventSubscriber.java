@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.neoforge;
 
 //? neoforge {
 
-/*import com.github.razorplay.lootbeams.ClientSetup;
+import com.github.razorplay.lootbeams.ClientSetup;
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.listeners.ResourceReloadListener;
 import com.github.razorplay.lootbeams.managers.ParticleManager;
@@ -13,25 +13,26 @@ import com.github.razorplay.lootbeams.shaders.ShaderRegister;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+//? if <= 1.21.1 {
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+//?}
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
-
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @EventBusSubscriber(modid = ModTemplate.MOD_ID, value = Dist.CLIENT)
 public class NeoforgeClientEventSubscriber {
@@ -40,12 +41,32 @@ public class NeoforgeClientEventSubscriber {
 		ModTemplate.onInitializeClient();
 	}
 
+	// 1.21.11 compila los shaders de forma perezosa dentro de su RenderPipeline, asi que alli no
+	// existe evento de registro (los shaders de packs los descubre ResourceReloadListener).
+	//? if <= 1.21.1 {
 	@SubscribeEvent
 	public static void onRegisterShaders(RegisterShadersEvent event) {
 		ShaderRegister registrar = new NeoForgeShaderRegister(event);
 		LootBeamShaders.registerCoreShaders(registrar);
 		LootBeamShaders.registerDroplightCoreShaders(registrar);
 		LootBeamShaders.registerCustomCoreShaders(registrar);
+	}
+	//?}
+
+	// El pack de ejemplos vive en `resourcepacks/loot_beams_examples` dentro del mod. Fabric API lo
+	// resuelve solo; en NeoForge hay que publicarlo como pack finder (misma API en 1.21.1 y 1.21.11).
+	@SubscribeEvent
+	public static void onAddPackFinders(AddPackFindersEvent event) {
+		if (event.getPackType() != PackType.CLIENT_RESOURCES) {
+			return;
+		}
+		event.addPackFinders(
+				ModTemplate.id("resourcepacks/loot_beams_examples"),
+				PackType.CLIENT_RESOURCES,
+				Component.literal("Loot beams examples"),
+				PackSource.BUILT_IN,
+				false,
+				Pack.Position.TOP);
 	}
 
 	@SubscribeEvent
@@ -65,8 +86,8 @@ public class NeoforgeClientEventSubscriber {
 	}
 
 	@SubscribeEvent
-	public static void onAddReloadListeners(AddReloadListenerEvent event) {
-		event.addListener(new ResourceReloadListener());
+	public static void onAddReloadListeners(RegisterClientReloadListenersEvent event) {
+		event.registerReloadListener(new ResourceReloadListener());
 	}
 
 	@SubscribeEvent
@@ -96,4 +117,4 @@ public class NeoforgeClientEventSubscriber {
 		NeoForgeClientCommands.register(event.getDispatcher());
 	}
 }
-*///?}
+//?}

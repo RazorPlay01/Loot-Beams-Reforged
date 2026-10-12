@@ -6,15 +6,15 @@ import com.github.razorplay.lootbeams.config.JsonConfigAdapter;
 import com.github.razorplay.lootbeams.dconfig.DynamicConfig;
 import com.github.razorplay.lootbeams.platform.Platform;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 //? fabric {
-import com.github.razorplay.lootbeams.platform.fabric.FabricPlatform;
-//?} neoforge {
-/*import com.github.razorplay.lootbeams.platform.neoforge.NeoforgePlatform;
- *///?} forge {
+/*import com.github.razorplay.lootbeams.platform.fabric.FabricPlatform;
+*///?} neoforge {
+import com.github.razorplay.lootbeams.platform.neoforge.NeoforgePlatform;
+ //?} forge {
 /*import com.github.razorplay.lootbeams.platform.forge.ForgePlatform;
  *///?}
 
@@ -53,27 +53,27 @@ public class ModTemplate {
 
 	private static Platform createPlatformInstance() {
 		//? fabric {
-		return new FabricPlatform();
-		//?} neoforge {
-		/*return new NeoforgePlatform();
-		 *///?} forge {
+		/*return new FabricPlatform();
+		*///?} neoforge {
+		return new NeoforgePlatform();
+		 //?} forge {
 		/*return new ForgePlatform();
 		 *///?}
 	}
 
-	public static Identifier id(String path) {
+	public static ResourceLocation id(String path) {
 		//? >1.19.2 {
-		return Identifier.fromNamespaceAndPath(MOD_ID, path);
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 		//?} <=1.19.2 {
-		/*return new Identifier(MOD_ID, path);
+		/*return new ResourceLocation(MOD_ID, path);
 		 *///?}
 	}
 
-	public static Identifier id(String namespace, String path) {
+	public static ResourceLocation id(String namespace, String path) {
 		//? >1.19.2 {
-		return Identifier.fromNamespaceAndPath(namespace, path);
+		return ResourceLocation.fromNamespaceAndPath(namespace, path);
 		//?} <=1.19.2 {
-		/*return new Identifier(namespace, path);
+		/*return new ResourceLocation(namespace, path);
 		 *///?}
 	}
 }

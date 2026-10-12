@@ -5,8 +5,8 @@ import com.github.razorplay.lootbeams.render.CustomVertexFormats;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ShaderManager;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 public class LootBeamShaders {
-	private static final Map<Shader, ShaderManager> SHADERS_MAP = new EnumMap<>(Shader.class);
-	private static final Map<DroplightShader, ShaderManager> DROPLIGHT_SHADERS_MAP = new EnumMap<>(DroplightShader.class);
-	private static final Map<String, ShaderManager> CUSTOM_SHADERS_MAP = new HashMap<>();
+	private static final Map<Shader, ShaderInstance> SHADERS_MAP = new EnumMap<>(Shader.class);
+	private static final Map<DroplightShader, ShaderInstance> DROPLIGHT_SHADERS_MAP = new EnumMap<>(DroplightShader.class);
+	private static final Map<String, ShaderInstance> CUSTOM_SHADERS_MAP = new HashMap<>();
 	private static final String CUSTOM_SHADERS_DIRECTORY = "shaders/core/custom";
 	private static final String CUSTOM_SHADERS_EXTENSION = ".json";
 
@@ -42,15 +42,15 @@ public class LootBeamShaders {
 
 	// ---- Getters (idénticos) ----
 
-	public static ShaderManager getShader(Shader shader) {
+	public static ShaderInstance getShader(Shader shader) {
 		return SHADERS_MAP.get(shader);
 	}
 
-	public static ShaderManager getShader(DroplightShader shader) {
+	public static ShaderInstance getShader(DroplightShader shader) {
 		return DROPLIGHT_SHADERS_MAP.get(shader);
 	}
 
-	public static ShaderManager getShader(CustomShader shader) {
+	public static ShaderInstance getShader(CustomShader shader) {
 		return CUSTOM_SHADERS_MAP.get(shader.name());
 	}
 
@@ -100,12 +100,17 @@ public class LootBeamShaders {
 
 	public static void onCustomShadersReload(ShaderRegister registrar, ResourceManager resourceManager) {
 		CustomShader.clearDynamicValues();
+		//? if <= 1.21.1 {
 		CUSTOM_SHADERS_MAP.clear();
-		Map<Identifier, Resource> resourceShaderMap = resourceManager.listResources(
+		if (resourceManager == null) {
+			return;
+		}
+
+		Map<ResourceLocation, Resource> resourceShaderMap = resourceManager.listResources(
 				CUSTOM_SHADERS_DIRECTORY, identifier -> identifier.getPath().endsWith(CUSTOM_SHADERS_EXTENSION)
 		);
 
-		for (Identifier shaderId : resourceShaderMap.keySet()) {
+		for (ResourceLocation shaderId : resourceShaderMap.keySet()) {
 			CustomShader newShader = CustomShader.addValue(getFormattedName(shaderId.getPath()));
 			String registryShaderName = newShader.name().toLowerCase();
 			if (registrar != null) {
@@ -113,6 +118,24 @@ public class LootBeamShaders {
 						CustomVertexFormats.POSITION_TEX_COLOR0_COLOR1_CENTER);
 			}
 		}
+		//?} else {
+		/*// 1.21.11: ya no hay ficheros .json de shader; cada shader personalizado se convierte en
+		// un RenderPipeline a partir de su pareja .vsh/.fsh.
+		if (resourceManager == null) {
+			LootBeamPipelines.reloadCustomShaders(null);
+			return;
+		}
+
+		Map<ResourceLocation, Resource> resourceShaderMap = resourceManager.listResources(
+				CUSTOM_SHADERS_DIRECTORY, identifier -> identifier.getPath().endsWith(".vsh")
+		);
+
+		for (ResourceLocation shaderId : resourceShaderMap.keySet()) {
+			CustomShader.addValue(LootBeamPipelines.getFormattedName(shaderId.getPath()));
+		}
+
+		LootBeamPipelines.reloadCustomShaders(resourceManager);
+		*///?}
 	}
 
 	// ---- Clases internas (idénticas en todos los loaders) ----

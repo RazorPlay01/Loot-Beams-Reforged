@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -27,7 +27,7 @@ public class Trail {
    private TilingMode tilingMode = TilingMode.STRETCH;
    private int frequency = 1;
    private float minDistance = 0.0F;
-   private Identifier texture = null;
+   private ResourceLocation texture = null;
    private boolean parentRotation = false;
    private ItemStack stack = null;
    private Configuration config;
@@ -51,7 +51,7 @@ public class Trail {
       this.tilingMode = tilingMode;
    }
 
-   public void setTexture(Identifier texture) {
+   public void setTexture(ResourceLocation texture) {
       this.texture = texture;
    }
 
@@ -106,7 +106,7 @@ public class Trail {
       this.widthFunction = widthFunction;
    }
 
-   public Identifier getTexture() {
+   public ResourceLocation getTexture() {
       return this.texture;
    }
 
@@ -173,7 +173,9 @@ public class Trail {
 
    public void render(PoseStack stack, VertexConsumer consumer) {
       stack.pushPose();
+      //? if <= 1.21.1 {
       RenderSystem.disableCull();
+      //?}
       double maxY = Arrays.stream(this.points).mapToDouble(p -> p.y).max().orElse(1.0);
       double minY = Arrays.stream(this.points).mapToDouble(p -> p.y).min().orElse(0.0);
       double pathHeight = maxY - minY;
@@ -195,7 +197,7 @@ public class Trail {
             Vector3f topOffset = new Vector3f(0.0F, width / 2.0F, 0.0F);
             Vector3f bottomOffset = new Vector3f(0.0F, -(width / 2.0F), 0.0F);
             if (this.billboard) {
-               Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+               Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera()/*? <= 1.21.1 {*/ .getPosition() /*?} else {*/ /*.position() *//*?} */;
                Vec3 directionToCamera = cameraPos.subtract(scaledPoint).normalize();
                Vec3 dirToNext = this.points[Math.min(i + this.frequency, this.points.length - 1)].subtract(this.points[i]).normalize();
                Vector3f dirToNextPoint = new Vector3f((float)dirToNext.x, (float)dirToNext.y, (float)dirToNext.z);
@@ -217,7 +219,9 @@ public class Trail {
       }
 
       this.renderPoints(stack, consumer, corners, this.color);
+      //? if <= 1.21.1 {
       RenderSystem.enableCull();
+      //?}
    }
 
    private void renderPoints(PoseStack stack, VertexConsumer consumer, Vector3f[][] corners, int color) {

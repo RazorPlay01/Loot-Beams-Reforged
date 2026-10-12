@@ -13,10 +13,12 @@
     "BufferBuilderMixin",
     "DrawContextMixin",
     "EntityRendererMixin",
+    "GameRendererMixin",
     "InGameHudMixin",
     "ItemEntityRendererMixin",
     "ItemRendererMixin",
     "ParticleManagerMixin",
+    "RenderTypeMixin",
     "WorldRendererMixin"
   ]
 }

@@ -6,11 +6,37 @@ plugins {
 stonecutter {
 	replacements.string(current.parsed >= "1.21.11") {
 		replace("ResourceLocation", "Identifier")
-		replace("location()", "identifier()")
 	}
 	replacements.string(current.parsed < "1.21.11") {
 		replace("Identifier", "ResourceLocation")
-		replace("identifier()", "location()")
+	}
+	replacements.string(current.parsed > "1.21.1") {
+		replace("ShaderInstance", "ShaderManager")
+	}
+	replacements.string(current.parsed <= "1.21.1") {
+		replace("ShaderManager", "ShaderInstance")
+	}
+	replacements.string(current.parsed > "1.21.1") {
+		replace("RegisterClientReloadListenersEvent", "AddClientReloadListenersEvent")
+	}
+	replacements.string(current.parsed <= "1.21.1") {
+		replace("AddClientReloadListenersEvent", "RegisterClientReloadListenersEvent")
+	}
+	replacements.string(current.parsed <= "1.21.1") {
+		replace(
+			"event.addListener(ModTemplate.id(\"reload_resources\"), new ResourceReloadListener());",
+			"event.registerReloadListener(new ResourceReloadListener());"
+		)
+	}
+	// En 1.21.1 NeoForge parchea ParticleEngine#render anadiendole dos parametros (frustum y
+	// predicado de particulas), asi que el target de ese @Inject se completa desde el script del
+	// loader. De este modo el fuente no necesita anidar condicionales de loader dentro de bloques de
+	// version, combinacion que Stonecutter no sabe preprocesar.
+	replacements.string(current.parsed <= "1.21.1") {
+		replace(
+			"__LOOTBEAMS_PARTICLE_RENDER_TARGET__",
+			"Lnet/minecraft/client/particle/ParticleEngine;render(Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/culling/Frustum;Ljava/util/function/Predicate;)V"
+		)
 	}
 }
 

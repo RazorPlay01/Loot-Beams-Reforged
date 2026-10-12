@@ -60,33 +60,41 @@ public class BeamRender {
       return !(itemConfig.beamAlpha * fadeAlpha < 0.01F);
    }
 
-   public static void render(PoseStack stack, MultiBufferSource.BufferSource buffer, ItemEntity item, long worldtime, float pticks) {
-      if (!ITEM_GROUND_START_TIMES.containsKey(item)) {
-         ITEM_GROUND_START_TIMES.put(item, item.getAge());
-      }
+	public static void render(PoseStack stack, MultiBufferSource.BufferSource buffer, ItemEntity item, long worldtime, float pticks) {
+		if (!ITEM_GROUND_START_TIMES.containsKey(item)) {
+			ITEM_GROUND_START_TIMES.put(item, item.getAge());
+		}
 
-      float itemGroundStartTime = ITEM_GROUND_START_TIMES.getOrDefault(item, 0).intValue();
-      float currentGroundTime = item.getAge() - itemGroundStartTime + pticks;
-      Configuration itemConfig = CustomLootBeamsConfig.fromItemStack(item.getItem());
-      LocalPlayer player = Minecraft.getInstance().player;
-      float distance = player != null ? player.distanceTo(item) : 0.0F;
-      float sizeMultiplier = getBeamSizeMultiplier(distance, itemConfig);
-      float fadeAlpha = fadeDistanceAlpha(distance, itemConfig);
-      if (canRenderBeam(itemConfig, fadeAlpha)) {
-         RenderSystem.enableDepthTest();
-         TextColor color = TextColorHelper.getItemColor(item.getItem());
-         if (item.onGround()) {
-            stack.pushPose();
-            GroundEffectRenderer.renderGroundEffect(buffer, stack, item, itemConfig, color, sizeMultiplier, fadeAlpha, currentGroundTime, worldtime, pticks);
-            IBeamRenderer iBeamRenderer = itemConfig.renderDroplightBeam ? DroplightRenderer::renderBeam : LootBeamRenderer::renderBeam;
-            iBeamRenderer.renderBeam(buffer, stack, item, itemConfig, color, sizeMultiplier, fadeAlpha, currentGroundTime, worldtime, pticks);
-            stack.popPose();
-            NameTagRenderer.renderNameTags(buffer, stack, item, itemConfig, color, fadeAlpha, currentGroundTime, worldtime, pticks);
-            ParticleEmitter.createParticlesForItem(item, itemConfig, item.getAge(), color, fadeAlpha, pticks);
-         }
+		float itemGroundStartTime = ITEM_GROUND_START_TIMES.getOrDefault(item, 0).intValue();
+		float currentGroundTime = item.getAge() - itemGroundStartTime + pticks;
+		Configuration itemConfig = CustomLootBeamsConfig.fromItemStack(item.getItem());
+		LocalPlayer player = Minecraft.getInstance().player;
+		float distance = player != null ? player.distanceTo(item) : 0.0F;
+		float sizeMultiplier = getBeamSizeMultiplier(distance, itemConfig);
+		float fadeAlpha = fadeDistanceAlpha(distance, itemConfig);
 
-         RenderSystem.disableDepthTest();
-         ITEM_GROUND_START_TIMES.keySet().removeIf(itemEntity -> !itemEntity.onGround());
-      }
-   }
+		if (canRenderBeam(itemConfig, fadeAlpha)) {
+			//? if <= 1.21.4 {
+			RenderSystem.enableDepthTest();
+			 //?}
+
+			TextColor color = TextColorHelper.getItemColor(item.getItem());
+
+			if (item.onGround()) {
+				stack.pushPose();
+				GroundEffectRenderer.renderGroundEffect(buffer, stack, item, itemConfig, color, sizeMultiplier, fadeAlpha, currentGroundTime, worldtime, pticks);
+				IBeamRenderer iBeamRenderer = itemConfig.renderDroplightBeam ? DroplightRenderer::renderBeam : LootBeamRenderer::renderBeam;
+				iBeamRenderer.renderBeam(buffer, stack, item, itemConfig, color, sizeMultiplier, fadeAlpha, currentGroundTime, worldtime, pticks);
+				stack.popPose();
+				NameTagRenderer.renderNameTags(buffer, stack, item, itemConfig, color, fadeAlpha, currentGroundTime, worldtime, pticks);
+				ParticleEmitter.createParticlesForItem(item, itemConfig, item.getAge(), color, fadeAlpha, pticks);
+			}
+
+			//? if <= 1.21.4 {
+			RenderSystem.disableDepthTest();
+			 //?}
+
+			ITEM_GROUND_START_TIMES.keySet().removeIf(itemEntity -> !itemEntity.onGround());
+		}
+	}
 }

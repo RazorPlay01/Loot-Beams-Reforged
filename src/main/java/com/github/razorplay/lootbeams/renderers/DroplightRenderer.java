@@ -18,23 +18,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.joml.Matrix4f;
 
 import java.util.List;
 //? <= 1.21.1 {
-/*import net.minecraft.client.renderer.RenderType;
-*///?} else {
-import net.minecraft.client.renderer.rendertype.RenderType;
-//?}
+import net.minecraft.client.renderer.RenderType;
+//?} else {
+/*import net.minecraft.client.renderer.rendertype.RenderType;
+*///?}
 
 
 public class DroplightRenderer {
-   private static final Identifier DROPLIGHT_TEXTURE = ModTemplate.id("textures/droplight/droplight.png");
-   private static final Identifier DROPLIGHT_GLOW_TEXTURE = ModTemplate.id("textures/droplight/droplight_glow.png");
-   private static final Identifier DROPLIGHT_ANIMATED_TEXTURE = ModTemplate.id("textures/droplight/droplight_animated.png");
-   private static final Identifier DROPLIGHT_ANIMATED_BASE_TEXTURE = ModTemplate.id("textures/droplight/droplight_animated_base.png");
+   private static final ResourceLocation DROPLIGHT_TEXTURE = ModTemplate.id("textures/droplight/droplight.png");
+   private static final ResourceLocation DROPLIGHT_GLOW_TEXTURE = ModTemplate.id("textures/droplight/droplight_glow.png");
+   private static final ResourceLocation DROPLIGHT_ANIMATED_TEXTURE = ModTemplate.id("textures/droplight/droplight_animated.png");
+   private static final ResourceLocation DROPLIGHT_ANIMATED_BASE_TEXTURE = ModTemplate.id("textures/droplight/droplight_animated_base.png");
    private static RenderType DROPLIGHT_LAYER = LootBeamRenderLayers.droplight(DROPLIGHT_TEXTURE);
    private static RenderType DROPLIGHT_GLOW_LAYER = LootBeamRenderLayers.droplight(DROPLIGHT_GLOW_TEXTURE);
    private static RenderType DROPLIGHT_ANIMATED_LAYER = LootBeamRenderLayers.droplightAnimated(DROPLIGHT_ANIMATED_TEXTURE);
@@ -90,12 +90,14 @@ public class DroplightRenderer {
          }
 
          TextColor color2 = getSecondColor(color, itemConfig.beamGradientModifiers);
+         //? if <= 1.21.1 {
          RenderSystem.setShaderTexture(1, minecraft.getMainRenderTarget().getDepthTextureId());
          RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, beamAlpha);
+         //?}
          matrixStack.pushPose();
          matrixStack.translate(0.0, 0.015, 0.0);
          matrixStack.pushPose();
-         matrixStack.mulPose(Axis.YP.rotationDegrees(-camera.getYRot()));
+         matrixStack.mulPose(Axis.YP.rotationDegrees(-camera/*? <= 1.21.1 {*/ .getYRot() /*?} else {*/ /*.yRot() *//*?} */));
          VertexConsumer builder = buffer.getBuffer(DROPLIGHT_GLOW_LAYER);
          renderQuad(
             builder,
@@ -122,7 +124,7 @@ public class DroplightRenderer {
                float halfBeamWidth = beamWidth / 2.0F;
                float oneThreeBeamWidth = beamWidth / 3.0F;
                float animationSpeed = itemConfig.droplightBeamAnimationSpeed;
-               float itemAgeInSeconds = (itemEntity.getAge() + minecraft.getTimer().getGameTimeDeltaPartialTick(true)) / 20.0F;
+               float itemAgeInSeconds = (itemEntity.getAge() + minecraft/*? <= 1.21.1 {*/ .getTimer() /*?} else {*/ /*.getDeltaTracker() *//*?} */.getGameTimeDeltaPartialTick(true)) / 20.0F;
                builder = buffer.getBuffer(DROPLIGHT_ANIMATED_LAYER);
                renderAnimatedQuad(
                   builder,
@@ -192,7 +194,9 @@ public class DroplightRenderer {
 
          matrixStack.popPose();
          matrixStack.popPose();
+         //? if <= 1.21.1 {
          RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+         //?}
       }
    }
 

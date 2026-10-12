@@ -35,8 +35,10 @@ public class AnimatedTextureCellCreator {
 				this.textFieldWidget.setValue(particleTexture.getDisplayName());
 				this.textFieldWidget.moveCursorTo(0, false);
 				this.textFieldWidget.render(graphics, mouseX, mouseY, delta);
+				//? if <= 1.21.1 {
 				RenderSystem.enableDepthTest();
 				RenderSystem.enableBlend();
+				//?}
 				TextureAtlasSprite particleSprite = particleTexture.getSprite();
 				Rect2i spriteRect = RenderHelper.getSpritePositionAndSize(particleSprite);
 				RenderHelper.drawColored(
@@ -52,8 +54,10 @@ public class AnimatedTextureCellCreator {
 						spriteRect.getHeight(),
 						particleTexture.isColored() ? "#808080" : "#bbbbbb"
 				);
+				//? if <= 1.21.1 {
 				RenderSystem.disableBlend();
 				RenderSystem.disableDepthTest();
+				//?}
 			}
 
 			public void setValue(ParticleManager.ParticleTexture value) {
@@ -90,8 +94,10 @@ public class AnimatedTextureCellCreator {
 				this.textFieldWidget.setValue(glowEffectTexture.getDisplayName());
 				this.textFieldWidget.moveCursorTo(0, false);
 				this.textFieldWidget.render(graphics, mouseX, mouseY, delta);
+				//? if <= 1.21.1 {
 				RenderSystem.enableDepthTest();
 				RenderSystem.enableBlend();
+				//?}
 				TextureAtlasSprite particleSprite = glowEffectTexture.getSprite();
 				Rect2i spriteRect = RenderHelper.getSpritePositionAndSize(particleSprite);
 				RenderHelper.drawColored(
@@ -107,8 +113,10 @@ public class AnimatedTextureCellCreator {
 						spriteRect.getHeight(),
 						glowEffectTexture.isColored() ? "#808080" : "#bbbbbb"
 				);
+				//? if <= 1.21.1 {
 				RenderSystem.disableBlend();
 				RenderSystem.disableDepthTest();
+				//?}
 			}
 
 			public void setValue(GlowEffectManager.GlowEffectTexture value) {
@@ -153,9 +161,11 @@ public class AnimatedTextureCellCreator {
 								y + 6,
 								b ? 16777215 : 8947848
 						);
+						//? if <= 1.21.1 {
 						RenderSystem.enableDepthTest();
 						RenderSystem.enableBlend();
-						TextureAtlasSprite particleSprite = Minecraft.getInstance().particleEngine.textureAtlas.getSprite(selection.id);
+						//?}
+						TextureAtlasSprite particleSprite = ParticleManager.ParticleTexture.getAtlasTexture().getSprite(selection.id);
 						Rect2i spriteRect = RenderHelper.getSpritePositionAndSize(particleSprite);
 						RenderHelper.drawColored(
 								graphics,
@@ -170,8 +180,10 @@ public class AnimatedTextureCellCreator {
 								spriteRect.getHeight(),
 								selection.isColored() ? "#808080" : "#bbbbbb"
 						);
+						//? if <= 1.21.1 {
 						RenderSystem.disableBlend();
 						RenderSystem.disableDepthTest();
+						//?}
 					}
 				};
 			}
@@ -212,8 +224,10 @@ public class AnimatedTextureCellCreator {
 								y + 6,
 								b ? 16777215 : 8947848
 						);
+						//? if <= 1.21.1 {
 						RenderSystem.enableDepthTest();
 						RenderSystem.enableBlend();
+						//?}
 						TextureAtlasSprite particleSprite = selection.getSpriteAtlasTexture().getSprite(selection.id);
 						Rect2i spriteRect = RenderHelper.getSpritePositionAndSize(particleSprite);
 						RenderHelper.drawColored(
@@ -229,8 +243,10 @@ public class AnimatedTextureCellCreator {
 								spriteRect.getHeight(),
 								selection.isColored() ? "#808080" : "#bbbbbb"
 						);
+						//? if <= 1.21.1 {
 						RenderSystem.disableBlend();
 						RenderSystem.disableDepthTest();
+						//?}
 					}
 				};
 			}

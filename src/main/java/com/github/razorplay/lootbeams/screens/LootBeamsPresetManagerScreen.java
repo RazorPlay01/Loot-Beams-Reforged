@@ -1,6 +1,7 @@
 package com.github.razorplay.lootbeams.screens;
 
 import com.github.razorplay.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.helpers.RenderHelper;
 import com.github.razorplay.lootbeams.managers.PresetManager;
 import com.github.razorplay.lootbeams.screens.widgets.PresetButtonWidget;
 import com.github.razorplay.lootbeams.screens.widgets.PresetListWidget;
@@ -10,10 +11,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
+//? if >= 1.21.11 {
+/*import net.minecraft.client.input.KeyEvent;
+*///?}
 
 public class LootBeamsPresetManagerScreen extends Screen {
-   private static final Identifier MODAL_TEXTURE = ModTemplate.id("textures/gui/screen/modal.png");
+   private static final ResourceLocation MODAL_TEXTURE = ModTemplate.id("textures/gui/screen/modal.png");
    private static final int BACKGROUND_WIDTH = 184;
    private static final int BACKGROUND_HEIGHT = 152;
    private Screen parent;
@@ -62,16 +66,7 @@ public class LootBeamsPresetManagerScreen extends Screen {
                String presetName = this.presetNameField.getText().trim();
                if (presetName.isEmpty()) {
                   try {
-                     this.minecraft
-                        .getToasts()
-                        .addToast(
-                           SystemToast.multiline(
-                              this.minecraft,
-                              SystemToast.SystemToastId.WORLD_ACCESS_FAILURE,
-                              Component.nullToEmpty("LootBeams"),
-                              Component.translatable("lootbeams.notification.savePreset.notEnteredPresetName")
-                           )
-                        );
+                     showToast(Component.translatable("lootbeams.notification.savePreset.notEnteredPresetName"));
                   } catch (Exception e) {
                      e.printStackTrace();
                   }
@@ -110,9 +105,31 @@ public class LootBeamsPresetManagerScreen extends Screen {
       return true;
    }
 
+   private void showToast(Component message) {
+      //? if <= 1.21.1 {
+      this.minecraft
+         .getToasts()
+         .addToast(
+            SystemToast.multiline(this.minecraft, SystemToast.SystemToastId.WORLD_ACCESS_FAILURE, Component.nullToEmpty("LootBeams"), message)
+         );
+      //?} else {
+      /*this.minecraft
+         .getToastManager()
+         .addToast(
+            SystemToast.multiline(this.minecraft, SystemToast.SystemToastId.WORLD_ACCESS_FAILURE, Component.nullToEmpty("LootBeams"), message)
+         );
+      *///?}
+   }
+
+   //? if <= 1.21.1 {
    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
       return keyCode != 258 && keyCode != 264 && keyCode != 265 ? super.keyPressed(keyCode, scanCode, modifiers) : false;
    }
+   //?} else {
+   /*public boolean keyPressed(KeyEvent event) {
+      return event.input() != 258 && event.input() != 264 && event.input() != 265 ? super.keyPressed(event) : false;
+   }
+   *///?}
 
    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
       this.renderBackground(context, mouseX, mouseY, delta);
@@ -131,7 +148,7 @@ public class LootBeamsPresetManagerScreen extends Screen {
       super.renderBackground(context, mouseX, mouseY, delta);
       int i = (this.width - BACKGROUND_WIDTH) / 2;
       int j = (this.height - BACKGROUND_HEIGHT) / 2;
-      context.blit(MODAL_TEXTURE, i, j, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+      RenderHelper.blit(context, MODAL_TEXTURE, i, j, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0, 0);
    }
 
    public void onClose() {

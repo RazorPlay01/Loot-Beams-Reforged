@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.fabric;
 
 //? fabric {
 
-import com.github.razorplay.lootbeams.ParticleRegistrar;
+/*import com.github.razorplay.lootbeams.ParticleRegistrar;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
@@ -25,4 +25,4 @@ public class FabricParticleRegistrar implements ParticleRegistrar {
         ParticleFactoryRegistry.getInstance().register(type, factory::apply);
     }
 }
-//?}
+*///?}

@@ -1,5 +1,7 @@
 package com.github.razorplay.lootbeams.mixin;
 
+//? if <= 1.21.1 {
+
 import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.features.CustomLootBeamsConfig;
 import com.github.razorplay.lootbeams.helpers.TextColorHelper;
@@ -87,3 +89,22 @@ public class ItemRendererMixin {
       }
    }
 }
+//?} else {
+/*import net.minecraft.client.renderer.entity.ItemRenderer;
+import org.spongepowered.asm.mixin.Mixin;
+
+/^*
+ * On <= 1.21.1 el resplandor de los items dropeados se implementaba interceptando
+ * {@code ItemRenderer#render(...)} y desviando el dibujo a un {@code OutlineBufferSource} teñido.
+ * <p>
+ * En 1.21.11 ese metodo ya no existe (lo sustituyo {@code ItemStackRenderState} +
+ * {@code ItemRenderer#renderItem(...)}) y, sobre todo, el motor de render tiene soporte NATIVO de
+ * contorno coloreado: {@code ItemStackRenderState#submit(..., int outlineColor)}. Por eso el
+ * resplandor se implementa ahora en {@link ItemEntityRendererMixin}, alimentando
+ * {@code EntityRenderState#outlineColor} durante {@code extractRenderState}. Esta clase se mantiene
+ * como mixin vacio porque el config sigue declarandola en {@code lootbeams.mixins.json}.
+ ^/
+@Mixin(ItemRenderer.class)
+public class ItemRendererMixin {
+}
+*///?}

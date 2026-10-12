@@ -21,10 +21,10 @@ import org.joml.Matrix4f;
 import java.util.List;
 
 //? <= 1.21.1 {
-/*import net.minecraft.client.renderer.RenderType;
-*///?} else {
-import net.minecraft.client.renderer.rendertype.RenderType;
-//?}
+import net.minecraft.client.renderer.RenderType;
+//?} else {
+/*import net.minecraft.client.renderer.rendertype.RenderType;
+*///?}
 
 public class GroundEffectRenderer {
    public static void renderGroundEffect(

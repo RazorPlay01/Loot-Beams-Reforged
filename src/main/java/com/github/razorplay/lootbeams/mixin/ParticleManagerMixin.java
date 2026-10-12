@@ -1,6 +1,12 @@
 package com.github.razorplay.lootbeams.mixin;
 
 import com.github.razorplay.lootbeams.extensions.LootbeamsParticleManager;
+import net.minecraft.client.Camera;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.renderer.LightTexture;
+import org.spongepowered.asm.mixin.Mixin;
+
+//? <= 1.21.1 {
 import com.github.razorplay.lootbeams.vfx.VFXParticle;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -10,14 +16,10 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
-import net.minecraft.client.Camera;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -81,3 +83,14 @@ public class ParticleManagerMixin implements LootbeamsParticleManager {
         }
     }
 }
+//?} else {
+/*@Mixin(ParticleEngine.class)
+public class ParticleManagerMixin implements LootbeamsParticleManager {
+    @Override
+    public void renderCustomParticles(LightTexture lightmapTextureManager, Camera camera, float tickDelta) {
+        // 1.21.11: las particulas del mod se dibujan con el sistema nativo de particulas
+        // (SingleQuadParticle + ParticleEngine.extract), asi que ya no hace falta una pasada de
+        // render propia ni el grupo de particulas personalizado.
+    }
+}
+*///?}

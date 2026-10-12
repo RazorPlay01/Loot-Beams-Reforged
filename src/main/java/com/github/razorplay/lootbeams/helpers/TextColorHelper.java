@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringDecomposer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +61,7 @@ public class TextColorHelper {
                }
 
                if (value.contains(NBT_COLOR_KEY)) {
-                  return TextColor.parseColor(value.getString(NBT_COLOR_KEY)).getOrThrow();
+                  return TextColor.parseColor(value.getString(NBT_COLOR_KEY)/*? >1.21.1 {*//*.get()*//*?} */).getOrThrow();
                }
             }
          }
@@ -98,65 +98,93 @@ public class TextColorHelper {
       }
    }
 
-   public static TextColor getColorFromItemOverrides(Item i) {
-      List<String> overrides = ModTemplate.config.colorOverrides;
-      if (overrides.isEmpty()) {
-         return null;
-      }
+	public static TextColor getColorFromItemOverrides(Item i) {
+		List<String> overrides = ModTemplate.config.colorOverrides;
+		if (overrides.isEmpty()) {
+			return null;
+		}
 
-      for (String unparsed : overrides.stream().filter(s -> !s.isEmpty()).collect(Collectors.toList())) {
-         String[] configValue = unparsed.split("=");
-         if (configValue.length == 2) {
-            String nameIn = configValue[0];
-            Identifier registry = Identifier.tryParse(nameIn.replace("#", ""));
-            TextColor colorIn = null;
+		ItemStack stack = i.getDefaultInstance();
 
-            try {
-               if (PrismCompat.isPrismLoaded()) {
-                  if (DC_MAP.containsKey(i.getDefaultInstance())) {
-                     colorIn = TextColor.fromRgb(DC_MAP.get(i.getDefaultInstance()).getValue());
-                  } else {
-                     TextColor dColor = PrismCompat.parseColor(configValue[1]);
-                     DC_MAP.put(i.getDefaultInstance(), dColor);
-                     colorIn = TextColor.fromRgb(dColor.getValue());
-                  }
-               } else {
-                  colorIn = TextColor.parseColor(configValue[1]).getOrThrow();
-               }
-            } catch (Exception e) {
-               CrashManager.LOGGER.error(String.format("Color overrides error! \"%s\" is not a valid hex color for \"%s\"", configValue[1], nameIn));
-               return null;
-            }
+		for (String unparsed : overrides.stream().filter(s -> !s.isEmpty()).toList()) {
+			String[] configValue = unparsed.split("=");
+			if (configValue.length != 2) continue;
 
-            if (!nameIn.contains(":") && BuiltInRegistries.ITEM.getKey(i).getNamespace().equals(nameIn)) {
-               return colorIn;
-            }
+			String nameIn = configValue[0];
+			TextColor colorIn = null;
 
-            if (registry != null) {
-               if (nameIn.startsWith("#")) {
-                  Optional<HolderSet.Named<Item>> tag = BuiltInRegistries.ITEM
-                     .getTags()
-                     .filter(pair -> pair.getFirst().identifier().equals(registry))
-                     .findFirst()
-                     .map(Pair::getSecond);
-                  if (tag.isPresent()
-                     && tag.get().contains(BuiltInRegistries.ITEM.getHolder(BuiltInRegistries.ITEM.getResourceKey(i).get()).get())
-                     )
-                   {
-                     return colorIn;
-                  }
-               }
+			// Parsear color
+			try {
+				if (PrismCompat.isPrismLoaded()) {
+					if (DC_MAP.containsKey(stack)) {
+						colorIn = TextColor.fromRgb(DC_MAP.get(stack).getValue());
+					} else {
+						TextColor dColor = PrismCompat.parseColor(configValue[1]);
+						DC_MAP.put(stack, dColor);
+						colorIn = TextColor.fromRgb(dColor.getValue());
+					}
+				} else {
+					//? if <= 1.21.1 {
+					colorIn = TextColor.parseColor(configValue[1])
+						.result()
+						.orElseThrow(() -> new IllegalArgumentException("Invalid color " + configValue[1]));
+					 //?} else {
+					/*colorIn = TextColor.parseColor(configValue[1]).getOrThrow();
+					*///?}
+				}
+			} catch (Exception e) {
+				CrashManager.LOGGER.error("Color overrides error! \"{}\" is not a valid hex color for \"{}\"", configValue[1], nameIn);
+				return null;
+			}
 
-               Optional<Item> registryItem = BuiltInRegistries.ITEM.getOptional(registry);
-               if (registryItem.isPresent() && registryItem.get().asItem() == i.asItem()) {
-                  return colorIn;
-               }
-            }
-         }
-      }
+			// 1. Namespace solo (ej: "minecraft")
+			if (!nameIn.contains(":") && !nameIn.startsWith("#")
+					&& BuiltInRegistries.ITEM.getKey(i).getNamespace().equals(nameIn)) {
+				return colorIn;
+			}
 
-      return null;
-   }
+			ResourceLocation registry = ResourceLocation.tryParse(nameIn.replace("#", ""));
+			if (registry == null) continue;
+
+			// 2. Tag (#minecraft:swords, #c:tools, etc.)
+			if (nameIn.startsWith("#")) {
+				//? if <= 1.21.1 {
+			Optional<HolderSet.Named<Item>> tag = BuiltInRegistries.ITEM
+					.getTags()
+					.filter(pair -> pair.getFirst().location().equals(registry))
+					.findFirst()
+					.map(Pair::getSecond);
+			if (tag.isPresent()
+					&& tag.get().contains(
+					BuiltInRegistries.ITEM.getHolder(BuiltInRegistries.ITEM.getResourceKey(i).get()).get()
+			)) {
+				return colorIn;
+			}
+			//?} else {
+				/*net.minecraft.tags.TagKey<Item> tagKey = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, registry);
+				if (stack.is(tagKey)) {
+					return colorIn;
+				}
+				*///?}
+				continue;
+			}
+
+			// 3. ID completo (minecraft:diamond_sword)
+			//? if <= 1.21.1 {
+		Optional<Item> registryItem = BuiltInRegistries.ITEM.getOptional(registry);
+		if (registryItem.isPresent() && registryItem.get().asItem() == i.asItem()) {
+			return colorIn;
+		}
+		//?} else {
+			/*Item registryItem = BuiltInRegistries.ITEM.get(registry).get().value();
+			if (registryItem != null && registryItem != net.minecraft.world.item.Items.AIR && registryItem == i) {
+				return colorIn;
+			}
+			*///?}
+		}
+
+		return null;
+	}
 
    public static TextColor getRawColor(Component text) {
       List<Style> list = Lists.newArrayList();

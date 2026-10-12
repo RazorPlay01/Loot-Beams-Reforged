@@ -1,5 +1,7 @@
 package com.github.razorplay.lootbeams.render;
 
+//? if <= 1.21.1 {
+
 import com.github.razorplay.lootbeams.compat.iris.IrisCompat;
 import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -10,14 +12,14 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public class ParticleRenderType implements net.minecraft.client.particle.ParticleRenderType {
-   private Identifier texture;
+   private ResourceLocation texture;
    private LootBeamShaders.Shader shader = LootBeamShaders.Shader.PARTICLE_OVERLAY;
 
-   public ParticleRenderType setTexture(Identifier texture) {
+   public ParticleRenderType setTexture(ResourceLocation texture) {
       this.texture = texture;
       return this;
    }
@@ -55,3 +57,4 @@ public class ParticleRenderType implements net.minecraft.client.particle.Particl
       RenderSystem.depthMask(true);
    }
 }
+//?}

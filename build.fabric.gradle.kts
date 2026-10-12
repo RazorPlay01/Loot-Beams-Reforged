@@ -6,11 +6,9 @@ plugins {
 stonecutter {
 	replacements.string(current.parsed >= "1.21.11") {
 		replace("ResourceLocation", "Identifier")
-		replace("location()", "identifier()")
 	}
 	replacements.string(current.parsed < "1.21.11") {
 		replace("Identifier", "ResourceLocation")
-		replace("identifier()", "location()")
 	}
 	replacements.string(current.parsed >= "26.1.2") {
 		replace("FabricDataOutput", "FabricPackOutput")
@@ -23,6 +21,12 @@ stonecutter {
 	}
 	replacements.string(current.parsed <= "1.21.1") {
 		replace("ShaderManager", "ShaderInstance")
+	}
+	replacements.string(current.parsed <= "1.21.1") {
+		replace(
+			"__LOOTBEAMS_PARTICLE_RENDER_TARGET__",
+			"Lnet/minecraft/client/particle/ParticleEngine;render(Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;F)V"
+		)
 	}
 }
 

@@ -2,7 +2,8 @@ package com.github.razorplay.lootbeams.platform.neoforge;
 
 //? neoforge {
 
-/*import com.github.razorplay.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.helpers.VersionCompatHelper;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
@@ -19,12 +20,13 @@ public final class NeoForgeKeyMappings {
 
     @SubscribeEvent
     public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
-        OPEN_PRESET_SCREEN = new KeyMapping(
+        OPEN_PRESET_SCREEN = VersionCompatHelper.registerKeyMapping(
                 "lootbeams.keybindings.savePreset",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_LEFT_ALT, // 325 = LEFT_ALT en el original
-                "lootbeams.title");
+                "lootbeams.title",
+                "lootbeams");
         event.register(OPEN_PRESET_SCREEN);
     }
 }
-*///?}
+//?}

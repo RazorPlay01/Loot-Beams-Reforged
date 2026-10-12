@@ -144,13 +144,58 @@ abstract class ModPlatformPlugin @Inject constructor() : Plugin<Project> {
 	private fun Project.configureProcessResources(ctx: Context) {
 		val javaVersionValue = "JAVA_${ctx.javaVersion.majorVersion}"
 		val excluded = ctx.loader.excludedResources
+		registerVersionedResourceDirs(ctx)
 		tasks.named<ProcessResources>("processResources") {
 			dependsOn(tasks.named("stonecutterGenerate"), "kspKotlin")
+			// Los overlays de version se registran de mas antiguo a mas nuevo y el mas especifico debe
+			// sobrescribir al anterior, asi que los duplicados se incluyen en lugar de fallar: en un
+			// Copy de Gradle el ultimo sourceDir procesado gana. Sin esto, cualquier fichero presente
+			// en dos overlays (o en `resources` y en un overlay) romperia el build.
+			duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
 			filesMatching("*.mixins.json") {
 				expand("java" to javaVersionValue)
 			}
 			exclude(excluded)
 		}
+	}
+
+	/**
+	 * Overlays de recursos por version de Minecraft.
+	 *
+	 * Cada entrada declara `minVersion to directorio`, donde el directorio es relativo a la raiz del
+	 * repositorio. Para un target concreto se aplican TODAS las entradas cuya `minVersion` sea menor o
+	 * igual a la version activa (`minVersion = null` significa "desde siempre", es decir la base).
+	 *
+	 * Los overlays se registran de mas nuevo a mas antiguo, de forma que el mas especifico gana cuando
+	 * dos declaran el mismo fichero. Los recursos comunes siguen viviendo en `src/main/resources`.
+	 *
+	 * PARA AÑADIR UNA ERA NUEVA (por ejemplo si 26.1.2 vuelve a cambiar los shaders):
+	 *   1. crea `src/main/resources-26.1.2/` con SOLO los ficheros que difieren de la era anterior,
+	 *   2. agrega una linea aqui: `ResourceOverlay("26.1.2", "resources-26.1.2")`.
+	 * No hace falta tocar nada mas: ni el source set, ni `stonecutter.gradle.kts`, ni los JARs.
+	 */
+	private val RESOURCE_OVERLAYS = listOf(
+		ResourceOverlay(minVersion = null, dir = "resources-legacy"),
+		ResourceOverlay(minVersion = "1.21.11", dir = "resources-modern")
+	)
+
+	/** Un overlay de recursos activo a partir de [minVersion] (`null` = siempre). */
+	private data class ResourceOverlay(val minVersion: String?, val dir: String)
+
+	private fun Project.registerVersionedResourceDirs(ctx: Context) {
+		val active = RESOURCE_OVERLAYS.filter { overlay ->
+			overlay.minVersion == null || ctx.stonecutter.eval(ctx.currentMcVersion, ">=${overlay.minVersion}")
+		}
+		active.forEach { overlay ->
+			val dir = rootProject.file("src/main/${overlay.dir}")
+			if (dir.isDirectory) {
+				the<JavaPluginExtension>().sourceSets.named("main") { resources.srcDir(dir) }
+			}
+		}
+		logger.info(
+			"Overlays de recursos para ${ctx.loader.id} ${ctx.currentMcVersion}: " +
+				active.joinToString { it.dir }
+		)
 	}
 
 	private fun Project.configureJarTask(ctx: Context) {

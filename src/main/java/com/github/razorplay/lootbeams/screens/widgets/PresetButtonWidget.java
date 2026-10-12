@@ -10,7 +10,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,16 +53,28 @@ public class PresetButtonWidget extends Button {
       }
    }
 
+   //? if <= 1.21.1 {
    public void renderString(GuiGraphics context, Font textRenderer, int color) {
       this.renderScrollingString(context, textRenderer, TEXT_MARGIN_X, color);
    }
+   //?} else {
+   /*public void renderString(GuiGraphics context, Font textRenderer, int color) {
+      Component message = this.getMessage();
+      if (!this.active) {
+         message = message.copy().withStyle(style -> style.withColor(TextColor.fromRgb(color)));
+      }
 
+      this.renderScrollingStringOverContents(context.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE), message, TEXT_MARGIN_X);
+   }
+   *///?}
+
+   //? if <= 1.21.1 {
    protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
       Minecraft minecraftClient = Minecraft.getInstance();
       context.setColor(1.0F, 1.0F, 1.0F, this.alpha);
       RenderSystem.enableBlend();
       RenderSystem.enableDepthTest();
-      Identifier texture = this.getButtonTextures().get(this.active, this.isHoveredOrFocused());
+      ResourceLocation texture = this.getButtonTextures().get(this.active, this.isHoveredOrFocused());
       RenderHelper.blit(context, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
       RenderSystem.setShaderTexture(0, texture);
       context.blit(texture, this.getX(), this.getY(), 0, 0.0F, 0.0F, this.getWidth(), this.getHeight(), 76, 19);
@@ -69,6 +82,14 @@ public class PresetButtonWidget extends Button {
       int i = this.active ? 16777215 : 10526880;
       this.renderString(context, minecraftClient.font, i | Mth.ceil(this.alpha * 255.0F) << 24);
    }
+   //?} else {
+   /*protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float delta) {
+      ResourceLocation texture = this.getButtonTextures().get(this.active, this.isHoveredOrFocused());
+      RenderHelper.blit(context, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
+      int i = this.active ? 16777215 : 10526880;
+      this.renderString(context, Minecraft.getInstance().font, i);
+   }
+   *///?}
 
    public static Builder customBuilder(Component message, OnPress onPress) {
       return new Builder(message, onPress);

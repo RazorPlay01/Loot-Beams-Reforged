@@ -9,10 +9,14 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
+//? if >= 1.21.11 {
+/*import net.minecraft.core.HolderSet;
+import net.minecraft.nbt.NbtOps;
+*///?}
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.FormattedCharSink;
 import net.minecraft.world.item.Item;
@@ -25,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiPredicate;
 
 public class Selectors {
@@ -38,12 +43,12 @@ public class Selectors {
     };
     private static Map<String, BiPredicate<Tag, String>> nbtComparators = new HashMap<>() {
         {
-            this.put("=", (tag, value) -> tag.getAsString().contentEquals(value));
-            this.put("!=", (tag, value) -> !tag.getAsString().contentEquals(value));
+            this.put("=", (tag, value) -> tagAsString(tag).contentEquals(value));
+            this.put("!=", (tag, value) -> !tagAsString(tag).contentEquals(value));
             this.put(">", (tag, value) -> {
                 try {
                     double parsedValue = Double.valueOf(value);
-                    return tag instanceof NumericTag ? ((NumericTag) tag).getAsDouble() > parsedValue : false;
+                    return tag instanceof NumericTag ? numericValue(tag) > parsedValue : false;
                 } catch (Exception var4) {
                     return false;
                 }
@@ -51,13 +56,76 @@ public class Selectors {
             this.put("<", (tag, value) -> {
                 try {
                     double parsedValue = Double.valueOf(value);
-                    return tag instanceof NumericTag ? ((NumericTag) tag).getAsDouble() < parsedValue : false;
+                    return tag instanceof NumericTag ? numericValue(tag) < parsedValue : false;
                 } catch (Exception var4) {
                     return false;
                 }
             });
         }
     };
+
+    private static String tagAsString(Tag tag) {
+        //? if <= 1.21.1 {
+        return tag.getAsString();
+        //?} else {
+        /*return tag.asString().orElseGet(tag::toString);
+        *///?}
+    }
+
+    private static double numericValue(Tag tag) {
+        //? if <= 1.21.1 {
+        return ((NumericTag) tag).getAsDouble();
+        //?} else {
+        /*return ((NumericTag) tag).doubleValue();
+        *///?}
+    }
+
+    private static Set<String> compoundKeys(CompoundTag tag) {
+        //? if <= 1.21.1 {
+        return tag.getAllKeys();
+        //?} else {
+        /*return tag.keySet();
+        *///?}
+    }
+
+    private static byte childTagId(CompoundTag tag, String key) {
+        Tag child = tag.get(key);
+        return child == null ? 0 : child.getId();
+    }
+
+    private static Tag parseSnbtOrNull(String value) {
+        try {
+            //? if <= 1.21.1 {
+            return TagParser.parseTag(value);
+            //?} else {
+            /*return TagParser.parseCompoundFully(value);
+            *///?}
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static Tag saveItemStack(ItemStack item, HolderLookup.Provider provider) {
+        //? if <= 1.21.1 {
+        return item.save(provider);
+        //?} else {
+        /*return ItemStack.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), item)
+                .result()
+                .orElseGet(CompoundTag::new);
+        *///?}
+    }
+
+    private static Optional<TagKey<Item>> findItemTagKey(String rawId) {
+        ResourceLocation target = ResourceLocation.parse(rawId);
+        //? if <= 1.21.1 {
+        return BuiltInRegistries.ITEM.getTagNames().filter(tagKey -> tagKey.location().equals(target)).findFirst();
+        //?} else {
+        /*return BuiltInRegistries.ITEM.getTags()
+                .map(HolderSet.Named::key)
+                .filter(tagKey -> tagKey.location().equals(target))
+                .findFirst();
+        *///?}
+    }
 
     public static boolean validateSelector(String value) {
         if (value.contains("+")) {
@@ -73,7 +141,7 @@ public class Selectors {
         } else if (value.contentEquals("*")) {
             return true;
         } else if (value.startsWith("$")) {
-            return Identifier.tryParse(value.substring(1)) != null;
+            return ResourceLocation.tryParse(value.substring(1)) != null;
         } else if (value.startsWith("@")) {
             return value.substring(1).matches("^[a-z][a-z0-9_-]{1,63}$");
         } else if (value.startsWith("!")) {
@@ -83,7 +151,7 @@ public class Selectors {
         } else if (value.startsWith("%") || value.startsWith("^")) {
             return true;
         } else {
-            return value.startsWith("&") ? true : value == null || value == "" || Identifier.tryParse(value) != null;
+            return value.startsWith("&") ? true : value == null || value == "" || ResourceLocation.tryParse(value) != null;
         }
     }
 
@@ -109,10 +177,10 @@ public class Selectors {
                 return true;
             }
 
-            String itemIdentifier = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
-            if (!selector.equals(itemIdentifier) && !selector.equals(itemIdentifier.replace("minecraft:", ""))) {
+            String itemResourceLocation = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
+            if (!selector.equals(itemResourceLocation) && !selector.equals(itemResourceLocation.replace("minecraft:", ""))) {
                 if (selector.startsWith("@")) {
-                    if (itemIdentifier.startsWith(selector.substring(1) + ":")) {
+                    if (itemResourceLocation.startsWith(selector.substring(1) + ":")) {
                         return true;
                     }
                 } else if (selector.startsWith("#")) {
@@ -125,10 +193,8 @@ public class Selectors {
                         return true;
                     }
                 } else if (selector.startsWith("$")) {
-                    Optional<TagKey<Item>> matchingTag = BuiltInRegistries.ITEM
-                            .getTagNames()
-                            .filter(tagKey -> tagKey.identifier().equals(Identifier.parse(selector.substring(1))))
-                            .findFirst();
+
+                    Optional<TagKey<Item>> matchingTag = findItemTagKey(selector.substring(1));
                     if (matchingTag.isPresent() && item.is(matchingTag.get())) {
                         return true;
                     }
@@ -165,7 +231,7 @@ public class Selectors {
                         }
                     }
 
-                    Tag itemTag = item.save(provider);
+                    Tag itemTag = saveItemStack(item, provider);
                     boolean result = findMatchingSubtag(itemTag, name, value, valueChecker);
                     if (!result) {
                         if (!name.contains(":")) {
@@ -207,9 +273,9 @@ public class Selectors {
         }
 
         if (tag.getId() == 8) {
-            try {
-                tag = TagParser.parseTag(tag.getAsString());
-            } catch (Exception var9) {
+            Tag parsed = parseSnbtOrNull(tagAsString(tag));
+            if (parsed != null) {
+                tag = parsed;
             }
         }
 
@@ -219,18 +285,10 @@ public class Selectors {
                 return value == null && valueChecker == null ? true : valueChecker.test(compoundTag.get(key), value);
             }
 
-            for (String innerKey : compoundTag.getAllKeys()) {
-                if (compoundTag.getTagType(innerKey) != 9 && compoundTag.getTagType(innerKey) != 10) {
-                    if (compoundTag.getTagType(innerKey) == 8) {
-                        try {
-                            tag = TagParser.parseTag(tag.getAsString());
-                            if (findMatchingSubtag(compoundTag.get(innerKey), key, value, valueChecker)) {
-                                return true;
-                            }
-                        } catch (Exception var8) {
-                        }
-                    }
-                } else if (findMatchingSubtag(compoundTag.get(innerKey), key, value, valueChecker)) {
+            for (String innerKey : compoundKeys(compoundTag)) {
+                byte innerId = childTagId(compoundTag, innerKey);
+                if ((innerId == 8 || innerId == 9 || innerId == 10)
+                        && findMatchingSubtag(compoundTag.get(innerKey), key, value, valueChecker)) {
                     return true;
                 }
             }

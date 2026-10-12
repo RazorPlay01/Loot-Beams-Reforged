@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,16 +72,38 @@ public class TooltipRenderer {
          x -= tooltipOffset.getOffset();
          if ((itemConfig.renderItemRarity || alwaysRenderRarityOnItem) && !itemConfig.combineNameAndRarity && !legendaryTooltipsLoaded) {
             int rarityLineHalfWidth = textRenderer.width(rarity) / 2;
-            context.renderTooltip(textRenderer, List.of(tooltipLines.get(0)), tooltipData, x, y);
-            context.renderTooltip(textRenderer, List.of(tooltipLines.get(1)), tooltipData, x + halfWidth - rarityLineHalfWidth, y + 9 * 2);
+            renderTooltip(context, textRenderer, List.of(tooltipLines.get(0)), tooltipData, x, y);
+            renderTooltip(context, textRenderer, List.of(tooltipLines.get(1)), tooltipData, x + halfWidth - rarityLineHalfWidth, y + 9 * 2);
          } else {
-            context.renderTooltip(textRenderer, tooltipLines, tooltipData, x, y);
+            renderTooltip(context, textRenderer, tooltipLines, tooltipData, x, y);
          }
       } else {
          TooltipManager.OffsetContainer tooltipOffset = alignTooltipHorizontal(itemStack, tooltipLines, tooltipData, context, x, y, textRenderer, halfWidth);
          x -= tooltipOffset.getOffset();
-         context.renderTooltip(textRenderer, tooltipLines, tooltipData, x, y);
+         renderTooltip(context, textRenderer, tooltipLines, tooltipData, x, y);
       }
+   }
+
+   /**
+    * Dibuja un tooltip. En 1.21.11 GuiGraphics ya no acepta List&lt;Component&gt; + Optional&lt;TooltipComponent&gt;: ahora
+    * hay que construir la lista de {@link ClientTooltipComponent} a mano y pasar un ClientTooltipPositioner
+    * (y el ResourceLocation de estilo, que aqui es null).
+    */
+   private static void renderTooltip(
+      GuiGraphics context, Font font, List<Component> lines, Optional<TooltipComponent> tooltipData, int x, int y
+   ) {
+      //? if <= 1.21.1 {
+      context.renderTooltip(font, lines, tooltipData, x, y);
+      //?} else {
+      /*List<ClientTooltipComponent> components = new ArrayList<>(lines.size() + 1);
+
+      for (Component line : lines) {
+         components.add(ClientTooltipComponent.create(line.getVisualOrderText()));
+      }
+
+      tooltipData.ifPresent(component -> components.add(ClientTooltipComponent.create(component)));
+      context.renderTooltip(font, components, x, y, DefaultTooltipPositioner.INSTANCE, null);
+      *///?}
    }
 
    public static void renderWorldPositionTooltip(GuiGraphics drawContext, Entity entity, ItemStack itemStack, float tickDelta) {
@@ -114,7 +137,7 @@ public class TooltipRenderer {
          }
 
          int guiScale = client.options.guiScale().get();
-         drawContext.renderTooltip(textRenderer, itemStack, x, y);
+         renderTooltip(drawContext, textRenderer, tooltipLines, itemStack.getTooltipImage(), x, y);
          client.options.guiScale().set(guiScale);
       }
    }

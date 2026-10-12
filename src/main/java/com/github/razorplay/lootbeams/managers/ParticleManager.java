@@ -7,12 +7,12 @@ import com.github.razorplay.lootbeams.vfx.VFXParticle;
 import com.github.razorplay.lootbeams.vfx.VFXParticleType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
 public class ParticleManager {
-	public static final Identifier GLOW_TEXTURE_ID = ModTemplate.id("glow");
+	public static final ResourceLocation GLOW_TEXTURE_ID = ModTemplate.id("glow");
 	public static final ParticleTexture GLOW_TEXTURE = ParticleTexture.of(GLOW_TEXTURE_ID);
 	public static VFXParticleType GLOW_PARTICLE;
 
@@ -37,11 +37,11 @@ public class ParticleManager {
 	}
 
 	public static class ParticleTexture extends AnimatedTexture {
-		public ParticleTexture(Identifier textureId) {
+		public ParticleTexture(ResourceLocation textureId) {
 			super(textureId);
 		}
 
-		public static ParticleTexture of(Identifier textureId) {
+		public static ParticleTexture of(ResourceLocation textureId) {
 			return of(textureId, ParticleTexture.class);
 		}
 
@@ -49,8 +49,15 @@ public class ParticleManager {
 			return of(path, namespace, ParticleTexture.class);
 		}
 
+
 		public static TextureAtlas getAtlasTexture() {
+			//? if <= 1.21.4 {
 			return Minecraft.getInstance().particleEngine.textureAtlas;
+			 //?} else {
+			/*return Minecraft.getInstance()
+					.getAtlasManager()
+					.getAtlasOrThrow(net.minecraft.data.AtlasIds.PARTICLES);
+			*///?}
 		}
 
 		@Override

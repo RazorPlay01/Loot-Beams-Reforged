@@ -9,9 +9,12 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
+//? if >= 1.21.11 {
+/*import net.minecraft.client.input.MouseButtonEvent;
+*///?}
 
 import java.util.Collections;
 import java.util.List;
@@ -23,8 +26,8 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
    private double dragOffsetY;
    @Nullable
    private PresetEntry hoveredEntry;
-   private static final Identifier SCROLLER_TEXTURE = ModTemplate.id("textures/gui/scroller/scroller.png");
-   private static final Identifier SCROLLER_BACKGROUND_TEXTURE = ModTemplate.id("textures/gui/scroller/scroller_background.png");
+   private static final ResourceLocation SCROLLER_TEXTURE = ModTemplate.id("textures/gui/scroller/scroller.png");
+   private static final ResourceLocation SCROLLER_BACKGROUND_TEXTURE = ModTemplate.id("textures/gui/scroller/scroller_background.png");
 
    public PresetListWidget(Minecraft client, int width, int height, int y, int itemHeight) {
       super(client, width, height, y, itemHeight);
@@ -54,9 +57,15 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
       return 6;
    }
 
+   //? if <= 1.21.1 {
    protected int getScrollbarPosition() {
       return this.getX() + this.getWidth() - this.getScrollbarWidth() + 4;
    }
+   //?} else {
+   /*protected int scrollBarX() {
+      return this.getX() + this.getWidth() - this.getScrollbarWidth() + 4;
+   }
+   *///?}
 
    public int getRowWidth() {
       return this.getWidth() - this.getScrollbarWidth() - 3;
@@ -66,14 +75,25 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
       return this.getX() + 3;
    }
 
+   /**
+    * En 1.21.11 cada Entry ya guarda su propia Y dentro de la lista, asi que la posicion de fila y
+    * el render de filas los resuelve AbstractSelectionList. Solo hace falta el helper de scroll.
+    */
+   public int getMaxScroll() {
+      //? if <= 1.21.1 {
+      return Math.max(0, this.getMaxPosition() - this.height + 2);
+      //?} else {
+      /*return this.maxScrollAmount();
+      *///?}
+   }
+
+   //? if <= 1.21.1 {
    protected int getRowTop(int index) {
       return this.getY() + 2 - (int)this.getScrollAmount() + index * this.itemHeight + this.headerHeight;
    }
+   //?}
 
-   public int getMaxScroll() {
-      return Math.max(0, this.getMaxPosition() - this.height + 2);
-   }
-
+   //? if <= 1.21.1 {
    protected void renderListItems(GuiGraphics context, int mouseX, int mouseY, float delta) {
       int i = this.getRowLeft();
       int j = this.getRowWidth();
@@ -99,6 +119,7 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
 
       entry.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, Objects.equals(this.hoveredEntry, entry), delta);
    }
+   //?}
 
    private void renderScroller(GuiGraphics context, int x, int y, int width, int height) {
       int topHeight = 6;
@@ -120,6 +141,7 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
       RenderHelper.blit(context, SCROLLER_TEXTURE, x, y + height - bottomHeight, width, bottomHeight, 0, 26, width, bottomHeight);
    }
 
+   //? if <= 1.21.1 {
    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
       this.hoveredEntry = this.isMouseOver(mouseX, mouseY) ? (PresetEntry)this.getEntryAtPosition(mouseX, mouseY) : null;
       this.renderListBackground(context);
@@ -145,6 +167,22 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
       this.renderDecorations(context, mouseX, mouseY);
       RenderSystem.disableBlend();
    }
+   //?} else {
+   /*public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+      this.hoveredEntry = this.isMouseOver(mouseX, mouseY) ? (PresetEntry)this.getEntryAtPosition(mouseX, mouseY) : null;
+      this.renderListBackground(context);
+      this.enableScissor(context);
+      super.renderListItems(context, mouseX, mouseY, delta);
+      context.disableScissor();
+      this.renderListSeparators(context);
+      if (this.scrollbarVisible()) {
+         int i = this.scrollBarX();
+         int j = this.scrollerHeight();
+         RenderHelper.blit(context, SCROLLER_BACKGROUND_TEXTURE, i, this.getY() - 1, 6, this.getHeight() + 2, 0, 0);
+         this.renderScroller(context, i, this.getScrollbarY() - 1, 6, j + 2);
+      }
+   }
+   *///?}
 
    protected void renderListBackground(GuiGraphics context) {
    }
@@ -156,6 +194,7 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
       return this.selectedEntry;
    }
 
+   //? if <= 1.21.1 {
    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
       if (!this.isScrolling) {
          return false;
@@ -214,6 +253,61 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
       int j = (int)((float)(this.height * this.height) / this.getMaxPosition());
       return Mth.clamp(j, 32, this.height - 8);
    }
+   //?} else {
+   /*public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+      if (!this.isScrolling) {
+         return false;
+      } else if (event.y() >= this.getY() && event.y() <= this.getBottom()) {
+         double scrollRange = this.getMaxScroll();
+         double scrollbarRange = this.getHeight();
+         double scrollPercentage = (event.y() - this.getY() - this.dragOffsetY) / (scrollbarRange - this.scrollerHeight());
+         this.setScrollAmount(scrollRange * scrollPercentage);
+         return true;
+      } else {
+         return super.mouseDragged(event, deltaX, deltaY);
+      }
+   }
+
+   public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+      if (event.button() == 0) {
+         int scrollbarY = this.getScrollbarY();
+         int scrollbarHeight = this.scrollerHeight();
+         if (event.x() >= this.scrollBarX()
+            && event.x() <= this.scrollBarX() + this.getScrollbarWidth()
+            && event.y() >= scrollbarY
+            && event.y() <= scrollbarY + scrollbarHeight) {
+            this.dragOffsetY = event.y() - scrollbarY;
+            this.isScrolling = true;
+            return true;
+         }
+      }
+
+      return super.mouseClicked(event, doubleClick);
+   }
+
+   public boolean mouseReleased(MouseButtonEvent event) {
+      if (event.button() == 0) {
+         this.isScrolling = false;
+      }
+
+      return super.mouseReleased(event);
+   }
+
+   private int getScrollbarY() {
+      int scrollbarHeight = this.scrollerHeight();
+      int maxScroll = this.getMaxScroll();
+      if (maxScroll <= 0) {
+         return this.getY();
+      }
+
+      int scrollbarPositionY = (int)this.scrollAmount() * (this.height - scrollbarHeight) / maxScroll + this.getY();
+      if (scrollbarPositionY < this.getY()) {
+         scrollbarPositionY = this.getY();
+      }
+
+      return scrollbarPositionY;
+   }
+   *///?}
 
    public static class PresetEntry extends Entry<PresetEntry> {
       private final String presetName;
@@ -252,6 +346,7 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
          return List.of();
       }
 
+      //? if <= 1.21.1 {
       public void render(
          GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta
       ) {
@@ -260,5 +355,13 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
          this.button.active = currentEntrySelected;
          this.button.render(context, mouseX, mouseY, tickDelta);
       }
+      //?} else {
+      /*public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+         boolean currentEntrySelected = this.parentWidget.getSelectedEntry() == this;
+         this.button.setRectangle(this.getWidth(), this.getHeight(), this.getX(), this.getY());
+         this.button.active = currentEntrySelected;
+         this.button.render(context, mouseX, mouseY, tickDelta);
+      }
+      *///?}
    }
 }

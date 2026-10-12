@@ -1,5 +1,7 @@
 package com.github.razorplay.lootbeams.mixin;
 
+//? if <= 1.21.1 {
+
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.features.CustomLootBeamsConfig;
@@ -100,3 +102,35 @@ public abstract class EntityRendererMixin<T extends Entity> {
       return light;
    }
 }
+//?} else {
+/*import com.github.razorplay.lootbeams.config.Configuration;
+import com.github.razorplay.lootbeams.features.CustomLootBeamsConfig;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+/^*
+ * 1.21.11: {@code render(...)} paso a {@code submit(...)} y {@code renderNameTag(...)} a
+ * {@code submitNameTag(...)}. El haz de luz y el lightmap a tope viven ahora en
+ * {@link ItemEntityRendererMixin} ({@code extractRenderState}); aqui solo se oculta el name tag de
+ * los marcos de item cancelando {@code getNameTag}, la fase que todavia recibe la entidad.
+ ^/
+@Mixin(EntityRenderer.class)
+public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> {
+   @Inject(method = "getNameTag", at = @At("HEAD"), cancellable = true)
+   protected void lootbeams$hideItemFrameNameTag(T entity, CallbackInfoReturnable<Component> cir) {
+      if (entity instanceof ItemFrame itemFrame) {
+         Configuration itemConfig = CustomLootBeamsConfig.fromItemStack(itemFrame.getItem());
+         if (itemConfig.advancedTooltips && itemConfig.itemFrameTooltips) {
+            cir.setReturnValue(null);
+         }
+      }
+   }
+}
+*///?}

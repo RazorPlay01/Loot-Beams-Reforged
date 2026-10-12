@@ -17,24 +17,27 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import org.jetbrains.annotations.Nullable;
+//? if >= 1.21.11 {
+/*import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+*///?}
 
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-//? <= 1.21.1 {
-/*import net.minecraft.Util;
+//? if <= 1.21.1 {
+import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
-*///?} else {
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.util.Util;
-//?}
+//?} else {
+/*import net.minecraft.util.Util;
+*///?}
 
 public class PresetTextFieldWidget extends AbstractWidget implements Renderable {
    private static final WidgetSprites TEXTURES = new WidgetSprites(
@@ -152,8 +155,26 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
       }
    }
 
+   //? if <= 1.21.1 {
+   private static boolean isControlDown() {
+      return Screen.hasControlDown();
+   }
+
+   private static boolean isShiftDown() {
+      return Screen.hasShiftDown();
+   }
+   //?} else {
+   /*private static boolean isControlDown() {
+      return Minecraft.getInstance().hasControlDown();
+   }
+
+   private static boolean isShiftDown() {
+      return Minecraft.getInstance().hasShiftDown();
+   }
+   *///?}
+
    private void erase(int offset) {
-      if (Screen.hasControlDown()) {
+      if (isControlDown()) {
          this.eraseWords(offset);
       } else {
          this.eraseCharacters(offset);
@@ -260,6 +281,7 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
       this.setCursor(this.text.length(), shiftKeyPressed);
    }
 
+   //? if <= 1.21.1 {
    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
       if (this.isActive() && this.isFocused()) {
          switch (keyCode) {
@@ -333,11 +355,91 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          return false;
       }
    }
+   //?} else {
+   /*public boolean keyPressed(KeyEvent event) {
+      if (this.isActive() && this.isFocused()) {
+         switch (event.input()) {
+            case 259:
+               if (this.editable) {
+                  this.erase(-1);
+               }
 
+               return true;
+            case 260:
+            case 264:
+            case 265:
+            case 266:
+            case 267:
+            default:
+               if (event.isSelectAll()) {
+                  this.setCursorToEnd(false);
+                  this.setSelectionEnd(0);
+                  return true;
+               } else if (event.isCopy()) {
+                  Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
+                  return true;
+               } else if (event.isPaste()) {
+                  if (this.isEditable()) {
+                     this.write(Minecraft.getInstance().keyboardHandler.getClipboard());
+                  }
+
+                  return true;
+               } else {
+                  if (event.isCut()) {
+                     Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
+                     if (this.isEditable()) {
+                        this.write("");
+                     }
+
+                     return true;
+                  }
+
+                  return false;
+               }
+            case 261:
+               if (this.editable) {
+                  this.erase(1);
+               }
+
+               return true;
+            case 262:
+               if (isControlDown()) {
+                  this.setCursor(this.getWordSkipPosition(1), isShiftDown());
+               } else {
+                  this.moveCursor(1, isShiftDown());
+               }
+
+               return true;
+            case 263:
+               if (isControlDown()) {
+                  this.setCursor(this.getWordSkipPosition(-1), isShiftDown());
+               } else {
+                  this.moveCursor(-1, isShiftDown());
+               }
+
+               return true;
+            case 268:
+               this.setCursorToStart(isShiftDown());
+               return true;
+            case 269:
+               this.setCursorToEnd(isShiftDown());
+               return true;
+         }
+      }
+
+      return false;
+   }
+   *///?}
+
+   /**
+    * NOTA: el original llamaba a this.isActive() de forma recursiva (StackOverflowError en runtime),
+    * por eso ahora delega en AbstractWidget.isActive().
+    */
    public boolean isActive() {
-      return this.isActive() && this.isFocused() && this.isEditable();
+      return super.isActive() && this.isFocused() && this.isEditable();
    }
 
+   //? if <= 1.21.1 {
    public boolean charTyped(char chr, int modifiers) {
       if (!this.isActive()) {
          return false;
@@ -353,6 +455,23 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          return false;
       }
    }
+   //?} else {
+   /*public boolean charTyped(CharacterEvent event) {
+      if (!this.isActive()) {
+         return false;
+      }
+
+      if (event.isAllowedChatCharacter()) {
+         if (this.editable) {
+            this.write(event.codepointAsString());
+         }
+
+         return true;
+      } else {
+         return false;
+      }
+   }
+   *///?}
 
    public void onClick(double mouseX, double mouseY) {
       int i = Mth.floor(mouseX) - this.getX();
@@ -361,7 +480,7 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
       }
 
       String string = this.textRenderer.plainSubstrByWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
-      this.setCursor(this.textRenderer.plainSubstrByWidth(string, i).length() + this.firstCharacterIndex, Screen.hasShiftDown());
+      this.setCursor(this.textRenderer.plainSubstrByWidth(string, i).length() + this.firstCharacterIndex, isShiftDown());
    }
 
    public void playDownSound(SoundManager soundManager) {
@@ -370,8 +489,10 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
    public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
       if (this.isVisible()) {
          if (this.drawsBackground()) {
-            Identifier texture = TEXTURES.get(this.isActive(), this.isFocused());
+            ResourceLocation texture = TEXTURES.get(this.isActive(), this.isFocused());
+            //? if <= 1.21.1 {
             RenderSystem.setShaderTexture(0, texture);
+            //?}
             RenderHelper.blit(context, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
          }
 
@@ -386,7 +507,13 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          int n = Mth.clamp(this.selectionEnd - this.firstCharacterIndex, 0, string.length());
          if (!string.isEmpty()) {
             String string2 = bl ? string.substring(0, j) : string;
+            //? if <= 1.21.1 {
             m = context.drawString(this.textRenderer, this.renderTextProvider.apply(string2, this.firstCharacterIndex), k, l, i);
+            //?} else {
+            /*FormattedCharSequence sequence = this.renderTextProvider.apply(string2, this.firstCharacterIndex);
+            context.drawString(this.textRenderer, sequence, k, l, i);
+            m = k + this.textRenderer.width(sequence);
+            *///?}
          }
 
          boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
@@ -412,7 +539,11 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
 
          if (bl2) {
             if (bl3) {
+               //? if <= 1.21.1 {
                context.fill(RenderType.guiOverlay(), o, l - 1, o + 1, l + 1 + 9, -3092272);
+               //?} else {
+               /*context.fill(o, l - 1, o + 1, l + 1 + 9, -3092272);
+               *///?}
             } else {
                context.drawString(this.textRenderer, "_", o, l, i);
             }
@@ -446,7 +577,11 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          x1 = this.drawsBackground ? this.getX() + this.width - this.horizontalPadding : this.getX() + this.width;
       }
 
+      //? if <= 1.21.1 {
       context.fill(RenderType.guiTextHighlight(), x1, y1, x2, y2, -16776961);
+      //?} else {
+      /*context.fill(x1, y1, x2, y2, -16776961);
+      *///?}
    }
 
    public void setMaxLength(int maxLength) {

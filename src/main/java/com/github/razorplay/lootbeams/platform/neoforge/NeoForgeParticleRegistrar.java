@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.neoforge;
 
 //? neoforge {
 
-/*import com.github.razorplay.lootbeams.ParticleRegistrar;
+import com.github.razorplay.lootbeams.ParticleRegistrar;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleOptions;
@@ -30,4 +30,4 @@ public class NeoForgeParticleRegistrar implements ParticleRegistrar {
 		event.registerSpriteSet(type, factory::apply);
 	}
 }
-*///?}
+//?}

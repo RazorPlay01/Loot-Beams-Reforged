@@ -7,7 +7,7 @@ import com.github.razorplay.lootbeams.helpers.StringHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -26,7 +26,7 @@ public class PresetManager {
    private static final String PRESET_ASSETS_DIRECTORY = "data/presets";
    private static final String PRESET_CONFIG_DIRECTORY = "lootbeams/presets";
    private static final String PRESET_EXTENSION = ".json";
-   private static Map<Identifier, Resource> RESOURCE_PRESETS_MAP = new HashMap<>();
+   private static Map<ResourceLocation, Resource> RESOURCE_PRESETS_MAP = new HashMap<>();
    private static List<Preset> presetList = null;
 
    public static void init() {
@@ -72,12 +72,16 @@ public class PresetManager {
       }
    }
 
-   public static Map<String, Identifier> getDefaultPresets() {
-      Map<String, Identifier> defaultPresetMap = new HashMap<>();
+   public static Map<String, ResourceLocation> getDefaultPresets() {
+      Map<String, ResourceLocation> defaultPresetMap = new HashMap<>();
       if (presetList != null && !presetList.isEmpty()) {
          for (Preset preset : presetList) {
             if (preset.type() == PresetType.IDENTIFIER) {
-               defaultPresetMap.put(preset.displayName(), preset./*? fabric {*//*identifier()*//*}? else {*/identifier /*?} */);
+               //? if fabric {
+               /*defaultPresetMap.put(preset.displayName(), preset.identifier());
+               *///?} else {
+               defaultPresetMap.put(preset.displayName(), preset.identifier);
+               //?}
 
 			}
          }
@@ -110,7 +114,7 @@ public class PresetManager {
    public static List<Preset> getPresetFiles() {
       List<Preset> presets = new ArrayList<>();
 
-      for (Identifier presetId : RESOURCE_PRESETS_MAP.keySet()) {
+      for (ResourceLocation presetId : RESOURCE_PRESETS_MAP.keySet()) {
          presets.add(new Preset(getPresetFormattedName(presetId.getPath()), presetId));
       }
 
@@ -134,7 +138,7 @@ public class PresetManager {
 	   ModTemplate.configManager.load(presetFile);
    }
 
-   public static void loadPreset(Identifier id) {
+   public static void loadPreset(ResourceLocation id) {
       Resource presetResource = RESOURCE_PRESETS_MAP.get(id);
       if (presetResource != null) {
          try {
@@ -150,7 +154,12 @@ public class PresetManager {
       File newPresetFile = FileHelper.createPathIfNotExists(newPresetPath.toString());
 	   ModTemplate.configManager.save(newPresetFile);
       Minecraft client = Minecraft.getInstance();
+
+      //? if <= 1.21.1 {
       client.getToasts()
+      //?} else {
+      /*client.getToastManager()
+      *///?}
          .addToast(
             SystemToast.multiline(
                client,
@@ -165,10 +174,10 @@ public class PresetManager {
       if (ModTemplate.config.selectedPreset.equals(presetName)) {
          return false;
       } else {
-         Map<String, Identifier> defaultPresets = getDefaultPresets();
+         Map<String, ResourceLocation> defaultPresets = getDefaultPresets();
          Map<String, File> customPresets = getCustomPresets();
          if (defaultPresets.containsKey(presetName)) {
-            Identifier presetId = defaultPresets.get(presetName);
+            ResourceLocation presetId = defaultPresets.get(presetName);
             loadPreset(presetId);
 			 ModTemplate.config.selectedPreset = presetName;
             return true;
@@ -186,7 +195,11 @@ public class PresetManager {
    public static void loadAndApplyPreset(String presetName) {
       if (tryApplyPreset(presetName)) {
          Minecraft client = Minecraft.getInstance();
-         client.getToasts()
+      //? if <= 1.21.1 {
+      client.getToasts()
+      //?} else {
+      /*client.getToastManager()
+      *///?}
             .addToast(
                SystemToast.multiline(
                   client,
@@ -200,8 +213,8 @@ public class PresetManager {
       }
    }
 
-	public record Preset(PresetType type, String displayName, Identifier identifier, File presetFile) {
-		public Preset(String displayName, Identifier identifier) {
+	public record Preset(PresetType type, String displayName, ResourceLocation identifier, File presetFile) {
+		public Preset(String displayName, ResourceLocation identifier) {
 			this(PresetType.IDENTIFIER, displayName, identifier, null);
 		}
 

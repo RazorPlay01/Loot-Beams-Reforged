@@ -46,7 +46,11 @@ public class NameTagRenderer {
                     int backgroundColor = color.getValue() & 16777215 | (int) (255.0F * backgroundAlpha) << 24;
                     matrixStack.pushPose();
                     matrixStack.translate(0.0, Math.min(1.0, Minecraft.getInstance().player.distanceToSqr(itemEntity) * 0.025) + yOffset, 0.0);
+                    //? if <= 1.21.1 {
                     Quaternionf entityRotationQuaternion = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
+                    //?} else {
+                    /*Quaternionf entityRotationQuaternion = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
+                    *///?}
                     matrixStack.mulPose(entityRotationQuaternion);
                     matrixStack.mulPose(new Quaternionf(0.0, Math.toRadians(90.0), 0.0, 0.0));
                     float nametagScale = itemConfig.nametagScale;

@@ -2,11 +2,12 @@ package com.github.razorplay.lootbeams.platform.neoforge;
 
 //? neoforge {
 
-/*import com.github.razorplay.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.dconfig.DynamicConfig;
 import com.github.razorplay.lootbeams.features.BeamOpacityOnApproach;
 import com.github.razorplay.lootbeams.features.BeamSizeOnApproach;
+import com.github.razorplay.lootbeams.helpers.VersionCompatHelper;
 import com.github.razorplay.lootbeams.managers.GlowEffectManager;
 import com.github.razorplay.lootbeams.managers.ParticleManager;
 import com.github.razorplay.lootbeams.managers.PresetManager;
@@ -102,8 +103,8 @@ public final class NeoForgeClientCommands {
             }
 
             desc = desc.append(Component.literal(" ]").withStyle(s -> s.withColor(ChatFormatting.WHITE)));
-            player.sendSystemMessage(fieldText.append(desc));
+            VersionCompatHelper.sendMessage(player, fieldText.append(desc));
         }
     }
 }
-*///?}
+//?}
