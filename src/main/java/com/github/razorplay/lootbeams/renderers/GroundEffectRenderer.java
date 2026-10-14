@@ -140,12 +140,13 @@ public class GroundEffectRenderer {
       VertexConsumer builder, PoseStack.Pose matrixEntry, float x, float y, float z, float red, float green, float blue, float alpha, float u, float v
    ) {
       Matrix4f poseMatrix = matrixEntry.pose();
-      return (LootbeamsBufferBuilder)builder.addVertex(poseMatrix, x, y, z)
+      return ((LootbeamsBufferBuilder)builder.addVertex(poseMatrix, x, y, z)
          .setColor(red, green, blue, alpha)
          .setUv(u, v)
          .setOverlay(OverlayTexture.NO_OVERLAY)
          .setLight(15728880)
-         .setNormal(matrixEntry, 0.0F, 1.0F, 0.0F);
+         .setNormal(matrixEntry, 0.0F, 1.0F, 0.0F))
+         .color0((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha * 255.0F));
    }
 
    private static void modifyGlowVertex(

@@ -4,11 +4,14 @@ import com.github.razorplay.lootbeams.extensions.LootbeamsBufferBuilder;
 import com.github.razorplay.lootbeams.render.CustomVertexFormats;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 //? if >= 26.3 {
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 import com.mojang.renderpearl.api.vertex.VertexFormatElement;
 //?} else {
-/*import com.mojang.blaze3d.vertex.VertexFormatElement;
+/*import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 *///?}
 import org.lwjgl.system.MemoryUtil;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -22,22 +25,59 @@ public abstract class BufferBuilderMixin implements LootbeamsBufferBuilder {
    private VertexFormatElement[] elements;
 
    @Shadow
+   @Final
+   private VertexFormat format;
+
+   @Shadow
+   private long vertexPointer;
+
+   @Shadow
    protected abstract long beginElement(int index);
 
+   /**
+    * Busca el offset del atributo indicado dentro del vertice que se esta escribiendo.
+    * <p>
+    * Primero prueba por las semanticas canonicas (que es lo que mantiene la contabilidad interna de
+    * {@code elementsToFill}). Si el nombre no es canonico (caso de "Color0", "Color1", "CenterUV",
+    * "SizeUV" o "GradientBounds" en los formatos propios del mod) lo resuelve directamente en el
+    * {@link VertexFormat} y devuelve {@code vertexPointer + element.offset()}, porque desde 26.2
+    * {@code BufferBuilder#elements} solo contiene las 8 semanticas canonicas y estos atributos
+    * quedaban sin escribir (basura en el buffer -> efectos corruptos).
+    */
    private long lootbeams$beginElement(String attributeName) {
       VertexFormatElement[] all = this.elements;
-      if (all == null) {
-         return -1L;
-      }
-
-      for (int i = 0; i < all.length; i++) {
-         VertexFormatElement element = all[i];
-         if (element != null && attributeName.equals(element.name())) {
-            return this.beginElement(i);
+      if (all != null) {
+         for (int i = 0; i < all.length; i++) {
+            VertexFormatElement element = all[i];
+            if (element != null && attributeName.equals(element.name())) {
+               return this.beginElement(i);
+            }
          }
       }
 
-      return -1L;
+      VertexFormatElement element = this.format.getElement(attributeName);
+      if (element == null || this.vertexPointer == -1L) {
+         return -1L;
+      }
+
+      return this.vertexPointer + (long)element.offset();
+   }
+
+   @Override
+   public LootbeamsBufferBuilder color0(int red, int green, int blue, int alpha) {
+      long l = this.lootbeams$beginElement("Color0");
+      if (l == -1L) {
+         l = this.lootbeams$beginElement("Color");
+      }
+
+      if (l != -1L) {
+         MemoryUtil.memPutByte(l, (byte)red);
+         MemoryUtil.memPutByte(l + 1L, (byte)green);
+         MemoryUtil.memPutByte(l + 2L, (byte)blue);
+         MemoryUtil.memPutByte(l + 3L, (byte)alpha);
+      }
+
+      return this;
    }
 
    @Override
@@ -106,6 +146,19 @@ public abstract class BufferBuilderMixin implements LootbeamsBufferBuilder {
 public abstract class BufferBuilderMixin implements LootbeamsBufferBuilder {
    @Shadow
    protected abstract long beginElement(VertexFormatElement var1);
+
+   @Override
+   public LootbeamsBufferBuilder color0(int red, int green, int blue, int alpha) {
+      long l = this.beginElement(VertexFormatElement.COLOR);
+      if (l != -1L) {
+         MemoryUtil.memPutByte(l, (byte)red);
+         MemoryUtil.memPutByte(l + 1L, (byte)green);
+         MemoryUtil.memPutByte(l + 2L, (byte)blue);
+         MemoryUtil.memPutByte(l + 3L, (byte)alpha);
+      }
+
+      return this;
+   }
 
    @Override
    public LootbeamsBufferBuilder color1(int red, int green, int blue, int alpha) {

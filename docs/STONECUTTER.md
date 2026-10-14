@@ -132,7 +132,27 @@ predicado y recorta puntuacion, asi que solo se usan para identificadores comple
 unicamente `GuiGraphics` -> `GuiGraphicsExtractor` desde 26.1.2). Para diferencias de API con
 parentesis o comas, usar `//? if` en el propio codigo.
 
-## 6. Build de la matriz
+## 6. Shaders por version
+
+Los shaders viven en overlays (`resources-legacy`, `resources-modern`, `resources-26.3`) porque el motor
+cambio el dialecto GLSL en dos ocasiones:
+
+| Era | Dialecto |
+|---|---|
+| `<= 1.21.1` | `#moj_import <fog.glsl>` + uniformes declarados a mano |
+| `>= 1.21.11` | `#moj_import <minecraft:fog.glsl>`, sin `layout(location = ...)` |
+| `>= 26.3` | `#include <minecraft:fog.glsl>`, `#extension GL_ARB_separate_shader_objects : require`, `layout(location = N)` obligatorio en todo `in`/`out` (los shaders se compilan a SPIR-V) |
+
+En 26.3 los atributos de vertice **se emparejan por nombre** con el `VertexFormat`, pero su `location`
+sale del propio shader; por eso hay que declararlos en el mismo orden que los elementos del formato
+(`Position`, `UV0`, `Color0`, `Color1`, `CustomUV`, ...). Ademas, cada salida del vertex debe coincidir
+con la entrada del fragment en `location`, tipo y numero de componentes.
+
+Para comprobar cambios de shaders sin abrir el juego, se puede compilar a SPIR-V con el `shaderc` de
+LWJGL (mismos errores que el log del juego, p. ej. `invalid directive: moj_import`).
+
+## 7. Build de la matriz
+
 
 ```powershell
 .\gradlew.bat :1.21.1-fabric:compileJava :1.21.1-neoforge:compileJava `

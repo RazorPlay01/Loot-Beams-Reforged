@@ -88,11 +88,10 @@ public final class LootBeamPipelines {
 
 	/** Viga con el shader de rayos de vanilla (beam "glowing"). */
 	//? if >= 26.2 {
-	public static final RenderPipeline LOOT_BEAM_LIGHTNING = RenderPipeline.builder()
+	public static final RenderPipeline LOOT_BEAM_LIGHTNING = withMatrixLayouts(RenderPipeline.builder())
 			.withLocation(ModTemplate.id("pipeline/loot_beam_lightning"))
 			.withVertexShader("core/rendertype_lightning")
 			.withFragmentShader("core/rendertype_lightning")
-			.withBindGroupLayout(MATRICES_PROJECTION_LAYOUT)
 			.withBindGroupLayout(BindGroupLayouts.FOG)
 			.withVertexBinding(0, DefaultVertexFormat.BLOCK)
 			.withPrimitiveTopology(PrimitiveTopology.QUADS)
@@ -122,11 +121,10 @@ public final class LootBeamPipelines {
 
 	/** Viga con textura (shader del beacon beam de vanilla). */
 	//? if >= 26.2 {
-	public static final RenderPipeline LOOT_BEAM = RenderPipeline.builder()
+	public static final RenderPipeline LOOT_BEAM = withMatrixLayouts(RenderPipeline.builder())
 			.withLocation(ModTemplate.id("pipeline/loot_beam"))
 			.withVertexShader("core/rendertype_beacon_beam")
 			.withFragmentShader("core/rendertype_beacon_beam")
-			.withBindGroupLayout(MATRICES_PROJECTION_LAYOUT)
 			.withBindGroupLayout(BindGroupLayouts.FOG)
 			.withBindGroupLayout(BindGroupLayouts.SAMPLER0)
 			.withVertexBinding(0, DefaultVertexFormat.BLOCK)
@@ -158,11 +156,10 @@ public final class LootBeamPipelines {
 
 	/** Nucleo solido de la viga, dibujado sobre el render target del clima. */
 	//? if >= 26.2 {
-	public static final RenderPipeline LOOT_BEAM_CENTER = RenderPipeline.builder()
+	public static final RenderPipeline LOOT_BEAM_CENTER = withMatrixLayouts(RenderPipeline.builder())
 			.withLocation(ModTemplate.id("pipeline/loot_beam_center"))
 			.withVertexShader("core/position_color")
 			.withFragmentShader("core/position_color")
-			.withBindGroupLayout(MATRICES_PROJECTION_LAYOUT)
 			.withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
 			.withPrimitiveTopology(PrimitiveTopology.QUADS)
 			.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
@@ -181,31 +178,56 @@ public final class LootBeamPipelines {
 			.build();
 	*///?}
 
+	//? if >= 26.3 {
 	/**
-	 * Samplers que declara cada shader del mod, necesario para elegir el bind group correcto a
-	 * partir de 26.2 (el snippet "matrices+fog" ya no aporta los samplers).
+	 * Bind groups de matrices. 26.3 dividio {@code MATRICES_PROJECTION} en
+	 * {@code DYNAMIC_TRANSFORMS} + {@code PROJECTION} y, ademas, el motor valida en desarrollo
+	 * ({@code STRICT_VALIDATION}) que el pipeline declare todo uniform que usen sus shaders.
 	 */
-	private static boolean coreUsesSampler2(String name) {
-		return name.endsWith("_add") || name.endsWith("_particle_overlay");
+	private static RenderPipeline.Builder withMatrixLayouts(RenderPipeline.Builder builder) {
+		return builder
+				.withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+				.withBindGroupLayout(BindGroupLayouts.PROJECTION);
 	}
+
+	/** 26.3: los shaders que leen {@code GameTime} deben declarar el bind group de globals. */
+	private static RenderPipeline.Builder withGlobalsLayout(RenderPipeline.Builder builder) {
+		return builder.withBindGroupLayout(BindGroupLayouts.GLOBALS);
+	}
+	//?} elif >= 26.2 {
+	/*private static RenderPipeline.Builder withMatrixLayouts(RenderPipeline.Builder builder) {
+		return builder.withBindGroupLayout(MATRICES_PROJECTION_LAYOUT);
+	}
+
+	private static RenderPipeline.Builder withGlobalsLayout(RenderPipeline.Builder builder) {
+		return builder;
+	}
+	*///?}
 
 	private static boolean coreUsesFog(String name) {
 		return name.endsWith("_add") || name.endsWith("_glow_overlay") || name.endsWith("_particle_overlay");
 	}
 
+	/** Shaders del mod que leen {@code GameTime} (droplight animado con ruido simplex). */
+	private static boolean coreUsesGlobals(String name) {
+		return "lootbeams_droplight_animated".equals(name);
+	}
+
 	private static RenderPipeline core(String name, VertexFormat format) {
 		//? if >= 26.2 {
-		RenderPipeline.Builder builder = RenderPipeline.builder()
+		RenderPipeline.Builder builder = withMatrixLayouts(RenderPipeline.builder())
 				.withLocation(ModTemplate.id("pipeline/" + name))
 				.withVertexShader(ModTemplate.id("core/" + name))
-				.withFragmentShader(ModTemplate.id("core/" + name))
-				.withBindGroupLayout(MATRICES_PROJECTION_LAYOUT);
+				.withFragmentShader(ModTemplate.id("core/" + name));
 		if (coreUsesFog(name)) {
 			builder = builder.withBindGroupLayout(BindGroupLayouts.FOG);
 		}
-		builder = builder.withBindGroupLayout(
-				coreUsesSampler2(name) ? BindGroupLayouts.SAMPLER0_SAMPLER2 : BindGroupLayouts.SAMPLER0
-		);
+		if (coreUsesGlobals(name)) {
+			builder = withGlobalsLayout(builder);
+		}
+		// Los shaders del mod solo declaran Sampler0 (ya no muestrean el lightmap) y el RenderSetup
+		// solo enlaza esa textura: declarar SAMPLER2 rompe STRICT_VALIDATION en desarrollo.
+		builder = builder.withBindGroupLayout(BindGroupLayouts.SAMPLER0);
 		return builder
 				.withVertexBinding(0, format)
 				.withPrimitiveTopology(PrimitiveTopology.QUADS)
@@ -283,14 +305,16 @@ public final class LootBeamPipelines {
 			// "shaders/core/custom/glow_vortex.vsh" -> "core/custom/glow_vortex"
 			String shaderPath = path.substring("shaders/".length(), path.length() - ".vsh".length());
 			String name = getFormattedName(path);
+			// Los shaders personalizados solo enlazan Sampler0 en su RenderSetup: declarar
+			// Sampler1/Sampler2 rompe STRICT_VALIDATION en desarrollo.
 			//? if >= 26.2 {
-			CUSTOM_PIPELINES.put(name, RenderPipeline.builder()
+			RenderPipeline.Builder customBuilder = withMatrixLayouts(RenderPipeline.builder())
 					.withLocation(ModTemplate.id("pipeline/" + shaderPath))
 					.withVertexShader(ModTemplate.id(shaderPath))
 					.withFragmentShader(ModTemplate.id(shaderPath))
-					.withBindGroupLayout(MATRICES_PROJECTION_LAYOUT)
 					.withBindGroupLayout(BindGroupLayouts.FOG)
-					.withBindGroupLayout(BindGroupLayouts.SAMPLER0_SAMPLER1_SAMPLER2)
+					.withBindGroupLayout(BindGroupLayouts.SAMPLER0);
+			CUSTOM_PIPELINES.put(name, withGlobalsLayout(customBuilder)
 					.withVertexBinding(0, CustomVertexFormats.POSITION_TEX_COLOR0_COLOR1_CENTER)
 					.withPrimitiveTopology(PrimitiveTopology.QUADS)
 					.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))

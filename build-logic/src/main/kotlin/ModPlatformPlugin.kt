@@ -185,7 +185,11 @@ abstract class ModPlatformPlugin @Inject constructor() : Plugin<Project> {
 	 */
 	private val RESOURCE_OVERLAYS = listOf(
 		ResourceOverlay(minVersion = null, dir = "resources-legacy"),
-		ResourceOverlay(minVersion = "1.21.11", dir = "resources-modern")
+		ResourceOverlay(minVersion = "1.21.11", dir = "resources-modern"),
+		// 26.3 cambia el dialecto GLSL de los shaders (moj_import -> #include, extension
+		// GL_ARB_separate_shader_objects y layout(location = N) obligatorio en in/out) porque ahora
+		// se compilan a SPIR-V. Solo se sobrescriben aqui los shaders afectados.
+		ResourceOverlay(minVersion = "26.3", dir = "resources-26.3")
 	)
 
 	/** Un overlay de recursos activo a partir de [minVersion] (`null` = siempre). */

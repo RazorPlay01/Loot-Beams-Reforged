@@ -307,15 +307,19 @@ public class DroplightRenderer {
             .setNormal(stack, 0.0F, 1.0F, 0.0F);
       } else {
          ((LootbeamsBufferBuilder)builder.addVertex(positionMatrix, x - w / 2.0F, y, z).setUv(u, v2).setColor(red, green, blue, alpha))
+            .color0((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha * 255.0F))
             .color1(red2, green2, blue2, (int)(alpha * 255.0F))
             .shortCustomData(alphaMultiplier, 0.0F);
          ((LootbeamsBufferBuilder)builder.addVertex(positionMatrix, x + w / 2.0F, y, z).setUv(u2, v2).setColor(red, green, blue, alpha))
+            .color0((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha * 255.0F))
             .color1(red2, green2, blue2, (int)(alpha * 255.0F))
             .shortCustomData(alphaMultiplier, 0.0F);
          ((LootbeamsBufferBuilder)builder.addVertex(positionMatrix, x + w / 2.0F, y + h, z).setUv(u2, v).setColor(red, green, blue, alpha2))
+            .color0((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha2 * 255.0F))
             .color1(red2, green2, blue2, (int)(alpha2 * 255.0F))
             .shortCustomData(alphaMultiplier, 0.0F);
          ((LootbeamsBufferBuilder)builder.addVertex(positionMatrix, x - w / 2.0F, y + h, z).setUv(u, v).setColor(red, green, blue, alpha2))
+            .color0((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha2 * 255.0F))
             .color1(red2, green2, blue2, (int)(alpha2 * 255.0F))
             .shortCustomData(alphaMultiplier, 0.0F);
       }
@@ -349,15 +353,19 @@ public class DroplightRenderer {
       int green2 = color2 >> 8 & 0xFF;
       int blue2 = color2 >> 0 & 0xFF;
       ((LootbeamsBufferBuilder)builder.addVertex(positionMatrix, x - w / 2.0F, y, z).setUv(u, v2).setColor(red, green, blue, alpha))
+         .color0((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha * 255.0F))
          .color1(red2, green2, blue2, (int)(alpha * 255.0F))
          .longCustomData(w, h, animationSpeed, itemAge);
       ((LootbeamsBufferBuilder)builder.addVertex(positionMatrix, x + w / 2.0F, y, z).setUv(u2, v2).setColor(red, green, blue, alpha))
+         .color0((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha * 255.0F))
          .color1(red2, green2, blue2, (int)(alpha * 255.0F))
          .longCustomData(w, h, animationSpeed, itemAge);
       ((LootbeamsBufferBuilder)builder.addVertex(positionMatrix, x + w / 2.0F, y + h, z).setUv(u2, v).setColor(red, green, blue, alpha2))
+         .color0((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha2 * 255.0F))
          .color1(red2, green2, blue2, (int)(alpha2 * 255.0F))
          .longCustomData(w, h, animationSpeed, itemAge);
       ((LootbeamsBufferBuilder)builder.addVertex(positionMatrix, x - w / 2.0F, y + h, z).setUv(u, v).setColor(red, green, blue, alpha2))
+         .color0((int)(red * 255.0F), (int)(green * 255.0F), (int)(blue * 255.0F), (int)(alpha2 * 255.0F))
          .color1(red2, green2, blue2, (int)(alpha2 * 255.0F))
          .longCustomData(w, h, animationSpeed, itemAge);
    }
