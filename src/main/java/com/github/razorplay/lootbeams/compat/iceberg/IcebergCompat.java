@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.compat.iceberg;
 
 import com.github.razorplay.lootbeams.ModTemplate;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.renderer.Rect2i;
@@ -30,7 +30,7 @@ public class IcebergCompat {
 
    public static Rect2i getTooltipRect(
       ItemStack itemStack,
-      GuiGraphics context,
+      GuiGraphicsExtractor context,
       ClientTooltipPositioner positioner,
       List<ClientTooltipComponent> components,
       int mouseX,
@@ -47,7 +47,7 @@ public class IcebergCompat {
             .getMethod(
                "calculateRect",
                ItemStack.class,
-               GuiGraphics.class,
+               GuiGraphicsExtractor.class,
                ClientTooltipPositioner.class,
                List.class,
                int.class,

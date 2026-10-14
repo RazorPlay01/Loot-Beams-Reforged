@@ -1,7 +1,7 @@
 package com.github.razorplay.lootbeams.mixin;
 
 //? if <= 1.21.1 {
-import com.github.razorplay.lootbeams.managers.ItemEntityManager;
+/*import com.github.razorplay.lootbeams.managers.ItemEntityManager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
@@ -31,8 +31,8 @@ public class ItemEntityRendererMixin {
       ItemEntityManager.untrack(itemEntity);
    }
 }
-//?} else {
-/*import com.github.razorplay.lootbeams.config.Configuration;
+*///?} else {
+import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.features.CustomLootBeamsConfig;
 import com.github.razorplay.lootbeams.helpers.TextColorHelper;
 import com.github.razorplay.lootbeams.helpers.ViewHelper;
@@ -53,14 +53,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/^*
+/**
  * 1.21.11: el render de entidades se divide en {@code extractRenderState} (con acceso a la entidad) y
  * {@code submit}, y el contorno coloreado es nativo ({@code EntityRenderState#outlineColor}), asi que
  * el resplandor del item ya no necesita {@code OutlineBufferSource} + {@code ItemRenderer#render}.
- ^/
+ */
 @Mixin(ItemEntityRenderer.class)
 public class ItemEntityRendererMixin {
-   /^* 0xF000F0 = bloque + cielo a maxima intensidad, el mismo valor que usa vanilla para el brillo. ^/
+   /** 0xF000F0 = bloque + cielo a maxima intensidad, el mismo valor que usa vanilla para el brillo. */
    @Unique
    private static final int LOOTBEAMS$FULLBRIGHT = 15728640;
 
@@ -102,4 +102,4 @@ public class ItemEntityRendererMixin {
       }
    }
 }
-*///?}
+//?}

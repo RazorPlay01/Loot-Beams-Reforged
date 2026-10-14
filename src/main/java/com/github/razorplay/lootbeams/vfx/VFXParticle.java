@@ -7,7 +7,10 @@ import com.github.razorplay.lootbeams.managers.ParticleManager;
 import com.github.razorplay.lootbeams.managers.RenderManager;
 import com.github.razorplay.lootbeams.render.LootBeamRenderLayers;
 //? <= 1.21.1 {
-import com.github.razorplay.lootbeams.render.ParticleRenderType;
+/*import com.github.razorplay.lootbeams.render.ParticleRenderType;
+*///?}
+//? if >= 26.2 {
+import net.minecraft.world.phys.shapes.CollisionContext;
 //?}
 import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -18,24 +21,31 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 //? <= 1.21.1 {
-import com.github.razorplay.lootbeams.render.ParticleRenderType;
+/*import com.github.razorplay.lootbeams.render.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
-//?} else {
-/*import com.github.razorplay.lootbeams.shaders.LootBeamPipelines;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+*///?} else {
+import com.github.razorplay.lootbeams.shaders.LootBeamPipelines;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
-import net.minecraft.util.RandomSource;
+//? if >= 26.1.2 {
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+//?} else {
+/*import net.minecraft.client.renderer.state.QuadParticleRenderState;
 *///?}
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.RandomSource;
+//?}
+//? if >= 26.1.2 {
+import net.minecraft.util.LightCoordsUtil;
+//?} else {
+/*import net.minecraft.client.renderer.LightTexture;
+*///?}
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 //? if <= 1.21.1 {
-import net.minecraft.util.FastColor;
-//?} else {
-/*import net.minecraft.util.ARGB;
-*///?}
+/*import net.minecraft.util.FastColor;
+*///?} else {
+import net.minecraft.util.ARGB;
+//?}
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -47,15 +57,15 @@ import org.joml.Vector3f;
 import java.util.List;
 
 //? <= 1.21.1 {
-public class VFXParticle extends TextureSheetParticle {
-//?} else {
-/*public class VFXParticle extends SingleQuadParticle {
-*///?}
+/*public class VFXParticle extends TextureSheetParticle {
+*///?} else {
+public class VFXParticle extends SingleQuadParticle {
+//?}
     private final boolean fullbright;
     private boolean stoppedByCollision;
     private boolean hasTrail = false;
     private float yHeightCompensation = 0.5F;
-    private static final ResourceLocation TEXTURE = ModTemplate.id("textures/trail/white.png");
+    private static final Identifier TEXTURE = ModTemplate.id("textures/trail/white.png");
     Trail trail;
     Vec3 particleCenter = Vec3.ZERO;
     Vec3 axis;
@@ -68,8 +78,8 @@ public class VFXParticle extends TextureSheetParticle {
     private int currentFrame = 0;
     private int tickDelayCounter = 0;
     //? <= 1.21.1 {
-    public static final ParticleRenderType RENDER_TYPE = new ParticleRenderType();
-    //?}
+    /*public static final ParticleRenderType RENDER_TYPE = new ParticleRenderType();
+    *///?}
 
     public VFXParticle(
             ClientLevel world,
@@ -88,13 +98,13 @@ public class VFXParticle extends TextureSheetParticle {
             boolean fullbright
     ) {
         //? if <= 1.21.1 {
-        super(world, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        /*super(world, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         this.texture = texture;
         this.setSprite(this.texture.getSprite());
-        //?} else {
-        /*super(world, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z, texture.getSprite());
+        *///?} else {
+        super(world, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z, texture.getSprite());
         this.texture = texture;
-        *///?}
+        //?}
         this.itemStack = itemStack;
         this.config = CustomLootBeamsConfig.fromItemStack(this.itemStack);
         this.axis = new Vec3(0.0, this.config.beamYOffset + this.config.beamHeight + this.yHeightCompensation, 0.0);
@@ -118,10 +128,10 @@ public class VFXParticle extends TextureSheetParticle {
         if (this.config.trails && this.hasTrail) {
             this.trail = new Trail(
                     //? if <= 1.21.1 {
-                    FastColor.ARGB32.color((int) (r * 255.0F), (int) (g * 255.0F), (int) (b * 255.0F), (int) (a * 255.0F)),
-                    //?} else {
-                    /*ARGB.color((int) (r * 255.0F), (int) (g * 255.0F), (int) (b * 255.0F), (int) (a * 255.0F)),
-                    *///?}
+                    /*FastColor.ARGB32.color((int) (r * 255.0F), (int) (g * 255.0F), (int) (b * 255.0F), (int) (a * 255.0F)),
+                    *///?} else {
+                    ARGB.color((int) (r * 255.0F), (int) (g * 255.0F), (int) (b * 255.0F), (int) (a * 255.0F)),
+                    //?}
                     width -> (float) ((float) Math.sin(width.floatValue() * 3.15) / 2.0F * 0.09F * this.config.trailWidth * (1.0 + Math.random()))
             );
             this.trail.setStack(this.itemStack);
@@ -147,7 +157,7 @@ public class VFXParticle extends TextureSheetParticle {
     }
 
     private Vector3f[] calculateParticleVectors(Camera camera, float partialTicks) {
-        Vec3 vec3 = camera/*? <= 1.21.1 {*/ .getPosition() /*?} else {*/ /*.position() *//*?} */;
+        Vec3 vec3 = camera/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */;
         float f = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
@@ -178,7 +188,11 @@ public class VFXParticle extends TextureSheetParticle {
         float maxX = this.getU1();
         float minY = this.getV0();
         float maxY = this.getV1();
-        int j = this.getLightColor(partialTicks);
+        //? if >= 26.1.2 {
+        int j = this.getLightCoords(partialTicks);
+        //?} else {
+        /*int j = this.getLightColor(partialTicks);
+        *///?}
         boolean particleInheritsColor = this.config.particleInheritsColor && !this.texture.isColored();
         float averageColor = LootBeamShaders.getAverageColor(this.config.particleColorMode);
         float R = particleInheritsColor ? this.rCol : averageColor;
@@ -215,32 +229,34 @@ public class VFXParticle extends TextureSheetParticle {
         if (this.config.trails && this.hasTrail && this.trail != null) {
             this.trail.setColor(this.rCol, this.gCol, this.bCol, this.alpha);
             this.trail.setCenterPoint(this.particleCenter);
-            // Se dibuja en el BufferSource de la etapa, que es el que se vuelca al final (endBatch).
             RenderManager.addRenderBeforeEnd(
-                    (matrixStack, consumer) -> this.trail
-                            .render(matrixStack, consumer.getBuffer(LootBeamRenderLayers.translucentNoCull(TEXTURE)))
+                    (matrixStack, buffer) -> buffer.submit(
+                            LootBeamRenderLayers.translucentNoCull(TEXTURE),
+                            matrixStack,
+                            (consumer, stack) -> this.trail.render(stack, consumer)
+                    )
             );
         }
     }
 
-    /** Ruta de render de 1.21.1 (en 1.21.11 la particula la dibuja el motor desde {@link #extract}). */
+    /** Ruta de render de 1.21.1 (en 1.21.11 la particula la dibuja el motor desde {@code extract}). */
     public void render(VertexConsumer vertexConsumer, Camera camera, float partialTicks) {
         this.renderParticles(vertexConsumer, camera, partialTicks);
         lootbeams$updateTrail(partialTicks);
     }
 
     //? if >= 1.21.11 {
-    /*/^*
+    /**
      * En 1.21.11 cada particula se extrae a un {@link QuadParticleRenderState}: {@code super.extract}
      * dibuja el quad y aqui se aprovecha el mismo punto de entrada (una vez por particula y frame)
      * para actualizar y encolar la estela, ya que {@code Particle#render(...)} no se invoca.
-     ^/
+     */
     @Override
     public void extract(QuadParticleRenderState state, Camera camera, float partialTicks) {
         super.extract(state, camera, partialTicks);
         lootbeams$updateTrail(partialTicks);
     }
-    *///?}
+    //?}
 
     /** Actualiza los puntos de la estela y la encola para la etapa BEFORE_END. */
     private void lootbeams$updateTrail(float partialTicks) {
@@ -283,9 +299,15 @@ public class VFXParticle extends TextureSheetParticle {
         return new Vec3(this.x, this.y, this.z);
     }
 
-    protected int getLightColor(float tint) {
+    //? if >= 26.1.2 {
+    protected int getLightCoords(float tint) {
+        return this.fullbright ? LightCoordsUtil.pack(15, 15) : super.getLightCoords(tint);
+    }
+    //?} else {
+    /*protected int getLightColor(float tint) {
         return this.fullbright ? LightTexture.pack(15, 15) : super.getLightColor(tint);
     }
+    *///?}
 
     public void setSize(float size) {
         this.quadSize = size / 10.0F;
@@ -336,7 +358,13 @@ public class VFXParticle extends TextureSheetParticle {
             double dY = y;
             double dZ = z;
             if (this.hasPhysics && (x != 0.0 || y != 0.0 || z != 0.0)) {
-                Vec3 vector3d = Entity.collideBoundingBox(null, new Vec3(x, y, z), this.getBoundingBox(), this.level, List.of());
+                //? if >= 26.2 {
+                // 26.2 anade una segunda sobrecarga de collideBoundingBox(CollisionContext, ...), asi que
+                // hay que desambiguar el null explicito.
+                Vec3 vector3d = Entity.collideBoundingBox(CollisionContext.empty(), new Vec3(x, y, z), this.getBoundingBox(), this.level, List.of());
+                //?} else {
+                /*Vec3 vector3d = Entity.collideBoundingBox(null, new Vec3(x, y, z), this.getBoundingBox(), this.level, List.of());
+                *///?}
                 x = vector3d.x;
                 y = vector3d.y;
                 z = vector3d.z;
@@ -364,15 +392,15 @@ public class VFXParticle extends TextureSheetParticle {
     }
 
     //? if <= 1.21.1 {
-    public ParticleRenderType getRenderType() {
+    /*public ParticleRenderType getRenderType() {
         return this.config.particleColorMode != null
                 ? RENDER_TYPE.setTexture(this.sprite.atlasLocation()).setShader(this.config.particleColorMode)
                 : RENDER_TYPE.setTexture(this.sprite.atlasLocation());
     }
-    //?} else {
-    /*@Override
+    *///?} else {
+    @Override
     protected SingleQuadParticle.Layer getLayer() {
-        RenderPipeline pipeline = this.config.particleColorMode != null
+        var pipeline = this.config.particleColorMode != null
                 ? LootBeamPipelines.getShader(this.config.particleColorMode)
                 : null;
         if (pipeline == null) {
@@ -381,14 +409,14 @@ public class VFXParticle extends TextureSheetParticle {
 
         return new SingleQuadParticle.Layer(true, this.sprite.atlasLocation(), pipeline);
     }
-    *///?}
+    //?}
 
     public static class Factory implements ParticleProvider<SimpleParticleType> {
         public Factory(SpriteSet spriteSet) {
         }
 
         @Nullable
-        public Particle createParticle(SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velX, double velY, double velZ/*? <= 1.21.1 {*/ /*?} else {*/ /*, RandomSource random *//*?} */) {
+        public Particle createParticle(SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double velX, double velY, double velZ/*? <= 1.21.1 {*/ /*?} else {*/ , RandomSource random /*?} */) {
             if (parameters instanceof VFXParticleType type) {
                 VFXParticle vfxParticle = new VFXParticle(
                         world,

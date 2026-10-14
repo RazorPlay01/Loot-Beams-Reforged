@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.fabric;
 
 //? fabric {
 
-/*import com.github.razorplay.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.ModTemplate;
 import dev.kikugie.fletching_table.annotation.fabric.Entrypoint;
 import net.fabricmc.api.ModInitializer;
 
@@ -14,4 +14,4 @@ public class FabricEntrypoint implements ModInitializer {
 		ModTemplate.onInitialize();
 	}
 }
-*///?}
+//?}

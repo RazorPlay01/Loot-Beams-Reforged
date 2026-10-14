@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.github.razorplay.lootbeams.render.LootBeamBuffer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.StringUtil;
@@ -23,7 +23,7 @@ import java.util.List;
 
 public class NameTagRenderer {
     public static void renderNameTags(
-            MultiBufferSource.BufferSource buffer,
+            LootBeamBuffer buffer,
             PoseStack matrixStack,
             ItemEntity itemEntity,
             Configuration itemConfig,
@@ -46,13 +46,25 @@ public class NameTagRenderer {
                     int backgroundColor = color.getValue() & 16777215 | (int) (255.0F * backgroundAlpha) << 24;
                     matrixStack.pushPose();
                     matrixStack.translate(0.0, Math.min(1.0, Minecraft.getInstance().player.distanceToSqr(itemEntity) * 0.025) + yOffset, 0.0);
-                    //? if <= 1.21.1 {
-                    Quaternionf entityRotationQuaternion = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
+                    //? if >= 26.2 {
+                    Quaternionf entityRotationQuaternion = Minecraft.getInstance().gameRenderer.mainCamera().rotation();
                     //?} else {
-                    /*Quaternionf entityRotationQuaternion = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
+                    /*//? if <= 1.21.1 {
+                    /^Quaternionf entityRotationQuaternion = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
+                    ^///?} else {
+                    Quaternionf entityRotationQuaternion = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
+                    //?}
                     *///?}
-                    matrixStack.mulPose(entityRotationQuaternion);
-                    matrixStack.mulPose(new Quaternionf(0.0, Math.toRadians(90.0), 0.0, 0.0));
+                                        //? if >= 26.3 {
+                    matrixStack.rotate(entityRotationQuaternion);
+                    //?} else {
+                    /*matrixStack.mulPose(entityRotationQuaternion);
+                    *///?}
+                    //? if >= 26.3 {
+                    matrixStack.rotate(new Quaternionf(0.0, Math.toRadians(90.0), 0.0, 0.0));
+                    //?} else {
+                    /*matrixStack.mulPose(new Quaternionf(0.0, Math.toRadians(90.0), 0.0, 0.0));
+                    *///?}
                     float nametagScale = itemConfig.nametagScale;
                     float nametagScaleCompensation = 0.25F;
                     matrixStack.scale(
@@ -89,7 +101,7 @@ public class NameTagRenderer {
             Configuration itemConfig,
             Font fontRenderer,
             PoseStack stack,
-            MultiBufferSource buffer,
+            LootBeamBuffer buffer,
             String text,
             int foregroundColor,
             int backgroundColor,
@@ -99,20 +111,28 @@ public class NameTagRenderer {
             float w = -fontRenderer.width(text) / 2.0F;
             int bg = new Color(0, 0, 0, (int) (255.0F * backgroundAlpha)).getRGB();
             Component orderedText = Component.nullToEmpty(text);
-            fontRenderer.drawInBatch8xOutline(orderedText.getVisualOrderText(), w, 0.0F, foregroundColor, bg, stack.last().pose(), buffer, 15728880);
+            //? if >= 26.2 {
+            buffer.submitText(stack, w, 0.0F, orderedText.getVisualOrderText(), false, Font.DisplayMode.NORMAL, 15728880, foregroundColor, bg, bg);
+            //?} else {
+            /*fontRenderer.drawInBatch8xOutline(orderedText.getVisualOrderText(), w, 0.0F, foregroundColor, bg, stack.last().pose(), buffer.source(), 15728880);
+            *///?}
         } else {
-            fontRenderer.drawInBatch(
+            //? if >= 26.2 {
+            buffer.submitText(stack, (float) (-fontRenderer.width(text) / 2.0), 0.0F, Component.nullToEmpty(text).getVisualOrderText(), false, Font.DisplayMode.NORMAL, 15728864, foregroundColor, backgroundColor, backgroundColor);
+            //?} else {
+            /*fontRenderer.drawInBatch(
                     text,
                     (float) (-fontRenderer.width(text) / 2.0),
                     0.0F,
                     foregroundColor,
                     false,
                     stack.last().pose(),
-                    buffer,
+                    buffer.source(),
                     Font.DisplayMode.NORMAL,
                     backgroundColor,
                     15728864
             );
+            *///?}
         }
     }
 
@@ -123,7 +143,7 @@ public class NameTagRenderer {
             float backgroundAlpha,
             Font fontRenderer,
             PoseStack stack,
-            MultiBufferSource buffer,
+            LootBeamBuffer buffer,
             boolean alwaysRenderRarityOnItem
     ) {
         stack.translate(0.0, 10.0, 0.0);

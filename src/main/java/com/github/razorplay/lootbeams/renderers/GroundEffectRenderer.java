@@ -11,7 +11,7 @@ import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.github.razorplay.lootbeams.render.LootBeamBuffer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.TextColor;
@@ -21,14 +21,14 @@ import org.joml.Matrix4f;
 import java.util.List;
 
 //? <= 1.21.1 {
-import net.minecraft.client.renderer.RenderType;
-//?} else {
-/*import net.minecraft.client.renderer.rendertype.RenderType;
-*///?}
+/*import net.minecraft.client.renderer.RenderType;
+*///?} else {
+import net.minecraft.client.renderer.rendertype.RenderType;
+//?}
 
 public class GroundEffectRenderer {
    public static void renderGroundEffect(
-      MultiBufferSource.BufferSource buffer,
+      LootBeamBuffer buffer,
       PoseStack matrixStack,
       ItemEntity itemEntity,
       Configuration itemConfig,
@@ -47,7 +47,11 @@ public class GroundEffectRenderer {
             float rotationSpeed = itemConfig.glowRotationSpeed;
             float rotation = currentGroundTime * rotationSpeed % 360.0F;
             float rotationDirection = itemConfig.glowRotateClockwise ? -1.0F : 1.0F;
-            matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * rotationDirection));
+            //? if >= 26.3 {
+            matrixStack.rotate(Axis.YP.rotationDegrees(rotation * rotationDirection));
+            //?} else {
+            /*matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * rotationDirection));
+            *///?}
          }
 
          TextureAtlasSprite glowEffectSprite = itemConfig.glowEffectTexture.getSprite();
@@ -103,19 +107,29 @@ public class GroundEffectRenderer {
 
          boolean useGlowGradient = !itemConfig.glowEffectTexture.isColored() && itemConfig.useGlowGradient
             || itemConfig.glowCustomShader != LootBeamShaders.CustomShader.NONE;
-         renderGlow(
+         final float glowRSnapshot = glowR;
+         final float glowGSnapshot = glowG;
+         final float glowBSnapshot = glowB;
+         final float glowAlphaSnapshot = glowEffectAlpha;
+         final float glowRadiusSnapshot = radius;
+         final TextureAtlasSprite glowSpriteSnapshot = glowEffectSprite;
+         buffer.submit(
+            glowLayer,
             matrixStack,
-            buffer.getBuffer(glowLayer),
-            glowR,
-            glowG,
-            glowB,
-            glowEffectAlpha,
-            radius,
-            glowEffectSprite,
-            useGlowGradient,
-            itemConfig.glowGradientModifiers,
-            itemConfig.glowGradientStart / 100.0F,
-            itemConfig.glowGradientEnd / 100.0F
+            (builder, poseStack) -> renderGlow(
+               poseStack,
+               builder,
+               glowRSnapshot,
+               glowGSnapshot,
+               glowBSnapshot,
+               glowAlphaSnapshot,
+               glowRadiusSnapshot,
+               glowSpriteSnapshot,
+               useGlowGradient,
+               itemConfig.glowGradientModifiers,
+               itemConfig.glowGradientStart / 100.0F,
+               itemConfig.glowGradientEnd / 100.0F
+            )
          );
          buffer.endBatch();
          matrixStack.popPose();

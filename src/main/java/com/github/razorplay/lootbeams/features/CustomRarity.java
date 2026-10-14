@@ -106,12 +106,12 @@ public class CustomRarity {
          if (itemCustomData != null) {
             CompoundTag customDataNbt = itemCustomData.copyTag();
             if (!customDataNbt.isEmpty()) {
-               String customRarityId = customDataNbt.getString(ITEM_CUSTOM_RARITY_ID_KEY)/*? > 1.21.1 {*//*.get()*//*?}*/;
-               CompoundTag customRarity = customDataNbt.getCompound(CUSTOM_RARITY_KEY)/*? > 1.21.1 {*//*.get()*//*?}*/;
+               String customRarityId = customDataNbt.getString(ITEM_CUSTOM_RARITY_ID_KEY)/*? > 1.21.1 {*/.get()/*?}*/;
+               CompoundTag customRarity = customDataNbt.getCompound(CUSTOM_RARITY_KEY)/*? > 1.21.1 {*/.get()/*?}*/;
                if (!customRarity.isEmpty()) {
-                  String rarityName = customRarity.getString(CUSTOM_RARITY_NAME_KEY)/*? > 1.21.1 {*//*.get()*//*?}*/;
-                  String hexColor = customRarity.getString(CUSTOM_RARITY_COLOR_KEY)/*? > 1.21.1 {*//*.get()*//*?}*/;
-                  String animatedHexColor = customRarity.getString(CUSTOM_RARITY_ANIMATED_COLOR_KEY)/*? > 1.21.1 {*//*.get()*//*?}*/;
+                  String rarityName = customRarity.getString(CUSTOM_RARITY_NAME_KEY)/*? > 1.21.1 {*/.get()/*?}*/;
+                  String hexColor = customRarity.getString(CUSTOM_RARITY_COLOR_KEY)/*? > 1.21.1 {*/.get()/*?}*/;
+                  String animatedHexColor = customRarity.getString(CUSTOM_RARITY_ANIMATED_COLOR_KEY)/*? > 1.21.1 {*/.get()/*?}*/;
                   if (!rarityName.isEmpty()) {
                      CustomRarity newRarity = new CustomRarity(Component.translatable(rarityName).getString());
                      if (!hexColor.isEmpty()) {

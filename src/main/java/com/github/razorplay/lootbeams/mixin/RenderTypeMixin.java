@@ -3,12 +3,12 @@ package com.github.razorplay.lootbeams.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 
 //? <= 1.21.1 {
-import net.minecraft.client.renderer.RenderType;
-//?} else {
-/*import net.minecraft.client.renderer.rendertype.RenderSetup;
+/*import net.minecraft.client.renderer.RenderType;
+*///?} else {
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import org.spongepowered.asm.mixin.gen.Invoker;
-*///?}
+//?}
 
 /**
  * Da acceso a RenderType#create.
@@ -23,9 +23,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface RenderTypeMixin {
 	//? if <= 1.21.1 {
 	//?} else {
-	/*@Invoker("create")
+	@Invoker("create")
 	static RenderType lootbeams$create(String name, RenderSetup setup) {
 		throw new AssertionError();
 	}
-	*///?}
+	//?}
 }

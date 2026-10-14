@@ -13,10 +13,12 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(GameRenderer.class)
 public interface GameRendererMixin {
 	// En 1.21.1 GameRenderer#getFov devuelve double; a partir de 1.21.11 devuelve float.
+	// 26.1.2 elimino el metodo por completo (el FOV efectivo pasa a CameraRenderState#hudFov),
+	// asi que a partir de ahi la interfaz se queda sin miembros.
 	//? if <= 1.21.1 {
-	@Invoker("getFov")
+	/*@Invoker("getFov")
 	double lootbeams$getFov(Camera camera, float partialTick, boolean useFovSetting);
-	//?} else {
+	*///?} elif <= 1.21.11 {
 	/*@Invoker("getFov")
 	float lootbeams$getFov(Camera camera, float partialTick, boolean useFovSetting);
 	*///?}

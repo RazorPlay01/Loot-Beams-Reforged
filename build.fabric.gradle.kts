@@ -16,6 +16,10 @@ stonecutter {
 	replacements.string(current.parsed < "26.1.2") {
 		replace("FabricPackOutput", "FabricDataOutput")
 	}
+	// 26.1.2: GuiGraphics -> GuiGraphicsExtractor (temporal, hasta portar las pantallas).
+	replacements.string(current.parsed >= "26.1.2") {
+		replace("GuiGraphics", "GuiGraphicsExtractor")
+	}
 	replacements.string(current.parsed > "1.21.1") {
 		replace("ShaderInstance", "ShaderManager")
 	}

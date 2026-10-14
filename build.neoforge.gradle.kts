@@ -32,6 +32,10 @@ stonecutter {
 	// predicado de particulas), asi que el target de ese @Inject se completa desde el script del
 	// loader. De este modo el fuente no necesita anidar condicionales de loader dentro de bloques de
 	// version, combinacion que Stonecutter no sabe preprocesar.
+	// Ver build.fabric.gradle.kts.
+	replacements.string(current.parsed >= "26.1.2") {
+		replace("GuiGraphics", "GuiGraphicsExtractor")
+	}
 	replacements.string(current.parsed <= "1.21.1") {
 		replace(
 			"__LOOTBEAMS_PARTICLE_RENDER_TARGET__",

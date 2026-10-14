@@ -4,9 +4,10 @@ import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.features.CustomRarity;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -24,7 +25,11 @@ public class RarityHelper {
       }
 
       String translatableKey = "lootbeams.rarity." + rarity;
-      return I18n.exists(translatableKey) ? I18n.get(translatableKey, new Object[0]) : rarity;
+      //? if >= 26.2 {
+      return Language.getInstance().has(translatableKey) ? I18n.get(translatableKey, new Object[0]) : rarity;
+      //?} else {
+      /*return I18n.exists(translatableKey) ? I18n.get(translatableKey, new Object[0]) : rarity;
+      *///?}
    }
 
    public static boolean rarityCheck(ItemStack itemStack, boolean isRare) {
@@ -45,12 +50,12 @@ public class RarityHelper {
 				return true;
 			}
 
-			ResourceLocation registry = ResourceLocation.tryParse(name.replace("#", ""));
+			Identifier registry = Identifier.tryParse(name.replace("#", ""));
 			if (registry == null) continue;
 
 			if (name.startsWith("#")) {
 				//? if <= 1.21.1 {
-			Optional<net.minecraft.core.HolderSet.Named<Item>> tag = BuiltInRegistries.ITEM
+			/*Optional<net.minecraft.core.HolderSet.Named<Item>> tag = BuiltInRegistries.ITEM
 					.getTags()
 					.filter(pair -> pair.getFirst().location().equals(registry))
 					.findFirst()
@@ -61,26 +66,26 @@ public class RarityHelper {
 			)) {
 				return true;
 			}
-			//?} else {
-				/*net.minecraft.tags.TagKey<Item> tagKey = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, registry);
+			*///?} else {
+				net.minecraft.tags.TagKey<Item> tagKey = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, registry);
 				if (item.is(tagKey)) {
 					return true;
 				}
-				*///?}
+				//?}
 				continue;
 			}
 
 			//? if <= 1.21.1 {
-		Optional<Item> registryItem = BuiltInRegistries.ITEM.getOptional(registry);
+		/*Optional<Item> registryItem = BuiltInRegistries.ITEM.getOptional(registry);
 		if (registryItem.isPresent() && registryItem.get().asItem() == item.getItem()) {
 			return true;
 		}
-		//?} else {
-			/*Item registryItem = BuiltInRegistries.ITEM.get(registry).get().value();
+		*///?} else {
+			Item registryItem = BuiltInRegistries.ITEM.get(registry).get().value();
 			if (registryItem != null && registryItem != net.minecraft.world.item.Items.AIR && registryItem == item.getItem()) {
 				return true;
 			}
-			*///?}
+			//?}
 		}
 
 		return false;

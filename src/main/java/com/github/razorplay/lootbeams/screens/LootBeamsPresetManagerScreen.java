@@ -7,17 +7,17 @@ import com.github.razorplay.lootbeams.screens.widgets.PresetButtonWidget;
 import com.github.razorplay.lootbeams.screens.widgets.PresetListWidget;
 import com.github.razorplay.lootbeams.screens.widgets.PresetTextFieldWidget;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 //? if >= 1.21.11 {
-/*import net.minecraft.client.input.KeyEvent;
-*///?}
+import net.minecraft.client.input.KeyEvent;
+//?}
 
 public class LootBeamsPresetManagerScreen extends Screen {
-   private static final ResourceLocation MODAL_TEXTURE = ModTemplate.id("textures/gui/screen/modal.png");
+   private static final Identifier MODAL_TEXTURE = ModTemplate.id("textures/gui/screen/modal.png");
    private static final int BACKGROUND_WIDTH = 184;
    private static final int BACKGROUND_HEIGHT = 152;
    private Screen parent;
@@ -90,8 +90,13 @@ public class LootBeamsPresetManagerScreen extends Screen {
       }).position(rightPos - 83, topHeaderPos + 47).size(76, 19).build();
       this.loadPresetButton.active = false;
       PresetButtonWidget cancelButton = PresetButtonWidget.customBuilder(
-            Component.translatable("lootbeams.screen.presets.button.cancel"), btn -> Minecraft.getInstance().setScreen(this.parent)
-         )
+            Component.translatable("lootbeams.screen.presets.button.cancel"), btn -> {
+               //? if >= 26.2 {
+               Minecraft.getInstance().gui.setScreen(this.parent);
+               //?} else {
+               /*Minecraft.getInstance().setScreen(this.parent);
+               *///?}
+            })
          .position(rightPos - 83, bottomPos - 27)
          .size(76, 19)
          .type(PresetButtonWidget.Type.Cancel)
@@ -106,32 +111,59 @@ public class LootBeamsPresetManagerScreen extends Screen {
    }
 
    private void showToast(Component message) {
-      //? if <= 1.21.1 {
-      this.minecraft
+      //? if >= 26.2 {
+      SystemToast.add(
+         this.minecraft.gui.toastManager(), SystemToast.SystemToastId.WORLD_ACCESS_FAILURE, Component.nullToEmpty("LootBeams"), message
+      );
+      //?} else {
+      /*//? if <= 1.21.1 {
+      /^this.minecraft
          .getToasts()
          .addToast(
             SystemToast.multiline(this.minecraft, SystemToast.SystemToastId.WORLD_ACCESS_FAILURE, Component.nullToEmpty("LootBeams"), message)
          );
-      //?} else {
-      /*this.minecraft
+      ^///?} else {
+      this.minecraft
          .getToastManager()
          .addToast(
             SystemToast.multiline(this.minecraft, SystemToast.SystemToastId.WORLD_ACCESS_FAILURE, Component.nullToEmpty("LootBeams"), message)
          );
+      //?}
       *///?}
    }
 
    //? if <= 1.21.1 {
-   public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+   /*public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
       return keyCode != 258 && keyCode != 264 && keyCode != 265 ? super.keyPressed(keyCode, scanCode, modifiers) : false;
    }
-   //?} else {
-   /*public boolean keyPressed(KeyEvent event) {
+   *///?} else {
+   public boolean keyPressed(KeyEvent event) {
       return event.input() != 258 && event.input() != 264 && event.input() != 265 ? super.keyPressed(event) : false;
    }
-   *///?}
+   //?}
 
-   public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+   //? if >= 26.1.2 {
+   public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+      this.extractBackground(context, mouseX, mouseY, delta);
+      super.extractRenderState(context, mouseX, mouseY, delta);
+      if (this.presetListWidget.getSelectedEntry() == this.addEntry) {
+         this.presetNameField.extractRenderState(context, mouseX, mouseY, delta);
+         this.savePresetButton.extractRenderState(context, mouseX, mouseY, delta);
+      } else {
+         PresetListWidget.PresetEntry presetEntry = this.presetListWidget.getSelectedEntry();
+         this.loadPresetButton.active = presetEntry != null && !presetEntry.getPresetName().equals(ModTemplate.config.selectedPreset);
+         this.loadPresetButton.extractRenderState(context, mouseX, mouseY, delta);
+      }
+   }
+
+   public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+      super.extractBackground(context, mouseX, mouseY, delta);
+      int i = (this.width - BACKGROUND_WIDTH) / 2;
+      int j = (this.height - BACKGROUND_HEIGHT) / 2;
+      RenderHelper.blit(context, MODAL_TEXTURE, i, j, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0, 0);
+   }
+   //?} else {
+   /*public void render(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
       this.renderBackground(context, mouseX, mouseY, delta);
       super.render(context, mouseX, mouseY, delta);
       if (this.presetListWidget.getSelectedEntry() == this.addEntry) {
@@ -144,14 +176,19 @@ public class LootBeamsPresetManagerScreen extends Screen {
       }
    }
 
-   public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
+   public void renderBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
       super.renderBackground(context, mouseX, mouseY, delta);
       int i = (this.width - BACKGROUND_WIDTH) / 2;
       int j = (this.height - BACKGROUND_HEIGHT) / 2;
       RenderHelper.blit(context, MODAL_TEXTURE, i, j, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0, 0);
    }
+   *///?}
 
    public void onClose() {
-      this.minecraft.setScreen(this.parent);
+      //? if >= 26.2 {
+      this.minecraft.gui.setScreen(this.parent);
+      //?} else {
+      /*this.minecraft.setScreen(this.parent);
+      *///?}
    }
 }

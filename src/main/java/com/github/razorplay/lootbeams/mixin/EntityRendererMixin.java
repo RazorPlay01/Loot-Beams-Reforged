@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.mixin;
 
 //? if <= 1.21.1 {
 
-import com.github.razorplay.lootbeams.ModTemplate;
+/*import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.features.CustomLootBeamsConfig;
 import com.github.razorplay.lootbeams.helpers.ItemHelper;
@@ -53,12 +53,11 @@ public abstract class EntityRendererMixin<T extends Entity> {
 
          boolean shouldRender = ViewHelper.shouldRenderOnItem(itemEntity.getItem()) && itemEntity.onGround();
          if (shouldRender) {
-            RenderManager.addRenderAfterWeather((stack, consumer) -> {
-               MultiBufferSource.BufferSource consumerProvider = Minecraft.getInstance().renderBuffers().bufferSource();
-               stack.pushPose();
-               stack.translate(itemEntity.position().x(), itemEntity.position().y(), itemEntity.position().z());
-               BeamRender.render(stack, consumerProvider, itemEntity, itemEntity.level().getGameTime(), partialTick);
-               stack.popPose();
+            RenderManager.addRenderAfterWeather((beamStack, beamBuffer) -> {
+               beamStack.pushPose();
+               beamStack.translate(itemEntity.position().x(), itemEntity.position().y(), itemEntity.position().z());
+               BeamRender.render(beamStack, beamBuffer, itemEntity, itemEntity.level().getGameTime(), partialTick);
+               beamStack.popPose();
             });
          }
       }
@@ -102,8 +101,8 @@ public abstract class EntityRendererMixin<T extends Entity> {
       return light;
    }
 }
-//?} else {
-/*import com.github.razorplay.lootbeams.config.Configuration;
+*///?} else {
+import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.features.CustomLootBeamsConfig;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -115,12 +114,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/^*
+/**
  * 1.21.11: {@code render(...)} paso a {@code submit(...)} y {@code renderNameTag(...)} a
  * {@code submitNameTag(...)}. El haz de luz y el lightmap a tope viven ahora en
  * {@link ItemEntityRendererMixin} ({@code extractRenderState}); aqui solo se oculta el name tag de
  * los marcos de item cancelando {@code getNameTag}, la fase que todavia recibe la entidad.
- ^/
+ */
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> {
    @Inject(method = "getNameTag", at = @At("HEAD"), cancellable = true)
@@ -133,4 +132,4 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
       }
    }
 }
-*///?}
+//?}

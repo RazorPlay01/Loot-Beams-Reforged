@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.mixin;
 
 //? if <= 1.21.1 {
 
-import com.github.razorplay.lootbeams.config.Configuration;
+/*import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.features.CustomLootBeamsConfig;
 import com.github.razorplay.lootbeams.helpers.TextColorHelper;
 import com.github.razorplay.lootbeams.managers.ItemEntityManager;
@@ -89,12 +89,16 @@ public class ItemRendererMixin {
       }
    }
 }
+*///?} else {
+//? if >= 26.1.2 {
+import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 //?} else {
 /*import net.minecraft.client.renderer.entity.ItemRenderer;
+*///?}
 import org.spongepowered.asm.mixin.Mixin;
 
-/^*
- * On <= 1.21.1 el resplandor de los items dropeados se implementaba interceptando
+/**
+ * En 1.21.1 y anteriores el resplandor de los items dropeados se implementaba interceptando
  * {@code ItemRenderer#render(...)} y desviando el dibujo a un {@code OutlineBufferSource} teñido.
  * <p>
  * En 1.21.11 ese metodo ya no existe (lo sustituyo {@code ItemStackRenderState} +
@@ -103,8 +107,14 @@ import org.spongepowered.asm.mixin.Mixin;
  * resplandor se implementa ahora en {@link ItemEntityRendererMixin}, alimentando
  * {@code EntityRenderState#outlineColor} durante {@code extractRenderState}. Esta clase se mantiene
  * como mixin vacio porque el config sigue declarandola en {@code lootbeams.mixins.json}.
- ^/
-@Mixin(ItemRenderer.class)
+ */
+//? if >= 26.1.2 {
+// 26.1.2 elimino ItemRenderer; se mantiene el mixin vacio apuntando a ItemEntityRenderer para que
+// la entrada de lootbeams.mixins.json siga siendo valida y no haya que filtrarla por version.
+@Mixin(ItemEntityRenderer.class)
+//?} else {
+/*@Mixin(ItemRenderer.class)
+*///?}
 public class ItemRendererMixin {
 }
-*///?}
+//?}

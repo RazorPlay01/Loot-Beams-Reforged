@@ -9,27 +9,27 @@ import com.github.razorplay.lootbeams.render.LootBeamRenderLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.github.razorplay.lootbeams.render.LootBeamBuffer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.joml.Matrix3f;
 //? <= 1.21.1 {
-import net.minecraft.client.renderer.RenderType;
-//?} else {
-/*import net.minecraft.client.renderer.rendertype.RenderType;
-*///?}
+/*import net.minecraft.client.renderer.RenderType;
+*///?} else {
+import net.minecraft.client.renderer.rendertype.RenderType;
+//?}
 import java.util.List;
 
 public class LootBeamRenderer {
-   private static final ResourceLocation LOOT_BEAM_TEXTURE = ModTemplate.id("textures/lootbeam/lootbeam.png");
-   private static final ResourceLocation LOOT_BEAM_WHITE_TEXTURE = ModTemplate.id("textures/lootbeam/lootbeam_white.png");
+   private static final Identifier LOOT_BEAM_TEXTURE = ModTemplate.id("textures/lootbeam/lootbeam.png");
+   private static final Identifier LOOT_BEAM_WHITE_TEXTURE = ModTemplate.id("textures/lootbeam/lootbeam_white.png");
    private static final RenderType LOOT_BEAM_CENTER_LAYER = LootBeamRenderLayers.lootBeamCenter();
    private static RenderType LOOT_BEAM_LAYER = updateLootBeamLayer();
 
    private static RenderType updateLootBeamLayer() {
-      ResourceLocation beamTexture = !ModTemplate.config.solidBeam ? LOOT_BEAM_TEXTURE : LOOT_BEAM_WHITE_TEXTURE;
+      Identifier beamTexture = !ModTemplate.config.solidBeam ? LOOT_BEAM_TEXTURE : LOOT_BEAM_WHITE_TEXTURE;
       return ModTemplate.config.glowingBeam ? LootBeamRenderLayers.lootBeamLightning() : LootBeamRenderLayers.lootBeam(beamTexture);
    }
 
@@ -38,7 +38,7 @@ public class LootBeamRenderer {
    }
 
    public static void renderBeam(
-      MultiBufferSource.BufferSource buffer,
+      LootBeamBuffer buffer,
       PoseStack matrixStack,
       ItemEntity itemEntity,
       Configuration itemConfig,
@@ -80,63 +80,83 @@ public class LootBeamRenderer {
 
          matrixStack.pushPose();
          float rotation = (float)Math.floorMod(worldtime, 40L) + pticks;
-         matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
-         renderBeamLayer(
+                  //? if >= 26.3 {
+         matrixStack.rotate(Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
+         //?} else {
+         /*matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
+         *///?}
+         final float beamHeightSnapshot = beamHeight;
+         final float beamRadiusSnapshot = beamRadius;
+         final float beamGlowRadiusSnapshot = beamGlowRadius;
+         final float yOffsetSnapshot = yOffset;
+         buffer.submit(
+            LOOT_BEAM_LAYER,
             matrixStack,
-            buffer.getBuffer(LOOT_BEAM_LAYER),
-            beamColor,
-            beamAlpha,
-            0.0F,
-            beamHeight,
-            0.0F,
-            beamRadius,
-            beamRadius,
-            0.0F,
-            -beamRadius,
-            0.0F,
-            0.0F,
-            -beamRadius,
-            itemConfig.solidBeam,
-            yOffset
+            (builder, poseStack) -> renderBeamLayer(
+               poseStack,
+               builder,
+               beamColor,
+               beamAlpha,
+               0.0F,
+               beamHeightSnapshot,
+               0.0F,
+               beamRadiusSnapshot,
+               beamRadiusSnapshot,
+               0.0F,
+               -beamRadiusSnapshot,
+               0.0F,
+               0.0F,
+               -beamRadiusSnapshot,
+               itemConfig.solidBeam,
+               yOffsetSnapshot
+            )
          );
          matrixStack.popPose();
-         renderBeamLayer(
+         buffer.submit(
+            LOOT_BEAM_LAYER,
             matrixStack,
-            buffer.getBuffer(LOOT_BEAM_LAYER),
-            beamColor,
-            glowBeamAlpha,
-            0.0F,
-            beamHeight,
-            -beamGlowRadius,
-            -beamGlowRadius,
-            beamGlowRadius,
-            -beamGlowRadius,
-            -beamGlowRadius,
-            beamGlowRadius,
-            beamGlowRadius,
-            beamGlowRadius,
-            itemConfig.solidBeam,
-            yOffset
+            (builder, poseStack) -> renderBeamLayer(
+               poseStack,
+               builder,
+               beamColor,
+               glowBeamAlpha,
+               0.0F,
+               beamHeightSnapshot,
+               -beamGlowRadiusSnapshot,
+               -beamGlowRadiusSnapshot,
+               beamGlowRadiusSnapshot,
+               -beamGlowRadiusSnapshot,
+               -beamGlowRadiusSnapshot,
+               beamGlowRadiusSnapshot,
+               beamGlowRadiusSnapshot,
+               beamGlowRadiusSnapshot,
+               itemConfig.solidBeam,
+               yOffsetSnapshot
+            )
          );
          buffer.endBatch();
          if (itemConfig.whiteCenter) {
-            renderBeamLayer(
+            buffer.submit(
+               LOOT_BEAM_CENTER_LAYER,
                matrixStack,
-               buffer.getBuffer(LOOT_BEAM_CENTER_LAYER),
-               centerColor,
-               beamAlpha,
-               0.0F,
-               beamHeight,
-               0.0F,
-               beamRadius * 0.4F,
-               beamRadius * 0.4F,
-               0.0F,
-               -beamRadius * 0.4F,
-               0.0F,
-               0.0F,
-               -beamRadius * 0.4F,
-               itemConfig.solidBeam,
-               yOffset
+               (builder, poseStack) -> renderBeamLayer(
+                  poseStack,
+                  builder,
+                  centerColor,
+                  beamAlpha,
+                  0.0F,
+                  beamHeightSnapshot,
+                  0.0F,
+                  beamRadiusSnapshot * 0.4F,
+                  beamRadiusSnapshot * 0.4F,
+                  0.0F,
+                  -beamRadiusSnapshot * 0.4F,
+                  0.0F,
+                  0.0F,
+                  -beamRadiusSnapshot * 0.4F,
+                  itemConfig.solidBeam,
+                  yOffsetSnapshot
+               )
             );
             buffer.endBatch();
          }
@@ -166,14 +186,22 @@ public class LootBeamRenderer {
       stack.translate(0.0F, yOffset, 0.0F);
       if (!solidBeam) {
          stack.translate(0.0F, halfHeight, 0.0F);
-         stack.mulPose(Axis.XP.rotationDegrees(180.0F));
+                  //? if >= 26.3 {
+         stack.rotate(Axis.XP.rotationDegrees(180.0F));
+         //?} else {
+         /*stack.mulPose(Axis.XP.rotationDegrees(180.0F));
+         *///?}
       }
 
       renderPart(
          stack, builder, color.fR, color.fG, color.fB, alpha, y, height, radius_1, radius_2, radius_3, radius_4, radius_5, radius_6, radius_7, radius_8, false
       );
       if (!solidBeam) {
-         stack.mulPose(Axis.XP.rotationDegrees(-180.0F));
+                  //? if >= 26.3 {
+         stack.rotate(Axis.XP.rotationDegrees(-180.0F));
+         //?} else {
+         /*stack.mulPose(Axis.XP.rotationDegrees(-180.0F));
+         *///?}
       }
 
       renderPart(

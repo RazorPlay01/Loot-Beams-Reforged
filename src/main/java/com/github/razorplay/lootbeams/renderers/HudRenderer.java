@@ -6,7 +6,7 @@ import com.github.razorplay.lootbeams.helpers.TargetHelper;
 import com.github.razorplay.lootbeams.helpers.ViewHelper;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ItemFrame;
@@ -17,7 +17,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public class HudRenderer {
-   public static void onHudRender(GuiGraphics drawContext, DeltaTracker tickCounter) {
+   public static void onHudRender(GuiGraphicsExtractor drawContext, DeltaTracker tickCounter) {
       float tickDelta = tickCounter.getGameTimeDeltaPartialTick(false);
       Minecraft client = Minecraft.getInstance();
       if (ViewHelper.shouldRenderCrosshair(client)) {

@@ -1,12 +1,12 @@
 package com.github.razorplay.lootbeams.helpers;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 //? if <=1.21.1 {
-import net.minecraft.world.item.ArmorItem;
+/*import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.BrushItem;
 import net.minecraft.world.item.DiggerItem;
@@ -18,11 +18,11 @@ import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TridentItem;
-//?}
+*///?}
 
 //? if >=1.21.2 {
-/*import net.minecraft.core.component.DataComponents;
-*///?}
+import net.minecraft.core.component.DataComponents;
+//?}
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +36,8 @@ public class ItemHelper {
 					return true;
 				}
 
-				ResourceLocation itemResource = ResourceLocation.tryParse(id);
-				if (itemResource != null && BuiltInRegistries.ITEM.get(itemResource)/*? >1.21.1 {*//*.get().value().asItem()*//*?} */ == item.asItem()) {
+				Identifier itemResource = Identifier.tryParse(id);
+				if (itemResource != null && BuiltInRegistries.ITEM.get(itemResource)/*? >1.21.1 {*/.get().value().asItem()/*?} */ == item.asItem()) {
 					return true;
 				}
 			}
@@ -48,7 +48,7 @@ public class ItemHelper {
 
 	public static boolean isEquipmentItem(ItemStack itemStack) {
 		//? if <=1.21.1 {
-		for (Class<? extends Item> item : Arrays.asList(
+		/*for (Class<? extends Item> item : Arrays.asList(
 				SwordItem.class,
 				DiggerItem.class,
 				ArmorItem.class,
@@ -67,10 +67,10 @@ public class ItemHelper {
 			}
 		}
 		return false;
-		//?}
+		*///?}
 
 		//? if >=1.21.2 {
-		/*// Armas cuerpo a cuerpo (reemplaza SwordItem)
+		// Armas cuerpo a cuerpo (reemplaza SwordItem)
 		if (itemStack.get(DataComponents.WEAPON) != null) {
 			return true;
 		}
@@ -122,6 +122,6 @@ public class ItemHelper {
 		}
 
 		return false;
-		*///?}
+		//?}
 	}
 }

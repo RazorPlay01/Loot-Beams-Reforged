@@ -87,13 +87,13 @@ public class CustomLootBeamsConfig {
                }
 
                if (field.type == List.class) {
-                  String value = customConfig.getString(field.saveKey)/*? > 1.21.1 {*//*.get()*//*?}*/;
+                  String value = customConfig.getString(field.saveKey)/*? > 1.21.1 {*/.get()/*?}*/;
                   List<String> values = Arrays.stream(value.split(",")).map(String::trim).toList();
                   fieldRef.set(configCopy, values);
                }
 
                if (field.type == ParticleManager.ParticleTexture.class) {
-                  String textureKey = customConfig.getString(field.saveKey)/*? > 1.21.1 {*//*.get()*//*?}*/;
+                  String textureKey = customConfig.getString(field.saveKey)/*? > 1.21.1 {*/.get()/*?}*/;
                   if (textureKey.contains(":")) {
                      String[] parts = textureKey.split(":");
                      fieldRef.set(configCopy, ParticleManager.ParticleTexture.of(textureKey, parts[0]));
@@ -103,7 +103,7 @@ public class CustomLootBeamsConfig {
                }
 
                if (field.type == GlowEffectManager.GlowEffectTexture.class) {
-                  String textureKey = customConfig.getString(field.saveKey)/*? > 1.21.1 {*//*.get()*//*?}*/;
+                  String textureKey = customConfig.getString(field.saveKey)/*? > 1.21.1 {*/.get()/*?}*/;
                   if (textureKey.contains(":")) {
                      String[] parts = textureKey.split(":");
                      fieldRef.set(configCopy, GlowEffectManager.GlowEffectTexture.of(textureKey, parts[0]));
@@ -113,11 +113,11 @@ public class CustomLootBeamsConfig {
                }
 
                if (field.type == LootBeamShaders.Shader.class) {
-                  fieldRef.set(configCopy, LootBeamShaders.Shader.valueOf(customConfig.getString(field.saveKey)/*? > 1.21.1 {*//*.get()*//*?}*/.toUpperCase()));
+                  fieldRef.set(configCopy, LootBeamShaders.Shader.valueOf(customConfig.getString(field.saveKey)/*? > 1.21.1 {*/.get()/*?}*/.toUpperCase()));
                }
 
                if (field.type == LootBeamShaders.CustomShader.class) {
-                  fieldRef.set(configCopy, LootBeamShaders.CustomShader.valueOf(customConfig.getString(field.saveKey)/*? > 1.21.1 {*//*.get()*//*?}*/.toUpperCase()));
+                  fieldRef.set(configCopy, LootBeamShaders.CustomShader.valueOf(customConfig.getString(field.saveKey)/*? > 1.21.1 {*/.get()/*?}*/.toUpperCase()));
                }
             } else {
                fieldRef.set(configCopy, ModTemplate.configManager.getFieldValue(field.key));
@@ -215,7 +215,7 @@ public class CustomLootBeamsConfig {
          if (itemCustomData != null) {
             CompoundTag customDataNbt = itemCustomData.copyTag();
             if (!customDataNbt.isEmpty()) {
-               CompoundTag customConfig = customDataNbt.getCompound(CONFIG_KEY)/*? > 1.21.1 {*//*.get()*//*?}*/;
+               CompoundTag customConfig = customDataNbt.getCompound(CONFIG_KEY)/*? > 1.21.1 {*/.get()/*?}*/;
                if (!customConfig.isEmpty()) {
                   Configuration newConfig = processConfig(customConfig);
                   CONFIG_CACHE.put(itemStack, newConfig);

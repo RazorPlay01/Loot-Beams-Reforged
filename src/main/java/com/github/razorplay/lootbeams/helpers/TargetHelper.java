@@ -25,7 +25,7 @@ public class TargetHelper {
    public static HitResult getEntityItem(Player player) {
       Minecraft mc = Minecraft.getInstance();
       double distance = player.blockInteractionRange();
-      float partialTicks = mc./*? <=1.21.1 {*/getTimer /*?} else {*//*getDeltaTracker *//*?} */().getGameTimeDeltaPartialTick(true);
+      float partialTicks = mc./*? <=1.21.1 {*//*getTimer *//*?} else {*/getDeltaTracker /*?} */().getGameTimeDeltaPartialTick(true);
       Vec3 position = player.getEyePosition(partialTicks);
       Vec3 view = player.getViewVector(partialTicks);
       if (mc.hitResult != null && mc.hitResult.getType() != HitResult.Type.MISS) {

@@ -3,11 +3,19 @@ package com.github.razorplay.lootbeams.mixin;
 import com.github.razorplay.lootbeams.extensions.LootbeamsParticleManager;
 import net.minecraft.client.Camera;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.renderer.LightTexture;
+//? if >= 26.1.2 {
+//? if >= 26.3 {
+import com.mojang.renderpearl.api.textures.GpuTextureView;
+//?} else {
+/*import com.mojang.blaze3d.textures.GpuTextureView;
+*///?}
+//?} else {
+/*import net.minecraft.client.renderer.LightTexture;
+*///?}
 import org.spongepowered.asm.mixin.Mixin;
 
 //? <= 1.21.1 {
-import com.github.razorplay.lootbeams.vfx.VFXParticle;
+/*import com.github.razorplay.lootbeams.vfx.VFXParticle;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -83,14 +91,18 @@ public class ParticleManagerMixin implements LootbeamsParticleManager {
         }
     }
 }
-//?} else {
-/*@Mixin(ParticleEngine.class)
+*///?} else {
+@Mixin(ParticleEngine.class)
 public class ParticleManagerMixin implements LootbeamsParticleManager {
     @Override
-    public void renderCustomParticles(LightTexture lightmapTextureManager, Camera camera, float tickDelta) {
+    //? if >= 26.1.2 {
+    public void renderCustomParticles(GpuTextureView lightmapTextureManager, Camera camera, float tickDelta) {
+    //?} else {
+    /*public void renderCustomParticles(LightTexture lightmapTextureManager, Camera camera, float tickDelta) {
+    *///?}
         // 1.21.11: las particulas del mod se dibujan con el sistema nativo de particulas
         // (SingleQuadParticle + ParticleEngine.extract), asi que ya no hace falta una pasada de
         // render propia ni el grupo de particulas personalizado.
     }
 }
-*///?}
+//?}

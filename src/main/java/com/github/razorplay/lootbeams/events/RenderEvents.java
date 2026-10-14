@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.events;
 
 import com.github.razorplay.lootbeams.contexts.WorldRendererContext;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public interface RenderEvents {
 	SimpleEvent<HudRender> HUD = new SimpleEvent<>(listeners -> (drawContext, tickCounter) -> {
@@ -34,5 +34,5 @@ public interface RenderEvents {
 	interface BeforeEnd        { void beforeEnd(WorldRendererContext ctx); }
 	interface BeforeParticles  { void beforeParticles(WorldRendererContext ctx); }
 	interface End              { void onEnd(WorldRendererContext ctx); }
-	interface HudRender        { void onHud(GuiGraphics g, DeltaTracker t); }
+	interface HudRender        { void onHud(GuiGraphicsExtractor g, DeltaTracker t); }
 }

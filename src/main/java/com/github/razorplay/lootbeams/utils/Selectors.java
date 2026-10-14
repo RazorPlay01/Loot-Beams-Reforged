@@ -10,13 +10,13 @@ import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
 //? if >= 1.21.11 {
-/*import net.minecraft.core.HolderSet;
+import net.minecraft.core.HolderSet;
 import net.minecraft.nbt.NbtOps;
-*///?}
+//?}
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.FormattedCharSink;
 import net.minecraft.world.item.Item;
@@ -66,26 +66,26 @@ public class Selectors {
 
     private static String tagAsString(Tag tag) {
         //? if <= 1.21.1 {
-        return tag.getAsString();
-        //?} else {
-        /*return tag.asString().orElseGet(tag::toString);
-        *///?}
+        /*return tag.getAsString();
+        *///?} else {
+        return tag.asString().orElseGet(tag::toString);
+        //?}
     }
 
     private static double numericValue(Tag tag) {
         //? if <= 1.21.1 {
-        return ((NumericTag) tag).getAsDouble();
-        //?} else {
-        /*return ((NumericTag) tag).doubleValue();
-        *///?}
+        /*return ((NumericTag) tag).getAsDouble();
+        *///?} else {
+        return ((NumericTag) tag).doubleValue();
+        //?}
     }
 
     private static Set<String> compoundKeys(CompoundTag tag) {
         //? if <= 1.21.1 {
-        return tag.getAllKeys();
-        //?} else {
-        /*return tag.keySet();
-        *///?}
+        /*return tag.getAllKeys();
+        *///?} else {
+        return tag.keySet();
+        //?}
     }
 
     private static byte childTagId(CompoundTag tag, String key) {
@@ -96,10 +96,10 @@ public class Selectors {
     private static Tag parseSnbtOrNull(String value) {
         try {
             //? if <= 1.21.1 {
-            return TagParser.parseTag(value);
-            //?} else {
-            /*return TagParser.parseCompoundFully(value);
-            *///?}
+            /*return TagParser.parseTag(value);
+            *///?} else {
+            return TagParser.parseCompoundFully(value);
+            //?}
         } catch (Exception e) {
             return null;
         }
@@ -107,24 +107,24 @@ public class Selectors {
 
     private static Tag saveItemStack(ItemStack item, HolderLookup.Provider provider) {
         //? if <= 1.21.1 {
-        return item.save(provider);
-        //?} else {
-        /*return ItemStack.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), item)
+        /*return item.save(provider);
+        *///?} else {
+        return ItemStack.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), item)
                 .result()
                 .orElseGet(CompoundTag::new);
-        *///?}
+        //?}
     }
 
     private static Optional<TagKey<Item>> findItemTagKey(String rawId) {
-        ResourceLocation target = ResourceLocation.parse(rawId);
+        Identifier target = Identifier.parse(rawId);
         //? if <= 1.21.1 {
-        return BuiltInRegistries.ITEM.getTagNames().filter(tagKey -> tagKey.location().equals(target)).findFirst();
-        //?} else {
-        /*return BuiltInRegistries.ITEM.getTags()
+        /*return BuiltInRegistries.ITEM.getTagNames().filter(tagKey -> tagKey.location().equals(target)).findFirst();
+        *///?} else {
+        return BuiltInRegistries.ITEM.getTags()
                 .map(HolderSet.Named::key)
                 .filter(tagKey -> tagKey.location().equals(target))
                 .findFirst();
-        *///?}
+        //?}
     }
 
     public static boolean validateSelector(String value) {
@@ -141,7 +141,7 @@ public class Selectors {
         } else if (value.contentEquals("*")) {
             return true;
         } else if (value.startsWith("$")) {
-            return ResourceLocation.tryParse(value.substring(1)) != null;
+            return Identifier.tryParse(value.substring(1)) != null;
         } else if (value.startsWith("@")) {
             return value.substring(1).matches("^[a-z][a-z0-9_-]{1,63}$");
         } else if (value.startsWith("!")) {
@@ -151,7 +151,7 @@ public class Selectors {
         } else if (value.startsWith("%") || value.startsWith("^")) {
             return true;
         } else {
-            return value.startsWith("&") ? true : value == null || value == "" || ResourceLocation.tryParse(value) != null;
+            return value.startsWith("&") ? true : value == null || value == "" || Identifier.tryParse(value) != null;
         }
     }
 
@@ -177,10 +177,10 @@ public class Selectors {
                 return true;
             }
 
-            String itemResourceLocation = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
-            if (!selector.equals(itemResourceLocation) && !selector.equals(itemResourceLocation.replace("minecraft:", ""))) {
+            String itemIdentifier = BuiltInRegistries.ITEM.getKey(item.getItem()).toString();
+            if (!selector.equals(itemIdentifier) && !selector.equals(itemIdentifier.replace("minecraft:", ""))) {
                 if (selector.startsWith("@")) {
-                    if (itemResourceLocation.startsWith(selector.substring(1) + ":")) {
+                    if (itemIdentifier.startsWith(selector.substring(1) + ":")) {
                         return true;
                     }
                 } else if (selector.startsWith("#")) {
@@ -319,9 +319,18 @@ public class Selectors {
 
             try {
                 ChatFormatting format = ChatFormatting.getByCode(rawTitle.charAt(i + 1));
-                if (format != null && format.isColor()) {
+                //? if >= 26.2 {
+                if (format != null) {
+                   TextColor legacyColor = TextColor.fromLegacyFormat(format);
+                   if (legacyColor != null) {
+                      return legacyColor;
+                   }
+                }
+                //?} else {
+                /*if (format != null && format.isColor()) {
                     return TextColor.fromLegacyFormat(format);
                 }
+                *///?}
             } catch (StringIndexOutOfBoundsException var4) {
                 return null;
             }

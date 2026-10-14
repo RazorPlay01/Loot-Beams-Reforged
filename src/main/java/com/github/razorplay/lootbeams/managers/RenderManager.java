@@ -2,9 +2,9 @@ package com.github.razorplay.lootbeams.managers;
 
 import com.github.razorplay.lootbeams.contexts.WorldRendererContext;
 import com.github.razorplay.lootbeams.extensions.LootbeamsParticleManager;
+import com.github.razorplay.lootbeams.render.LootBeamBuffer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -22,24 +22,24 @@ public class RenderManager {
    }
 
    protected static final List<ItemEntity> LIGHT_CACHE = new ArrayList<>();
-   private static final List<BiConsumer<PoseStack, MultiBufferSource.BufferSource>> RENDER_BEFORE_PARTICLES = new ArrayList<>();
-   private static final List<BiConsumer<PoseStack, MultiBufferSource.BufferSource>> RENDER_AFTER_TRANSLUCENT = new ArrayList<>();
-   private static final List<BiConsumer<PoseStack, MultiBufferSource.BufferSource>> RENDER_AFTER_WEATHER = new ArrayList<>();
-   private static final List<BiConsumer<PoseStack, MultiBufferSource.BufferSource>> RENDER_BEFORE_END = new ArrayList<>();
+   private static final List<BiConsumer<PoseStack, LootBeamBuffer>> RENDER_BEFORE_PARTICLES = new ArrayList<>();
+   private static final List<BiConsumer<PoseStack, LootBeamBuffer>> RENDER_AFTER_TRANSLUCENT = new ArrayList<>();
+   private static final List<BiConsumer<PoseStack, LootBeamBuffer>> RENDER_AFTER_WEATHER = new ArrayList<>();
+   private static final List<BiConsumer<PoseStack, LootBeamBuffer>> RENDER_BEFORE_END = new ArrayList<>();
    private static final Map<ItemEntity, Boolean> ITEM_RENDER_STATES = new HashMap<>();
    private static final Map<Class<?>, Consumer<WorldRendererContext>> END_RENDERS = new HashMap<>();
 
    public static void onWorldRenderBeforeParticles(WorldRendererContext worldRendererContext) {
-      renderBeforeParticles(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ .getPosition() /*?} else {*/ /*.position() *//*?} */, worldRendererContext.getConsumers());
+      renderBeforeParticles(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */, worldRendererContext.getConsumers());
    }
 
 
    public static void onWorldRenderAfterTranslucent(WorldRendererContext worldRendererContext) {
-      renderAfterTranslucent(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ .getPosition() /*?} else {*/ /*.position() *//*?} */, worldRendererContext.getConsumers());
+      renderAfterTranslucent(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */, worldRendererContext.getConsumers());
    }
 
    public static void onWorldRenderAfterWeather(WorldRendererContext worldRendererContext) {
-      renderAfterWeather(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ .getPosition() /*?} else {*/ /*.position() *//*?} */, worldRendererContext.getConsumers());
+      renderAfterWeather(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */, worldRendererContext.getConsumers());
       LootbeamsParticleManager particleManager = (LootbeamsParticleManager)Minecraft.getInstance().particleEngine;
       if (particleManager != null) {
          particleManager.renderCustomParticles(
@@ -49,7 +49,7 @@ public class RenderManager {
    }
 
    public static void onWorldRenderBeforeEnd(WorldRendererContext worldRendererContext) {
-      renderBeforeEnd(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ .getPosition() /*?} else {*/ /*.position() *//*?} */, worldRendererContext.getConsumers());
+      renderBeforeEnd(worldRendererContext.getMatrixStack(), worldRendererContext.getCamera()/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */, worldRendererContext.getConsumers());
    }
 
    public static void onWorldRenderEnd(WorldRendererContext worldRendererContext) {
@@ -71,7 +71,7 @@ public class RenderManager {
       LIGHT_CACHE.remove(itemEntity);
    }
 
-   public static void renderAfter(PoseStack stack, Vec3 cameraPos, MultiBufferSource.BufferSource immediate, List<BiConsumer<PoseStack, MultiBufferSource.BufferSource>> consumers) {
+   public static void renderAfter(PoseStack stack, Vec3 cameraPos, LootBeamBuffer immediate, List<BiConsumer<PoseStack, LootBeamBuffer>> consumers) {
       if (stack != null) {
          stack.pushPose();
          stack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
@@ -84,27 +84,27 @@ public class RenderManager {
       END_RENDERS.values().forEach(consumer -> consumer.accept(context));
    }
 
-   public static void renderBeforeParticles(PoseStack stack, Vec3 cameraPos, MultiBufferSource.BufferSource immediate) {
+   public static void renderBeforeParticles(PoseStack stack, Vec3 cameraPos, LootBeamBuffer immediate) {
       renderAfter(stack, cameraPos, immediate, RENDER_BEFORE_PARTICLES);
    }
 
-   public static void renderAfterTranslucent(PoseStack stack, Vec3 cameraPos, MultiBufferSource.BufferSource immediate) {
+   public static void renderAfterTranslucent(PoseStack stack, Vec3 cameraPos, LootBeamBuffer immediate) {
       renderAfter(stack, cameraPos, immediate, RENDER_AFTER_TRANSLUCENT);
    }
 
-   public static void renderAfterWeather(PoseStack stack, Vec3 cameraPos, MultiBufferSource.BufferSource immediate) {
+   public static void renderAfterWeather(PoseStack stack, Vec3 cameraPos, LootBeamBuffer immediate) {
       renderAfter(stack, cameraPos, immediate, RENDER_AFTER_WEATHER);
    }
 
-   public static void renderBeforeEnd(PoseStack stack, Vec3 cameraPos, MultiBufferSource.BufferSource immediate) {
+   public static void renderBeforeEnd(PoseStack stack, Vec3 cameraPos, LootBeamBuffer immediate) {
       renderAfter(stack, cameraPos, immediate, RENDER_BEFORE_END);
    }
 
-   public static void addRenderBeforeParticles(BiConsumer<PoseStack, MultiBufferSource.BufferSource> render) {
+   public static void addRenderBeforeParticles(BiConsumer<PoseStack, LootBeamBuffer> render) {
       RENDER_BEFORE_PARTICLES.add(render);
    }
 
-   public static void addRenderAfterTranslucent(BiConsumer<PoseStack, MultiBufferSource.BufferSource> render) {
+   public static void addRenderAfterTranslucent(BiConsumer<PoseStack, LootBeamBuffer> render) {
       RENDER_AFTER_TRANSLUCENT.add(render);
    }
 
@@ -116,11 +116,11 @@ public class RenderManager {
       return ITEM_RENDER_STATES.getOrDefault(itemEntity, false);
    }
 
-   public static void addRenderAfterWeather(BiConsumer<PoseStack, MultiBufferSource.BufferSource> render) {
+   public static void addRenderAfterWeather(BiConsumer<PoseStack, LootBeamBuffer> render) {
       RENDER_AFTER_WEATHER.add(render);
    }
 
-   public static void addRenderBeforeEnd(BiConsumer<PoseStack, MultiBufferSource.BufferSource> render) {
+   public static void addRenderBeforeEnd(BiConsumer<PoseStack, LootBeamBuffer> render) {
       RENDER_BEFORE_END.add(render);
    }
 

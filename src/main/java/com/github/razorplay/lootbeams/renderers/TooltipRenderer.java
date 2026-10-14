@@ -11,7 +11,7 @@ import com.github.razorplay.lootbeams.helpers.ViewHelper;
 import com.github.razorplay.lootbeams.managers.TooltipManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.Rect2i;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TooltipRenderer {
-   public static void renderItemTooltip(GuiGraphics context, Font font, ItemStack itemStack, int x, int y) {
+   public static void renderItemTooltip(GuiGraphicsExtractor context, Font font, ItemStack itemStack, int x, int y) {
       Minecraft client = Minecraft.getInstance();
       Configuration itemConfig = CustomLootBeamsConfig.fromItemStack(itemStack);
       Player player = client.player;
@@ -85,15 +85,18 @@ public class TooltipRenderer {
    }
 
    /**
-    * Dibuja un tooltip. En 1.21.11 GuiGraphics ya no acepta List&lt;Component&gt; + Optional&lt;TooltipComponent&gt;: ahora
+    * Dibuja un tooltip. En 1.21.11 GuiGraphicsExtractor ya no acepta List&lt;Component&gt; + Optional&lt;TooltipComponent&gt;: ahora
     * hay que construir la lista de {@link ClientTooltipComponent} a mano y pasar un ClientTooltipPositioner
-    * (y el ResourceLocation de estilo, que aqui es null).
+    * (y el Identifier de estilo, que aqui es null).
     */
    private static void renderTooltip(
-      GuiGraphics context, Font font, List<Component> lines, Optional<TooltipComponent> tooltipData, int x, int y
+      GuiGraphicsExtractor context, Font font, List<Component> lines, Optional<TooltipComponent> tooltipData, int x, int y
    ) {
       //? if <= 1.21.1 {
-      context.renderTooltip(font, lines, tooltipData, x, y);
+      /*context.renderTooltip(font, lines, tooltipData, x, y);
+      *///?} else {
+      //? if >= 26.1.2 {
+      context.setTooltipForNextFrame(font, lines, tooltipData, x, y);
       //?} else {
       /*List<ClientTooltipComponent> components = new ArrayList<>(lines.size() + 1);
 
@@ -104,9 +107,10 @@ public class TooltipRenderer {
       tooltipData.ifPresent(component -> components.add(ClientTooltipComponent.create(component)));
       context.renderTooltip(font, components, x, y, DefaultTooltipPositioner.INSTANCE, null);
       *///?}
+      //?}
    }
 
-   public static void renderWorldPositionTooltip(GuiGraphics drawContext, Entity entity, ItemStack itemStack, float tickDelta) {
+   public static void renderWorldPositionTooltip(GuiGraphicsExtractor drawContext, Entity entity, ItemStack itemStack, float tickDelta) {
       if (itemStack != null && !itemStack.isEmpty()) {
          if (!TooltipManager.canRenderTooltips(itemStack)) {
             return;
@@ -146,7 +150,7 @@ public class TooltipRenderer {
       ItemStack itemStack,
       List<Component> tooltipLines,
       Optional<TooltipComponent> tooltipData,
-      GuiGraphics context,
+      GuiGraphicsExtractor context,
       int x,
       int y,
       Font textRenderer,

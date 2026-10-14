@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringDecomposer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +61,7 @@ public class TextColorHelper {
                }
 
                if (value.contains(NBT_COLOR_KEY)) {
-                  return TextColor.parseColor(value.getString(NBT_COLOR_KEY)/*? >1.21.1 {*//*.get()*//*?} */).getOrThrow();
+                  return TextColor.parseColor(value.getString(NBT_COLOR_KEY)/*? >1.21.1 {*/.get()/*?} */).getOrThrow();
                }
             }
          }
@@ -125,12 +125,12 @@ public class TextColorHelper {
 					}
 				} else {
 					//? if <= 1.21.1 {
-					colorIn = TextColor.parseColor(configValue[1])
+					/*colorIn = TextColor.parseColor(configValue[1])
 						.result()
 						.orElseThrow(() -> new IllegalArgumentException("Invalid color " + configValue[1]));
-					 //?} else {
-					/*colorIn = TextColor.parseColor(configValue[1]).getOrThrow();
-					*///?}
+					 *///?} else {
+					colorIn = TextColor.parseColor(configValue[1]).getOrThrow();
+					//?}
 				}
 			} catch (Exception e) {
 				CrashManager.LOGGER.error("Color overrides error! \"{}\" is not a valid hex color for \"{}\"", configValue[1], nameIn);
@@ -143,13 +143,13 @@ public class TextColorHelper {
 				return colorIn;
 			}
 
-			ResourceLocation registry = ResourceLocation.tryParse(nameIn.replace("#", ""));
+			Identifier registry = Identifier.tryParse(nameIn.replace("#", ""));
 			if (registry == null) continue;
 
 			// 2. Tag (#minecraft:swords, #c:tools, etc.)
 			if (nameIn.startsWith("#")) {
 				//? if <= 1.21.1 {
-			Optional<HolderSet.Named<Item>> tag = BuiltInRegistries.ITEM
+			/*Optional<HolderSet.Named<Item>> tag = BuiltInRegistries.ITEM
 					.getTags()
 					.filter(pair -> pair.getFirst().location().equals(registry))
 					.findFirst()
@@ -160,27 +160,27 @@ public class TextColorHelper {
 			)) {
 				return colorIn;
 			}
-			//?} else {
-				/*net.minecraft.tags.TagKey<Item> tagKey = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, registry);
+			*///?} else {
+				net.minecraft.tags.TagKey<Item> tagKey = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, registry);
 				if (stack.is(tagKey)) {
 					return colorIn;
 				}
-				*///?}
+				//?}
 				continue;
 			}
 
 			// 3. ID completo (minecraft:diamond_sword)
 			//? if <= 1.21.1 {
-		Optional<Item> registryItem = BuiltInRegistries.ITEM.getOptional(registry);
+		/*Optional<Item> registryItem = BuiltInRegistries.ITEM.getOptional(registry);
 		if (registryItem.isPresent() && registryItem.get().asItem() == i.asItem()) {
 			return colorIn;
 		}
-		//?} else {
-			/*Item registryItem = BuiltInRegistries.ITEM.get(registry).get().value();
+		*///?} else {
+			Item registryItem = BuiltInRegistries.ITEM.get(registry).get().value();
 			if (registryItem != null && registryItem != net.minecraft.world.item.Items.AIR && registryItem == i) {
 				return colorIn;
 			}
-			*///?}
+			//?}
 		}
 
 		return null;

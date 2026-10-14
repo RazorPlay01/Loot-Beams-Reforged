@@ -4,7 +4,7 @@ import com.github.razorplay.lootbeams.helpers.StringHelper;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -19,12 +19,12 @@ import static com.github.razorplay.lootbeams.ModTemplate.MOD_ID;
 public abstract class AnimatedTexture {
    private static final String COLORED_POSTFIX = "_colored";
    private static final Map<Class<?>, Map<String, AnimatedTexture>> TEXTURE_CACHE = new HashMap<>();
-   public ResourceLocation id;
+   public Identifier id;
    public String path;
    private boolean isSpriteSplitted = false;
    private int frameCount = 0;
 
-   public AnimatedTexture(ResourceLocation id) {
+   public AnimatedTexture(Identifier id) {
       this.id = id;
       this.path = id.toString();
    }
@@ -62,7 +62,7 @@ public abstract class AnimatedTexture {
    }
 
    public TextureAtlasSprite getSprite(int frameIndex) {
-      TextureAtlasSprite sprite = this.getSpriteAtlasTexture().getSprite(ResourceLocation.parse(this.id.toString() + "_" + frameIndex));
+      TextureAtlasSprite sprite = this.getSpriteAtlasTexture().getSprite(Identifier.parse(this.id.toString() + "_" + frameIndex));
       if (!this.isMissing(sprite) && !this.isSplitted()) {
          this.processSplittedSprite();
       }
@@ -70,7 +70,7 @@ public abstract class AnimatedTexture {
       return sprite;
    }
 
-   public ResourceLocation getAtlasId() {
+   public Identifier getAtlasId() {
       return this.getSpriteAtlasTexture().location();
    }
 
@@ -104,7 +104,7 @@ public abstract class AnimatedTexture {
       return namespace + ":" + displayName.trim().toLowerCase().replace(" ", "_");
    }
 
-   public static <T extends AnimatedTexture> T of(ResourceLocation id, Class<T> type) {
+   public static <T extends AnimatedTexture> T of(Identifier id, Class<T> type) {
       String resourcePath = id.toString();
       return of(resourcePath, "", type);
    }
@@ -121,8 +121,8 @@ public abstract class AnimatedTexture {
       }
 
       try {
-         Constructor<T> constructor = type.getConstructor(ResourceLocation.class);
-         T instance = constructor.newInstance(ResourceLocation.parse(resourcePath));
+         Constructor<T> constructor = type.getConstructor(Identifier.class);
+         T instance = constructor.newInstance(Identifier.parse(resourcePath));
          MAP.put(resourcePath, instance);
          return instance;
       } catch (Exception e) {

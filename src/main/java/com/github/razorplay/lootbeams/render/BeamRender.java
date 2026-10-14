@@ -16,7 +16,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.github.razorplay.lootbeams.render.LootBeamBuffer;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.item.ItemEntity;
 
@@ -60,7 +60,7 @@ public class BeamRender {
       return !(itemConfig.beamAlpha * fadeAlpha < 0.01F);
    }
 
-	public static void render(PoseStack stack, MultiBufferSource.BufferSource buffer, ItemEntity item, long worldtime, float pticks) {
+	public static void render(PoseStack stack, LootBeamBuffer buffer, ItemEntity item, long worldtime, float pticks) {
 		if (!ITEM_GROUND_START_TIMES.containsKey(item)) {
 			ITEM_GROUND_START_TIMES.put(item, item.getAge());
 		}
@@ -75,8 +75,8 @@ public class BeamRender {
 
 		if (canRenderBeam(itemConfig, fadeAlpha)) {
 			//? if <= 1.21.4 {
-			RenderSystem.enableDepthTest();
-			 //?}
+			/*RenderSystem.enableDepthTest();
+			 *///?}
 
 			TextColor color = TextColorHelper.getItemColor(item.getItem());
 
@@ -91,8 +91,8 @@ public class BeamRender {
 			}
 
 			//? if <= 1.21.4 {
-			RenderSystem.disableDepthTest();
-			 //?}
+			/*RenderSystem.disableDepthTest();
+			 *///?}
 
 			ITEM_GROUND_START_TIMES.keySet().removeIf(itemEntity -> !itemEntity.onGround());
 		}

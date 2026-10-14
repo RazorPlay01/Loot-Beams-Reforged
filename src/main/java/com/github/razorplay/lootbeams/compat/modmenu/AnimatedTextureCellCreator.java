@@ -11,7 +11,7 @@ import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry.SelectionCellCreat
 import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry.SelectionCellElement;
 import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry.SelectionTopCellElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -25,7 +25,7 @@ public class AnimatedTextureCellCreator {
 		return new DefaultSelectionTopCellElement<ParticleManager.ParticleTexture>(
 				texture, key -> ParticleManager.ParticleTexture.of(key, MOD_ID), i -> Component.literal(i.toString())
 		) {
-			public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
+			public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
 				ParticleManager.ParticleTexture particleTexture = this.getValue();
 				this.textFieldWidget.setX(x + 4);
 				this.textFieldWidget.setY(y + 6);
@@ -34,11 +34,15 @@ public class AnimatedTextureCellCreator {
 				this.textFieldWidget.setTextColor(this.getPreferredTextColor());
 				this.textFieldWidget.setValue(particleTexture.getDisplayName());
 				this.textFieldWidget.moveCursorTo(0, false);
-				this.textFieldWidget.render(graphics, mouseX, mouseY, delta);
+				//? if >= 26.1.2 {
+				this.textFieldWidget.extractWidgetRenderState(graphics, mouseX, mouseY, delta);
+				//?} else {
+				/*this.textFieldWidget.render(graphics, mouseX, mouseY, delta);
+				*///?}
 				//? if <= 1.21.1 {
-				RenderSystem.enableDepthTest();
+				/*RenderSystem.enableDepthTest();
 				RenderSystem.enableBlend();
-				//?}
+				*///?}
 				TextureAtlasSprite particleSprite = particleTexture.getSprite();
 				Rect2i spriteRect = RenderHelper.getSpritePositionAndSize(particleSprite);
 				RenderHelper.drawColored(
@@ -55,9 +59,9 @@ public class AnimatedTextureCellCreator {
 						particleTexture.isColored() ? "#808080" : "#bbbbbb"
 				);
 				//? if <= 1.21.1 {
-				RenderSystem.disableBlend();
+				/*RenderSystem.disableBlend();
 				RenderSystem.disableDepthTest();
-				//?}
+				*///?}
 			}
 
 			public void setValue(ParticleManager.ParticleTexture value) {
@@ -84,7 +88,7 @@ public class AnimatedTextureCellCreator {
 		return new DefaultSelectionTopCellElement<GlowEffectManager.GlowEffectTexture>(
 				texture, key -> GlowEffectManager.GlowEffectTexture.of(key, MOD_ID), i -> Component.literal(i.toString())
 		) {
-			public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
+			public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
 				GlowEffectManager.GlowEffectTexture glowEffectTexture = this.getValue();
 				this.textFieldWidget.setX(x + 4);
 				this.textFieldWidget.setY(y + 6);
@@ -93,11 +97,15 @@ public class AnimatedTextureCellCreator {
 				this.textFieldWidget.setTextColor(this.getPreferredTextColor());
 				this.textFieldWidget.setValue(glowEffectTexture.getDisplayName());
 				this.textFieldWidget.moveCursorTo(0, false);
-				this.textFieldWidget.render(graphics, mouseX, mouseY, delta);
+				//? if >= 26.1.2 {
+				this.textFieldWidget.extractWidgetRenderState(graphics, mouseX, mouseY, delta);
+				//?} else {
+				/*this.textFieldWidget.render(graphics, mouseX, mouseY, delta);
+				*///?}
 				//? if <= 1.21.1 {
-				RenderSystem.enableDepthTest();
+				/*RenderSystem.enableDepthTest();
 				RenderSystem.enableBlend();
-				//?}
+				*///?}
 				TextureAtlasSprite particleSprite = glowEffectTexture.getSprite();
 				Rect2i spriteRect = RenderHelper.getSpritePositionAndSize(particleSprite);
 				RenderHelper.drawColored(
@@ -114,9 +122,9 @@ public class AnimatedTextureCellCreator {
 						glowEffectTexture.isColored() ? "#808080" : "#bbbbbb"
 				);
 				//? if <= 1.21.1 {
-				RenderSystem.disableBlend();
+				/*RenderSystem.disableBlend();
 				RenderSystem.disableDepthTest();
-				//?}
+				*///?}
 			}
 
 			public void setValue(GlowEffectManager.GlowEffectTexture value) {
@@ -142,8 +150,8 @@ public class AnimatedTextureCellCreator {
 	public static SelectionCellCreator<ParticleManager.ParticleTexture> selectionParticleCell(int cellHeight, int cellWidth, int maxItems) {
 		return new DefaultSelectionCellCreator<>(i -> Component.literal(i.toString())) {
 			public SelectionCellElement<ParticleManager.ParticleTexture> create(ParticleManager.ParticleTexture selection) {
-				return new DefaultSelectionCellElement<>(selection, this.toTextFunction) {
-					public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
+				return new DefaultSelectionCellElement(selection, this.toTextFunction) {
+					public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
 						this.rendering = true;
 						this.x = x;
 						this.y = y + 1;
@@ -154,17 +162,27 @@ public class AnimatedTextureCellCreator {
 							graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, -15132391);
 						}
 
-						graphics.drawString(
+						//? if >= 26.1.2 {
+						graphics.text(
 								Minecraft.getInstance().font,
 								Component.literal(selection.getDisplayName()).getVisualOrderText(),
 								x + 4,
 								y + 6,
 								b ? 16777215 : 8947848
 						);
+						//?} else {
+						/*graphics.drawString(
+								Minecraft.getInstance().font,
+								Component.literal(selection.getDisplayName()).getVisualOrderText(),
+								x + 4,
+								y + 6,
+								b ? 16777215 : 8947848
+						);
+						*///?}
 						//? if <= 1.21.1 {
-						RenderSystem.enableDepthTest();
+						/*RenderSystem.enableDepthTest();
 						RenderSystem.enableBlend();
-						//?}
+						*///?}
 						TextureAtlasSprite particleSprite = ParticleManager.ParticleTexture.getAtlasTexture().getSprite(selection.id);
 						Rect2i spriteRect = RenderHelper.getSpritePositionAndSize(particleSprite);
 						RenderHelper.drawColored(
@@ -181,9 +199,9 @@ public class AnimatedTextureCellCreator {
 								selection.isColored() ? "#808080" : "#bbbbbb"
 						);
 						//? if <= 1.21.1 {
-						RenderSystem.disableBlend();
+						/*RenderSystem.disableBlend();
 						RenderSystem.disableDepthTest();
-						//?}
+						*///?}
 					}
 				};
 			}
@@ -206,7 +224,7 @@ public class AnimatedTextureCellCreator {
 		return new DefaultSelectionCellCreator<GlowEffectManager.GlowEffectTexture>(i -> Component.literal(i.toString())) {
 			public SelectionCellElement<GlowEffectManager.GlowEffectTexture> create(GlowEffectManager.GlowEffectTexture selection) {
 				return new DefaultSelectionCellElement<GlowEffectManager.GlowEffectTexture>(selection, this.toTextFunction) {
-					public void render(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
+					public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int width, int height, float delta) {
 						this.rendering = true;
 						this.x = x;
 						this.y = y + 1;
@@ -217,17 +235,27 @@ public class AnimatedTextureCellCreator {
 							graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, -15132391);
 						}
 
-						graphics.drawString(
+						//? if >= 26.1.2 {
+						graphics.text(
 								Minecraft.getInstance().font,
 								Component.literal(selection.getDisplayName()).getVisualOrderText(),
 								x + 4,
 								y + 6,
 								b ? 16777215 : 8947848
 						);
+						//?} else {
+						/*graphics.drawString(
+								Minecraft.getInstance().font,
+								Component.literal(selection.getDisplayName()).getVisualOrderText(),
+								x + 4,
+								y + 6,
+								b ? 16777215 : 8947848
+						);
+						*///?}
 						//? if <= 1.21.1 {
-						RenderSystem.enableDepthTest();
+						/*RenderSystem.enableDepthTest();
 						RenderSystem.enableBlend();
-						//?}
+						*///?}
 						TextureAtlasSprite particleSprite = selection.getSpriteAtlasTexture().getSprite(selection.id);
 						Rect2i spriteRect = RenderHelper.getSpritePositionAndSize(particleSprite);
 						RenderHelper.drawColored(
@@ -244,9 +272,9 @@ public class AnimatedTextureCellCreator {
 								selection.isColored() ? "#808080" : "#bbbbbb"
 						);
 						//? if <= 1.21.1 {
-						RenderSystem.disableBlend();
+						/*RenderSystem.disableBlend();
 						RenderSystem.disableDepthTest();
-						//?}
+						*///?}
 					}
 				};
 			}

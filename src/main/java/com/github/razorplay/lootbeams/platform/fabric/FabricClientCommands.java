@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.fabric;
 
 //? fabric {
 
-/*import com.github.razorplay.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.dconfig.DynamicConfig;
 import com.github.razorplay.lootbeams.features.BeamOpacityOnApproach;
@@ -11,9 +11,17 @@ import com.github.razorplay.lootbeams.managers.GlowEffectManager;
 import com.github.razorplay.lootbeams.managers.ParticleManager;
 import com.github.razorplay.lootbeams.managers.PresetManager;
 import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+//? if >= 26.1.2 {
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
+//?} else {
+/*import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+*///?}
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -27,17 +35,33 @@ import java.util.List;
 public final class FabricClientCommands {
     private FabricClientCommands() {}
 
+    private static LiteralArgumentBuilder<FabricClientCommandSource> literal(String name) {
+        //? if >= 26.1.2 {
+        return ClientCommands.literal(name);
+        //?} else {
+        /*return ClientCommandManager.literal(name);
+        *///?}
+    }
+
+    private static <T> RequiredArgumentBuilder<FabricClientCommandSource, T> argument(String name, ArgumentType<T> type) {
+        //? if >= 26.1.2 {
+        return ClientCommands.argument(name, type);
+        //?} else {
+        /*return ClientCommandManager.argument(name, type);
+        *///?}
+    }
+
     public static void register() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
-                dispatcher.register(ClientCommandManager.literal("lootbeams")
-                        .then(ClientCommandManager.literal("save-preset")
-                                .then(ClientCommandManager.argument("presetName", StringArgumentType.word())
+                dispatcher.register(literal("lootbeams")
+                        .then(literal("save-preset")
+                                .then(argument("presetName", StringArgumentType.word())
                                         .executes(ctx -> {
                                             PresetManager.savePreset(StringArgumentType.getString(ctx, "presetName"));
                                             return 1;
                                         })))
-                        .then(ClientCommandManager.literal("item-custom-config")
-                                .then(ClientCommandManager.literal("available")
+                        .then(literal("item-custom-config")
+                                .then(literal("available")
                                         .executes(ctx -> {
                                             printAvailableFields();
                                             return 1;
@@ -102,12 +126,16 @@ public final class FabricClientCommands {
             }
 
             desc = desc.append(Component.literal(" ]").withStyle(s -> s.withColor(ChatFormatting.WHITE)));
-			/^? <=1.21.1 {^/
+			/*? <=1.21.1 {*/
+			/*player.sendSystemMessage(fieldText.append(desc));
+			*//*?} else {*/
+			//? if >= 26.1.2 {
 			player.sendSystemMessage(fieldText.append(desc));
-			/^?} else {^/
-			/^player.displayClientMessage(fieldText.append(desc),false);
-			^//^?} ^/
+			//?} else {
+			/*player.displayClientMessage(fieldText.append(desc),false);
+			*///?}
+			/*?} */
         }
     }
 }
-*///?}
+//?}

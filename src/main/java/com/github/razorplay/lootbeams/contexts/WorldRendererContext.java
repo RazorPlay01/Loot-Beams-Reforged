@@ -6,8 +6,16 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+//? if >= 26.1.2 {
+//? if >= 26.3 {
+import com.mojang.renderpearl.api.textures.GpuTextureView;
+//?} else {
+/*import com.mojang.blaze3d.textures.GpuTextureView;
+*///?}
+//?} else {
+/*import net.minecraft.client.renderer.LightTexture;
+*///?}
+import com.github.razorplay.lootbeams.render.LootBeamBuffer;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.joml.Matrix4f;
 
@@ -18,10 +26,14 @@ public class WorldRendererContext {
    private boolean blockOutlines;
    private Camera camera;
    private GameRenderer gameRenderer;
-   private LightTexture lightmapTextureManager;
+   //? if >= 26.1.2 {
+   private GpuTextureView lightmapTextureManager;
+   //?} else {
+   /*private LightTexture lightmapTextureManager;
+   *///?}
    private Matrix4f projectionMatrix;
    private Matrix4f positionMatrix;
-   private MultiBufferSource.BufferSource consumers;
+   private LootBeamBuffer consumers;
    private ProfilerFiller profiler;
    private boolean advancedTranslucency;
    private ClientLevel world;
@@ -32,10 +44,14 @@ public class WorldRendererContext {
       boolean blockOutlines,
       Camera camera,
       GameRenderer gameRenderer,
-      LightTexture lightmapTextureManager,
+      //? if >= 26.1.2 {
+      GpuTextureView lightmapTextureManager,
+      //?} else {
+      /*LightTexture lightmapTextureManager,
+      *///?}
       Matrix4f projectionMatrix,
       Matrix4f positionMatrix,
-      MultiBufferSource.BufferSource consumers,
+      LootBeamBuffer consumers,
       ProfilerFiller profiler,
       boolean advancedTranslucency,
       ClientLevel world
@@ -74,11 +90,19 @@ public class WorldRendererContext {
       return this;
    }
 
-   public LightTexture getLightmapTextureManager() {
+   //? if >= 26.1.2 {
+   public GpuTextureView getLightmapTextureManager() {
+   //?} else {
+   /*public LightTexture getLightmapTextureManager() {
+   *///?}
       return this.lightmapTextureManager;
    }
 
-   public WorldRendererContext setLightmapTextureManager(LightTexture lightmapTextureManager) {
+   //? if >= 26.1.2 {
+   public WorldRendererContext setLightmapTextureManager(GpuTextureView lightmapTextureManager) {
+   //?} else {
+   /*public WorldRendererContext setLightmapTextureManager(LightTexture lightmapTextureManager) {
+   *///?}
       this.lightmapTextureManager = lightmapTextureManager;
       return this;
    }
@@ -137,11 +161,11 @@ public class WorldRendererContext {
       return this;
    }
 
-   public MultiBufferSource.BufferSource getConsumers() {
+   public LootBeamBuffer getConsumers() {
       return this.consumers;
    }
 
-   public WorldRendererContext setConsumers(MultiBufferSource.BufferSource consumers) {
+   public WorldRendererContext setConsumers(LootBeamBuffer consumers) {
       this.consumers = consumers;
       return this;
    }

@@ -5,7 +5,7 @@ import com.github.razorplay.lootbeams.helpers.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
@@ -17,15 +17,15 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import org.jetbrains.annotations.Nullable;
 //? if >= 1.21.11 {
-/*import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
-*///?}
+//?}
 
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -33,11 +33,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 //? if <= 1.21.1 {
-import net.minecraft.Util;
+/*import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
-//?} else {
-/*import net.minecraft.util.Util;
-*///?}
+*///?} else {
+import net.minecraft.util.Util;
+//?}
 
 public class PresetTextFieldWidget extends AbstractWidget implements Renderable {
    private static final WidgetSprites TEXTURES = new WidgetSprites(
@@ -156,22 +156,22 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
    }
 
    //? if <= 1.21.1 {
-   private static boolean isControlDown() {
+   /*private static boolean isControlDown() {
       return Screen.hasControlDown();
    }
 
    private static boolean isShiftDown() {
       return Screen.hasShiftDown();
    }
-   //?} else {
-   /*private static boolean isControlDown() {
+   *///?} else {
+   private static boolean isControlDown() {
       return Minecraft.getInstance().hasControlDown();
    }
 
    private static boolean isShiftDown() {
       return Minecraft.getInstance().hasShiftDown();
    }
-   *///?}
+   //?}
 
    private void erase(int offset) {
       if (isControlDown()) {
@@ -282,7 +282,7 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
    }
 
    //? if <= 1.21.1 {
-   public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+   /*public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
       if (this.isActive() && this.isFocused()) {
          switch (keyCode) {
             case 259:
@@ -355,8 +355,8 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          return false;
       }
    }
-   //?} else {
-   /*public boolean keyPressed(KeyEvent event) {
+   *///?} else {
+   public boolean keyPressed(KeyEvent event) {
       if (this.isActive() && this.isFocused()) {
          switch (event.input()) {
             case 259:
@@ -429,7 +429,7 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
 
       return false;
    }
-   *///?}
+   //?}
 
    /**
     * NOTA: el original llamaba a this.isActive() de forma recursiva (StackOverflowError en runtime),
@@ -440,7 +440,7 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
    }
 
    //? if <= 1.21.1 {
-   public boolean charTyped(char chr, int modifiers) {
+   /*public boolean charTyped(char chr, int modifiers) {
       if (!this.isActive()) {
          return false;
       }
@@ -455,8 +455,8 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          return false;
       }
    }
-   //?} else {
-   /*public boolean charTyped(CharacterEvent event) {
+   *///?} else {
+   public boolean charTyped(CharacterEvent event) {
       if (!this.isActive()) {
          return false;
       }
@@ -471,7 +471,7 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          return false;
       }
    }
-   *///?}
+   //?}
 
    public void onClick(double mouseX, double mouseY) {
       int i = Mth.floor(mouseX) - this.getX();
@@ -486,13 +486,17 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
    public void playDownSound(SoundManager soundManager) {
    }
 
-   public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+   //? if >= 26.1.2 {
+   public void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+   //?} else {
+   /*public void renderWidget(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+   *///?}
       if (this.isVisible()) {
          if (this.drawsBackground()) {
-            ResourceLocation texture = TEXTURES.get(this.isActive(), this.isFocused());
+            Identifier texture = TEXTURES.get(this.isActive(), this.isFocused());
             //? if <= 1.21.1 {
-            RenderSystem.setShaderTexture(0, texture);
-            //?}
+            /*RenderSystem.setShaderTexture(0, texture);
+            *///?}
             RenderHelper.blit(context, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
          }
 
@@ -508,12 +512,16 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          if (!string.isEmpty()) {
             String string2 = bl ? string.substring(0, j) : string;
             //? if <= 1.21.1 {
-            m = context.drawString(this.textRenderer, this.renderTextProvider.apply(string2, this.firstCharacterIndex), k, l, i);
+            /*m = context.drawString(this.textRenderer, this.renderTextProvider.apply(string2, this.firstCharacterIndex), k, l, i);
+            *///?} else {
+            FormattedCharSequence sequence = this.renderTextProvider.apply(string2, this.firstCharacterIndex);
+            //? if >= 26.1.2 {
+            context.text(this.textRenderer, sequence, k, l, i);
             //?} else {
-            /*FormattedCharSequence sequence = this.renderTextProvider.apply(string2, this.firstCharacterIndex);
-            context.drawString(this.textRenderer, sequence, k, l, i);
-            m = k + this.textRenderer.width(sequence);
+            /*context.drawString(this.textRenderer, sequence, k, l, i);
             *///?}
+            m = k + this.textRenderer.width(sequence);
+            //?}
          }
 
          boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
@@ -526,26 +534,42 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          }
 
          if (!string.isEmpty() && bl && j < string.length()) {
-            context.drawString(this.textRenderer, this.renderTextProvider.apply(string.substring(j), this.selectionStart), m, l, i);
+            //? if >= 26.1.2 {
+            context.text(this.textRenderer, this.renderTextProvider.apply(string.substring(j), this.selectionStart), m, l, i);
+            //?} else {
+            /*context.drawString(this.textRenderer, this.renderTextProvider.apply(string.substring(j), this.selectionStart), m, l, i);
+            *///?}
          }
 
          if (this.placeholder != null && string.isEmpty() && !this.isFocused()) {
-            context.drawString(this.textRenderer, this.placeholder, m, l, i);
+            //? if >= 26.1.2 {
+            context.text(this.textRenderer, this.placeholder, m, l, i);
+            //?} else {
+            /*context.drawString(this.textRenderer, this.placeholder, m, l, i);
+            *///?}
          }
 
          if (!bl3 && this.suggestion != null) {
-            context.drawString(this.textRenderer, this.suggestion, o - 1, l, -8355712);
+            //? if >= 26.1.2 {
+            context.text(this.textRenderer, this.suggestion, o - 1, l, -8355712);
+            //?} else {
+            /*context.drawString(this.textRenderer, this.suggestion, o - 1, l, -8355712);
+            *///?}
          }
 
          if (bl2) {
             if (bl3) {
                //? if <= 1.21.1 {
-               context.fill(RenderType.guiOverlay(), o, l - 1, o + 1, l + 1 + 9, -3092272);
-               //?} else {
-               /*context.fill(o, l - 1, o + 1, l + 1 + 9, -3092272);
-               *///?}
+               /*context.fill(RenderType.guiOverlay(), o, l - 1, o + 1, l + 1 + 9, -3092272);
+               *///?} else {
+               context.fill(o, l - 1, o + 1, l + 1 + 9, -3092272);
+               //?}
             } else {
-               context.drawString(this.textRenderer, "_", o, l, i);
+               //? if >= 26.1.2 {
+               context.text(this.textRenderer, "_", o, l, i);
+               //?} else {
+               /*context.drawString(this.textRenderer, "_", o, l, i);
+               *///?}
             }
          }
 
@@ -556,7 +580,7 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
       }
    }
 
-   private void drawSelectionHighlight(GuiGraphics context, int x1, int y1, int x2, int y2) {
+   private void drawSelectionHighlight(GuiGraphicsExtractor context, int x1, int y1, int x2, int y2) {
       if (x1 < x2) {
          int i = x1;
          x1 = x2;
@@ -578,10 +602,10 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
       }
 
       //? if <= 1.21.1 {
-      context.fill(RenderType.guiTextHighlight(), x1, y1, x2, y2, -16776961);
-      //?} else {
-      /*context.fill(x1, y1, x2, y2, -16776961);
-      *///?}
+      /*context.fill(RenderType.guiTextHighlight(), x1, y1, x2, y2, -16776961);
+      *///?} else {
+      context.fill(x1, y1, x2, y2, -16776961);
+      //?}
    }
 
    public void setMaxLength(int maxLength) {

@@ -12,7 +12,8 @@ import com.github.razorplay.lootbeams.managers.RenderManager;
 import com.github.razorplay.lootbeams.managers.TooltipManager;
 import com.github.razorplay.lootbeams.renderers.HudRenderer;
 import com.github.razorplay.lootbeams.renderers.LootBeamRenderer;
-import net.minecraft.client.multiplayer.ClientLevel;
+import com.github.razorplay.lootbeams.screens.LootBeamsPresetManagerScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 
@@ -36,7 +37,7 @@ public class ClientSetup {
 			CustomLootBeamsConfig.onConfigurationChange();
 			LootBeamRenderer.onConfigurationChange();
 		});
-		PresetEvents.APPLY_PRESET.register(presetName -> {
+		PresetEvents.APPLY_PRESET.register(_ -> {
 			CustomLootBeamsConfig.onConfigurationChange();
 			LootBeamRenderer.onConfigurationChange();
 		});
@@ -47,8 +48,8 @@ public class ClientSetup {
 			PresetManager.onResourcesReload(rm);
 			GlowEffectManager.onResourceManagerReload(rm, prep);
 			//? if >= 1.21.11 {
-			/*com.github.razorplay.lootbeams.shaders.LootBeamShaders.onCustomShadersReload(null, rm);
-			*///?}
+			com.github.razorplay.lootbeams.shaders.LootBeamShaders.onCustomShadersReload(null, rm);
+			//?}
 		});
 	}
 
@@ -63,5 +64,16 @@ public class ClientSetup {
 	public static void onEntityUnload(ItemEntity itemEntity, Level world) {
 		TooltipManager.onEntityUnload(itemEntity, world);
 		RenderManager.onEntityUnload(itemEntity, world);
+	}
+
+	/**
+	 * Abre la pantalla de presets. A partir de 26.2 la pantalla activa vive en {@code Gui}.
+	 */
+	public static void openPresetManagerScreen() {
+		//? if >= 26.2 {
+		Minecraft.getInstance().gui.setScreen(new LootBeamsPresetManagerScreen(Minecraft.getInstance().gui.screen()));
+		//?} else {
+		/*Minecraft.getInstance().setScreen(new LootBeamsPresetManagerScreen(Minecraft.getInstance().screen));
+		*///?}
 	}
 }

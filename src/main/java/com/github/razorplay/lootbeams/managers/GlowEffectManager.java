@@ -5,7 +5,7 @@ import com.github.razorplay.lootbeams.extensions.AnimatedTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.List;
@@ -13,10 +13,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class GlowEffectManager {
-   public static final ResourceLocation GLOW_EFFECTS_PATH = ModTemplate.id("glow_effects");
-   public static final ResourceLocation ATLAS_ID = ModTemplate.id("textures/atlas/glow_effects.png");
-   public static final ResourceLocation GLOW_TEXTURE_ID = ModTemplate.id("glow");
-   public static final ResourceLocation GLOW_SHADER_TEXTURE_ID = ModTemplate.id("glow_shaders");
+   public static final Identifier GLOW_EFFECTS_PATH = ModTemplate.id("glow_effects");
+   public static final Identifier ATLAS_ID = ModTemplate.id("textures/atlas/glow_effects.png");
+   public static final Identifier GLOW_TEXTURE_ID = ModTemplate.id("glow");
+   public static final Identifier GLOW_SHADER_TEXTURE_ID = ModTemplate.id("glow_shaders");
    public static final GlowEffectTexture GLOW_TEXTURE = GlowEffectTexture.of(GLOW_TEXTURE_ID);
    public static final GlowEffectTexture GLOW_SHADER_TEXTURE = GlowEffectTexture.of(GLOW_SHADER_TEXTURE_ID);
    public static TextureAtlas ATLAS_TEXTURE = null;
@@ -29,14 +29,14 @@ public class GlowEffectManager {
 		}
 
 		//? if <= 1.21.4 {
-	CompletableFuture<SpriteLoader.Preparations> completableFuture = SpriteLoader.create(ATLAS_TEXTURE)
+	/*CompletableFuture<SpriteLoader.Preparations> completableFuture = SpriteLoader.create(ATLAS_TEXTURE)
 			.loadAndStitch(resourceManager, GLOW_EFFECTS_PATH, 0, prepareExecutor)
 			.thenCompose(SpriteLoader.Preparations::waitForUpload);
-	//?} else {
-		/*CompletableFuture<SpriteLoader.Preparations> completableFuture = SpriteLoader.create(ATLAS_TEXTURE)
+	*///?} else {
+		CompletableFuture<SpriteLoader.Preparations> completableFuture = SpriteLoader.create(ATLAS_TEXTURE)
 				.loadAndStitch(resourceManager, GLOW_EFFECTS_PATH, 0, prepareExecutor, java.util.Set.of())
 				.thenCompose(preparations -> preparations.readyForUpload().thenApply(v -> preparations));
-		*///?}
+		//?}
 
 		ATLAS_TEXTURE.clearTextureData();
 		SpriteLoader.Preparations stitchResult = completableFuture.join();
@@ -50,11 +50,11 @@ public class GlowEffectManager {
    }
 
    public static class GlowEffectTexture extends AnimatedTexture {
-      public GlowEffectTexture(ResourceLocation textureId) {
+      public GlowEffectTexture(Identifier textureId) {
          super(textureId);
       }
 
-      public static GlowEffectTexture of(ResourceLocation textureId) {
+      public static GlowEffectTexture of(Identifier textureId) {
          return of(textureId, GlowEffectTexture.class);
       }
 

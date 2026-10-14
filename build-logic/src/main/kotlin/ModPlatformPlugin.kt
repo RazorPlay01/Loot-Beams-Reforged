@@ -114,6 +114,15 @@ abstract class ModPlatformPlugin @Inject constructor() : Plugin<Project> {
 				languageVersion.set(JavaLanguageVersion.of(ctx.javaVersion.majorVersion))
 			}
 		}
+		// `resources-legacy` y `resources-modern` comparten nombres de fichero a proposito: el overlay
+		// moderno sobrescribe al legacy en processResources (duplicatesStrategy = INCLUDE). El jar de
+		// fuentes, en cambio, no admite duplicados sin estrategia explicita (Gradle 9), asi que se colapsan.
+		tasks.withType<org.gradle.api.tasks.AbstractCopyTask>().configureEach {
+			if (name == "sourcesJar" || name == "modSourcesJar") {
+				duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.EXCLUDE
+			}
+		}
+
 	}
 
 	private fun Project.registerGenerateManifestTask(ctx: Context) {

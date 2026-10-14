@@ -8,8 +8,8 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 //? if >= 1.21.11 {
-/*import net.minecraft.client.entity.ClientAvatarState;
-*///?}
+import net.minecraft.client.entity.ClientAvatarState;
+//?}
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -44,7 +44,19 @@ public class ViewHelper {
       return shouldRender;
    }
 
+   //? if >= 26.2 {
    public static boolean shouldRenderCrosshair(Minecraft client) {
+      return ModTemplate.config.renderTooltipsInThirdPersonView
+         ? (
+               client.options.getCameraType() == CameraType.THIRD_PERSON_FRONT
+                  || client.options.getCameraType() == CameraType.THIRD_PERSON_BACK
+                  || client.options.getCameraType().isFirstPerson()
+            )
+            && !client.gui.hud.isHidden()
+         : client.options.getCameraType().isFirstPerson() && !client.gui.hud.isHidden();
+   }
+   //?} else {
+   /*public static boolean shouldRenderCrosshair(Minecraft client) {
       return ModTemplate.config.renderTooltipsInThirdPersonView
          ? (
                client.options.getCameraType() == CameraType.THIRD_PERSON_FRONT
@@ -54,21 +66,22 @@ public class ViewHelper {
             && !client.options.hideGui
          : client.options.getCameraType().isFirstPerson() && !client.options.hideGui;
    }
+   *///?}
 
    public static void cancelBobView(Vector3f position, float partialTicks) {
       Minecraft mc = Minecraft.getInstance();
       //? if <= 1.21.1 {
-      if (mc.options.bobView().get() && mc.getCameraEntity() instanceof Player) {
+      /*if (mc.options.bobView().get() && mc.getCameraEntity() instanceof Player) {
          Player player = (Player)mc.getCameraEntity();
          float playerStep = player.walkDist - player.walkDistO;
          float stepSize = -(player.walkDist + playerStep * partialTicks);
          float viewBob = Mth.lerp(partialTicks, player.oBob, player.bob);
-      //?} else {
-      /*if (mc.options.bobView().get() && mc.getCameraEntity() instanceof AbstractClientPlayer player) {
+      *///?} else {
+      if (mc.options.bobView().get() && mc.getCameraEntity() instanceof AbstractClientPlayer player) {
          ClientAvatarState avatar = player.avatarState();
          float stepSize = avatar.getBackwardsInterpolatedWalkDistance(partialTicks);
          float viewBob = avatar.getInterpolatedBob(partialTicks);
-      *///?}
+      //?}
          Quaternionf bobXRotation = Axis.XP
             .rotationDegrees(Math.abs(Mth.cos(stepSize * (float) Math.PI - 0.2F) * viewBob) * 5.0F);
          Quaternionf bobZRotation = Axis.ZP.rotationDegrees(Mth.sin(stepSize * (float) Math.PI) * viewBob * 3.0F);
@@ -86,12 +99,16 @@ public class ViewHelper {
 
    public static Vector3f worldToScreenSpace(Vec3 pos, float partialTicks) {
       Minecraft mc = Minecraft.getInstance();
-      Camera camera = mc.gameRenderer.getMainCamera();
-      //? if <= 1.21.1 {
-      Vec3 cameraPosition = camera.getPosition();
+      //? if >= 26.2 {
+      Camera camera = mc.gameRenderer.mainCamera();
       //?} else {
-      /*Vec3 cameraPosition = camera.position();
+      /*Camera camera = mc.gameRenderer.getMainCamera();
       *///?}
+      //? if <= 1.21.1 {
+      /*Vec3 cameraPosition = camera.getPosition();
+      *///?} else {
+      Vec3 cameraPosition = camera.position();
+      //?}
       Vector3f position = new Vector3f(
          (float)(cameraPosition.x - pos.x),
          (float)(cameraPosition.y - pos.y),
@@ -103,7 +120,11 @@ public class ViewHelper {
       cancelBobView(position, partialTicks);
       Window window = mc.getWindow();
       //? if <= 1.21.1 {
-      double fov = mc.gameRenderer.getFov(camera, partialTicks, true);
+      /*double fov = mc.gameRenderer.getFov(camera, partialTicks, true);
+      *///?} elif >= 26.1.2 {
+      // 26.1.2 elimino GameRenderer#getFov (el efectivo vive en CameraRenderState#hudFov, que
+      // no es accesible desde aqui); se usa el ajuste de FOV como aproximacion.
+      float fov = (float)mc.options.fov().get();
       //?} else {
       /*float fov = ((GameRendererMixin)(Object) mc.gameRenderer).lootbeams$getFov(camera, partialTicks, true);
       *///?}

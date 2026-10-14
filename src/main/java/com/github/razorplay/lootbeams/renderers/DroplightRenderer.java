@@ -8,6 +8,7 @@ import com.github.razorplay.lootbeams.extensions.LootbeamsBufferBuilder;
 import com.github.razorplay.lootbeams.helpers.ColorHelper;
 import com.github.razorplay.lootbeams.helpers.NumberHelper;
 import com.github.razorplay.lootbeams.helpers.RarityHelper;
+import com.github.razorplay.lootbeams.helpers.VersionCompatHelper;
 import com.github.razorplay.lootbeams.render.LootBeamRenderLayers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -15,26 +16,26 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.github.razorplay.lootbeams.render.LootBeamBuffer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.joml.Matrix4f;
 
 import java.util.List;
 //? <= 1.21.1 {
-import net.minecraft.client.renderer.RenderType;
-//?} else {
-/*import net.minecraft.client.renderer.rendertype.RenderType;
-*///?}
+/*import net.minecraft.client.renderer.RenderType;
+*///?} else {
+import net.minecraft.client.renderer.rendertype.RenderType;
+//?}
 
 
 public class DroplightRenderer {
-   private static final ResourceLocation DROPLIGHT_TEXTURE = ModTemplate.id("textures/droplight/droplight.png");
-   private static final ResourceLocation DROPLIGHT_GLOW_TEXTURE = ModTemplate.id("textures/droplight/droplight_glow.png");
-   private static final ResourceLocation DROPLIGHT_ANIMATED_TEXTURE = ModTemplate.id("textures/droplight/droplight_animated.png");
-   private static final ResourceLocation DROPLIGHT_ANIMATED_BASE_TEXTURE = ModTemplate.id("textures/droplight/droplight_animated_base.png");
+   private static final Identifier DROPLIGHT_TEXTURE = ModTemplate.id("textures/droplight/droplight.png");
+   private static final Identifier DROPLIGHT_GLOW_TEXTURE = ModTemplate.id("textures/droplight/droplight_glow.png");
+   private static final Identifier DROPLIGHT_ANIMATED_TEXTURE = ModTemplate.id("textures/droplight/droplight_animated.png");
+   private static final Identifier DROPLIGHT_ANIMATED_BASE_TEXTURE = ModTemplate.id("textures/droplight/droplight_animated_base.png");
    private static RenderType DROPLIGHT_LAYER = LootBeamRenderLayers.droplight(DROPLIGHT_TEXTURE);
    private static RenderType DROPLIGHT_GLOW_LAYER = LootBeamRenderLayers.droplight(DROPLIGHT_GLOW_TEXTURE);
    private static RenderType DROPLIGHT_ANIMATED_LAYER = LootBeamRenderLayers.droplightAnimated(DROPLIGHT_ANIMATED_TEXTURE);
@@ -42,7 +43,7 @@ public class DroplightRenderer {
    private static boolean SHADERS_LOADED = IrisCompat.isShaderPackInUse();
 
    public static void renderBeam(
-      MultiBufferSource.BufferSource buffer,
+      LootBeamBuffer buffer,
       PoseStack matrixStack,
       ItemEntity itemEntity,
       Configuration itemConfig,
@@ -55,7 +56,11 @@ public class DroplightRenderer {
    ) {
       if (itemConfig.renderBeam) {
          Minecraft minecraft = Minecraft.getInstance();
-         Camera camera = minecraft.gameRenderer.getMainCamera();
+         //? if >= 26.2 {
+         Camera camera = minecraft.gameRenderer.mainCamera();
+         //?} else {
+         /*Camera camera = minecraft.gameRenderer.getMainCamera();
+         *///?}
          boolean updatedShadersLoaded = IrisCompat.isShaderPackInUse();
          if (updatedShadersLoaded != SHADERS_LOADED) {
             SHADERS_LOADED = updatedShadersLoaded;
@@ -91,32 +96,42 @@ public class DroplightRenderer {
 
          TextColor color2 = getSecondColor(color, itemConfig.beamGradientModifiers);
          //? if <= 1.21.1 {
-         RenderSystem.setShaderTexture(1, minecraft.getMainRenderTarget().getDepthTextureId());
+         /*RenderSystem.setShaderTexture(1, minecraft.getMainRenderTarget().getDepthTextureId());
          RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, beamAlpha);
-         //?}
+         *///?}
          matrixStack.pushPose();
          matrixStack.translate(0.0, 0.015, 0.0);
          matrixStack.pushPose();
-         matrixStack.mulPose(Axis.YP.rotationDegrees(-camera/*? <= 1.21.1 {*/ .getYRot() /*?} else {*/ /*.yRot() *//*?} */));
-         VertexConsumer builder = buffer.getBuffer(DROPLIGHT_GLOW_LAYER);
-         renderQuad(
-            builder,
+         //? if >= 26.3 {
+         matrixStack.rotate(Axis.YP.rotationDegrees(-VersionCompatHelper.cameraYaw(camera)));
+         //?} else {
+         /*matrixStack.mulPose(Axis.YP.rotationDegrees(-VersionCompatHelper.cameraYaw(camera)));
+         *///?}
+         final float droplightGlowAlpha = SHADERS_LOADED ? beamAlpha / 2.0F : beamAlpha;
+         final float droplightGlowY = yOffset;
+         final float droplightGlowWidth = beamWidth;
+         buffer.submit(
+            DROPLIGHT_GLOW_LAYER,
             matrixStack,
-            color.getValue(),
-            color2.getValue(),
-            SHADERS_LOADED ? beamAlpha / 2.0F : beamAlpha,
-            0.0F,
-            yOffset,
-            -0.001F,
-            beamWidth,
-            beamGlowHeight,
-            0.0F,
-            0.0F,
-            1.0F,
-            1.0F,
-            0.5F,
-            true,
-            SHADERS_LOADED
+            (builder, poseStack) -> renderQuad(
+               builder,
+               poseStack,
+               color.getValue(),
+               color2.getValue(),
+               droplightGlowAlpha,
+               0.0F,
+               droplightGlowY,
+               -0.001F,
+               droplightGlowWidth,
+               beamGlowHeight,
+               0.0F,
+               0.0F,
+               1.0F,
+               1.0F,
+               0.5F,
+               true,
+               SHADERS_LOADED
+            )
          );
          buffer.endBatch();
          if (beamHeight > 0.0F) {
@@ -124,69 +139,89 @@ public class DroplightRenderer {
                float halfBeamWidth = beamWidth / 2.0F;
                float oneThreeBeamWidth = beamWidth / 3.0F;
                float animationSpeed = itemConfig.droplightBeamAnimationSpeed;
-               float itemAgeInSeconds = (itemEntity.getAge() + minecraft/*? <= 1.21.1 {*/ .getTimer() /*?} else {*/ /*.getDeltaTracker() *//*?} */.getGameTimeDeltaPartialTick(true)) / 20.0F;
-               builder = buffer.getBuffer(DROPLIGHT_ANIMATED_LAYER);
-               renderAnimatedQuad(
-                  builder,
+               float itemAgeInSeconds = (itemEntity.getAge() + minecraft/*? <= 1.21.1 {*/ /*.getTimer() *//*?} else {*/ .getDeltaTracker() /*?} */.getGameTimeDeltaPartialTick(true)) / 20.0F;
+               final float droplightAnimatedAlpha = beamAlpha;
+               final float droplightAnimatedY = halfBeamWidth - oneThreeBeamWidth + yOffset;
+               final float droplightAnimatedWidth = beamWidth;
+               final float droplightAnimatedHeight = beamHeight;
+               buffer.submit(
+                  DROPLIGHT_ANIMATED_LAYER,
                   matrixStack,
-                  color.getValue(),
-                  color2.getValue(),
-                  beamAlpha,
-                  0.0F,
-                  halfBeamWidth - oneThreeBeamWidth + yOffset,
-                  0.0F,
-                  beamWidth,
-                  beamHeight,
-                  0.0F,
-                  0.0F,
-                  1.0F,
-                  1.0F,
-                  true,
-                  animationSpeed,
-                  itemAgeInSeconds
+                  (builder, poseStack) -> renderAnimatedQuad(
+                     builder,
+                     poseStack,
+                     color.getValue(),
+                     color2.getValue(),
+                     droplightAnimatedAlpha,
+                     0.0F,
+                     droplightAnimatedY,
+                     0.0F,
+                     droplightAnimatedWidth,
+                     droplightAnimatedHeight,
+                     0.0F,
+                     0.0F,
+                     1.0F,
+                     1.0F,
+                     true,
+                     animationSpeed,
+                     itemAgeInSeconds
+                  )
                );
                buffer.endBatch();
-               builder = buffer.getBuffer(DROPLIGHT_BASE_LAYER);
-               renderQuad(
-                  builder,
+               final float droplightBaseAlpha = beamAlpha;
+               final float droplightBaseY = -oneThreeBeamWidth + yOffset;
+               final float droplightBaseWidth = beamWidth;
+               buffer.submit(
+                  DROPLIGHT_BASE_LAYER,
                   matrixStack,
-                  color.getValue(),
-                  color2.getValue(),
-                  beamAlpha,
-                  0.0F,
-                  -oneThreeBeamWidth + yOffset,
-                  0.0F,
-                  beamWidth,
-                  beamWidth,
-                  0.0F,
-                  0.0F,
-                  1.0F,
-                  1.0F,
-                  2.0F,
-                  false,
-                  SHADERS_LOADED
+                  (builder, poseStack) -> renderQuad(
+                     builder,
+                     poseStack,
+                     color.getValue(),
+                     color2.getValue(),
+                     droplightBaseAlpha,
+                     0.0F,
+                     droplightBaseY,
+                     0.0F,
+                     droplightBaseWidth,
+                     droplightBaseWidth,
+                     0.0F,
+                     0.0F,
+                     1.0F,
+                     1.0F,
+                     2.0F,
+                     false,
+                     SHADERS_LOADED
+                  )
                );
                buffer.endBatch();
             } else {
-               builder = buffer.getBuffer(DROPLIGHT_LAYER);
-               renderQuad(
-                  builder,
+               final float droplightAlpha = beamAlpha;
+               final float droplightY = yOffset;
+               final float droplightWidth = beamWidth;
+               final float droplightHeight = beamHeight;
+               buffer.submit(
+                  DROPLIGHT_LAYER,
                   matrixStack,
-                  color.getValue(),
-                  color2.getValue(),
-                  beamAlpha,
-                  0.0F,
-                  yOffset,
-                  0.0F,
-                  beamWidth,
-                  beamHeight,
-                  0.0F,
-                  0.0F,
-                  1.0F,
-                  1.0F,
-                  2.0F,
-                  true,
-                  SHADERS_LOADED
+                  (builder, poseStack) -> renderQuad(
+                     builder,
+                     poseStack,
+                     color.getValue(),
+                     color2.getValue(),
+                     droplightAlpha,
+                     0.0F,
+                     droplightY,
+                     0.0F,
+                     droplightWidth,
+                     droplightHeight,
+                     0.0F,
+                     0.0F,
+                     1.0F,
+                     1.0F,
+                     2.0F,
+                     true,
+                     SHADERS_LOADED
+                  )
                );
                buffer.endBatch();
             }
@@ -195,8 +230,8 @@ public class DroplightRenderer {
          matrixStack.popPose();
          matrixStack.popPose();
          //? if <= 1.21.1 {
-         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-         //?}
+         /*RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+         *///?}
       }
    }
 

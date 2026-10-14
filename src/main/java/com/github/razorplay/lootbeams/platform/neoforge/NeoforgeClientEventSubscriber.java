@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.neoforge;
 
 //? neoforge {
 
-import com.github.razorplay.lootbeams.ClientSetup;
+/*import com.github.razorplay.lootbeams.ClientSetup;
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.listeners.ResourceReloadListener;
 import com.github.razorplay.lootbeams.managers.ParticleManager;
@@ -27,8 +27,8 @@ import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 //? if <= 1.21.1 {
-import net.neoforged.neoforge.client.event.RegisterShadersEvent;
-//?}
+/^import net.neoforged.neoforge.client.event.RegisterShadersEvent;
+^///?}
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
@@ -44,14 +44,14 @@ public class NeoforgeClientEventSubscriber {
 	// 1.21.11 compila los shaders de forma perezosa dentro de su RenderPipeline, asi que alli no
 	// existe evento de registro (los shaders de packs los descubre ResourceReloadListener).
 	//? if <= 1.21.1 {
-	@SubscribeEvent
+	/^@SubscribeEvent
 	public static void onRegisterShaders(RegisterShadersEvent event) {
 		ShaderRegister registrar = new NeoForgeShaderRegister(event);
 		LootBeamShaders.registerCoreShaders(registrar);
 		LootBeamShaders.registerDroplightCoreShaders(registrar);
 		LootBeamShaders.registerCustomCoreShaders(registrar);
 	}
-	//?}
+	^///?}
 
 	// El pack de ejemplos vive en `resourcepacks/loot_beams_examples` dentro del mod. Fabric API lo
 	// resuelve solo; en NeoForge hay que publicarlo como pack finder (misma API en 1.21.1 y 1.21.11).
@@ -108,7 +108,7 @@ public class NeoforgeClientEventSubscriber {
 	public static void onClientTick(ClientTickEvent.Post event) {
 		if (NeoForgeKeyMappings.OPEN_PRESET_SCREEN == null) return;
 		while (NeoForgeKeyMappings.OPEN_PRESET_SCREEN.consumeClick()) {
-			Minecraft.getInstance().setScreen(new LootBeamsPresetManagerScreen(Minecraft.getInstance().screen));
+			ClientSetup.openPresetManagerScreen();
 		}
 	}
 
@@ -117,4 +117,4 @@ public class NeoforgeClientEventSubscriber {
 		NeoForgeClientCommands.register(event.getDispatcher());
 	}
 }
-//?}
+*///?}
