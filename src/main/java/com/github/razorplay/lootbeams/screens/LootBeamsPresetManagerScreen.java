@@ -12,15 +12,12 @@ import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-//? if >= 1.21.11 {
-import net.minecraft.client.input.KeyEvent;
-//?}
 
 public class LootBeamsPresetManagerScreen extends Screen {
    private static final Identifier MODAL_TEXTURE = ModTemplate.id("textures/gui/screen/modal.png");
    private static final int BACKGROUND_WIDTH = 184;
    private static final int BACKGROUND_HEIGHT = 152;
-   private Screen parent;
+   private final Screen parent;
    private PresetTextFieldWidget presetNameField;
    private PresetButtonWidget savePresetButton;
    private PresetButtonWidget loadPresetButton;
@@ -137,14 +134,13 @@ public class LootBeamsPresetManagerScreen extends Screen {
       return keyCode != 258 && keyCode != 264 && keyCode != 265 ? super.keyPressed(keyCode, scanCode, modifiers) : false;
    }
    *///?} else {
-   public boolean keyPressed(KeyEvent event) {
+   public boolean keyPressed(net.minecraft.client.input.KeyEvent event) {
       return event.input() != 258 && event.input() != 264 && event.input() != 265 ? super.keyPressed(event) : false;
    }
    //?}
 
    //? if >= 26.1.2 {
    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
-      this.extractBackground(context, mouseX, mouseY, delta);
       super.extractRenderState(context, mouseX, mouseY, delta);
       if (this.presetListWidget.getSelectedEntry() == this.addEntry) {
          this.presetNameField.extractRenderState(context, mouseX, mouseY, delta);

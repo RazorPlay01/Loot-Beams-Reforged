@@ -30,6 +30,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class TooltipRenderer {
+   private TooltipRenderer() {
+      /* This utility class should not be instantiated */
+   }
+
    public static void renderItemTooltip(GuiGraphicsExtractor context, Font font, ItemStack itemStack, int x, int y) {
       Minecraft client = Minecraft.getInstance();
       Configuration itemConfig = CustomLootBeamsConfig.fromItemStack(itemStack);
@@ -85,9 +89,13 @@ public class TooltipRenderer {
    }
 
    /**
-    * Dibuja un tooltip. En 1.21.11 GuiGraphicsExtractor ya no acepta List&lt;Component&gt; + Optional&lt;TooltipComponent&gt;: ahora
+    * Dibuja un tooltip. En 1.21.11+ GuiGraphicsExtractor ya no acepta List&lt;Component&gt; + Optional&lt;TooltipComponent&gt;:
     * hay que construir la lista de {@link ClientTooltipComponent} a mano y pasar un ClientTooltipPositioner
     * (y el Identifier de estilo, que aqui es null).
+    * <p>
+    * En 26.1.2 {@code setTooltipForNextFrame} es un mecanismo DIFERIDO que no llega a renderizar el tooltip del HUD
+    * (se guarda en {@code deferredTooltip} y se dibuja en el extractor de la frame siguiente, que ya se ha descartado),
+    * asi que ahi se usa {@code tooltip(...)} (publico) que renderiza de inmediato, igual que 1.21.11.
     */
    private static void renderTooltip(
       GuiGraphicsExtractor context, Font font, List<Component> lines, Optional<TooltipComponent> tooltipData, int x, int y
@@ -95,9 +103,18 @@ public class TooltipRenderer {
       //? if <= 1.21.1 {
       /*context.renderTooltip(font, lines, tooltipData, x, y);
       *///?} else {
-      //? if >= 26.1.2 {
-      context.setTooltipForNextFrame(font, lines, tooltipData, x, y);
-      //?} else {
+      //? if >= 26.1.2 && < 26.2 {
+      List<ClientTooltipComponent> components = new ArrayList<>(lines.size() + 1);
+
+      for (Component line : lines) {
+         components.add(ClientTooltipComponent.create(line.getVisualOrderText()));
+      }
+
+      tooltipData.ifPresent(component -> components.add(ClientTooltipComponent.create(component)));
+      context.tooltip(font, components, x, y, DefaultTooltipPositioner.INSTANCE, null);
+      //?} elif >= 26.2 {
+      /*context.setTooltipForNextFrame(font, lines, tooltipData, x, y);
+      *///?} else {
       /*List<ClientTooltipComponent> components = new ArrayList<>(lines.size() + 1);
 
       for (Component line : lines) {

@@ -19,7 +19,6 @@ import net.minecraft.world.level.Level;
 
 public class ClientSetup {
 	private ClientSetup() {
-		/* utility class */
 	}
 
 	/**

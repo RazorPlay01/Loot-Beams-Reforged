@@ -3,6 +3,7 @@ package com.github.razorplay.lootbeams.shaders;
 //? if >= 1.21.11 {
 
 import com.github.razorplay.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.helpers.StringHelper;
 import com.github.razorplay.lootbeams.render.CustomVertexFormats;
 //? if >= 26.3 {
 /*import com.mojang.renderpearl.api.pipeline.BlendFunction;
@@ -312,15 +313,6 @@ public final class LootBeamPipelines {
 		return CUSTOM_PIPELINES.get(shader.name());
 	}
 
-	public static String getFormattedName(String path) {
-		String result = path;
-		if (result.contains(".")) {
-			result = result.substring(path.lastIndexOf(47) + 1, path.lastIndexOf(46));
-		}
-
-		return result.toUpperCase();
-	}
-
 	/**
 	 * Descubre los shaders personalizados presentes en {@code assets/<ns>/shaders/core/custom}
 	 * y construye un pipeline por cada par {@code .vsh}/{@code .fsh}.
@@ -339,7 +331,7 @@ public final class LootBeamPipelines {
 			String path = shaderId.getPath();
 			// "shaders/core/custom/glow_vortex.vsh" -> "core/custom/glow_vortex"
 			String shaderPath = path.substring("shaders/".length(), path.length() - ".vsh".length());
-			String name = getFormattedName(path);
+			String name = StringHelper.getFormattedName(path);
 			// Los shaders personalizados solo enlazan Sampler0 en su RenderSetup: declarar
 			// Sampler1/Sampler2 rompe STRICT_VALIDATION en desarrollo.
 			//? if >= 26.2 {

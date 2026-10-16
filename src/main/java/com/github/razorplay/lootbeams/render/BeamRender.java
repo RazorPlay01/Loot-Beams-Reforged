@@ -25,7 +25,6 @@ import java.util.Map;
 
 public class BeamRender {
    private BeamRender() {
-      /* This utility class should not be instantiated */
    }
 
    private static final Map<ItemEntity, Integer> ITEM_GROUND_START_TIMES = new HashMap<>();

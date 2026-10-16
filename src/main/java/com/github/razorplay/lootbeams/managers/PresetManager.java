@@ -154,29 +154,7 @@ public class PresetManager {
       File newPresetFile = FileHelper.createPathIfNotExists(newPresetPath.toString());
 	   ModTemplate.configManager.save(newPresetFile);
       Minecraft client = Minecraft.getInstance();
-
-      //? if >= 26.2 {
-      /*SystemToast.add(
-         client.gui.toastManager(),
-         SystemToast.SystemToastId.NARRATOR_TOGGLE,
-         Component.nullToEmpty("LootBeams"),
-         Component.translatable("lootbeams.notification.savePreset.text", getPresetFormattedName(presetName))
-      );
-      *///?} else {
-      //? if <= 1.21.1 {
-      /*client.getToasts()
-      *///?} else {
-      client.getToastManager()
-      //?}
-         .addToast(
-            SystemToast.multiline(
-               client,
-               SystemToast.SystemToastId.NARRATOR_TOGGLE,
-               Component.nullToEmpty("LootBeams"),
-               Component.translatable("lootbeams.notification.savePreset.text", getPresetFormattedName(presetName))
-            )
-         );
-      //?}
+      showToast(client, Component.translatable("lootbeams.notification.savePreset.text", getPresetFormattedName(presetName)));
    }
 
    public static boolean tryApplyPreset(String presetName) {
@@ -204,12 +182,19 @@ public class PresetManager {
    public static void loadAndApplyPreset(String presetName) {
       if (tryApplyPreset(presetName)) {
          Minecraft client = Minecraft.getInstance();
+         showToast(client, Component.translatable("lootbeams.notification.loadPreset.text", presetName));
+		  ModTemplate.configManager.save();
+         PresetEvents.APPLY_PRESET.invoker().onApplyPreset(presetName);
+      }
+   }
+
+   private static void showToast(Minecraft client, Component message) {
       //? if >= 26.2 {
       /*SystemToast.add(
          client.gui.toastManager(),
          SystemToast.SystemToastId.NARRATOR_TOGGLE,
          Component.nullToEmpty("LootBeams"),
-         Component.translatable("lootbeams.notification.loadPreset.text", presetName)
+         message
       );
       *///?} else {
       //? if <= 1.21.1 {
@@ -217,18 +202,15 @@ public class PresetManager {
       *///?} else {
       client.getToastManager()
       //?}
-            .addToast(
-               SystemToast.multiline(
-                  client,
-                  SystemToast.SystemToastId.NARRATOR_TOGGLE,
-                  Component.nullToEmpty("LootBeams"),
-                  Component.translatable("lootbeams.notification.loadPreset.text", presetName)
-               )
-            );
+         .addToast(
+            SystemToast.multiline(
+               client,
+               SystemToast.SystemToastId.NARRATOR_TOGGLE,
+               Component.nullToEmpty("LootBeams"),
+               message
+            )
+         );
       //?}
-		  ModTemplate.configManager.save();
-         PresetEvents.APPLY_PRESET.invoker().onApplyPreset(presetName);
-      }
    }
 
 	public record Preset(PresetType type, String displayName, Identifier identifier, File presetFile) {

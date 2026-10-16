@@ -5,6 +5,7 @@ import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.extensions.LootbeamsBufferBuilder;
 import com.github.razorplay.lootbeams.helpers.ColorHelper;
 import com.github.razorplay.lootbeams.helpers.NumberHelper;
+import com.github.razorplay.lootbeams.helpers.VersionCompatHelper;
 import com.github.razorplay.lootbeams.managers.GlowEffectManager;
 import com.github.razorplay.lootbeams.render.LootBeamRenderLayers;
 import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
@@ -47,11 +48,7 @@ public class GroundEffectRenderer {
             float rotationSpeed = itemConfig.glowRotationSpeed;
             float rotation = currentGroundTime * rotationSpeed % 360.0F;
             float rotationDirection = itemConfig.glowRotateClockwise ? -1.0F : 1.0F;
-            //? if >= 26.3 {
-            /*matrixStack.rotate(Axis.YP.rotationDegrees(rotation * rotationDirection));
-            *///?} else {
-            matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * rotationDirection));
-            //?}
+            VersionCompatHelper.mulPose(matrixStack, Axis.YP.rotationDegrees(rotation * rotationDirection));
          }
 
          TextureAtlasSprite glowEffectSprite = itemConfig.glowEffectTexture.getSprite();

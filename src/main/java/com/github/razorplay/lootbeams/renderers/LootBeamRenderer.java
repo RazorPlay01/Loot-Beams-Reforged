@@ -5,6 +5,7 @@ import com.github.razorplay.lootbeams.config.Configuration;
 import com.github.razorplay.lootbeams.helpers.ColorHelper;
 import com.github.razorplay.lootbeams.helpers.NumberHelper;
 import com.github.razorplay.lootbeams.helpers.RarityHelper;
+import com.github.razorplay.lootbeams.helpers.VersionCompatHelper;
 import com.github.razorplay.lootbeams.render.LootBeamRenderLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -80,11 +81,7 @@ public class LootBeamRenderer {
 
          matrixStack.pushPose();
          float rotation = (float)Math.floorMod(worldtime, 40L) + pticks;
-                  //? if >= 26.3 {
-         /*matrixStack.rotate(Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
-         *///?} else {
-         matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
-         //?}
+         VersionCompatHelper.mulPose(matrixStack, Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
          final float beamHeightSnapshot = beamHeight;
          final float beamRadiusSnapshot = beamRadius;
          final float beamGlowRadiusSnapshot = beamGlowRadius;
@@ -186,22 +183,14 @@ public class LootBeamRenderer {
       stack.translate(0.0F, yOffset, 0.0F);
       if (!solidBeam) {
          stack.translate(0.0F, halfHeight, 0.0F);
-                  //? if >= 26.3 {
-         /*stack.rotate(Axis.XP.rotationDegrees(180.0F));
-         *///?} else {
-         stack.mulPose(Axis.XP.rotationDegrees(180.0F));
-         //?}
+         VersionCompatHelper.mulPose(stack, Axis.XP.rotationDegrees(180.0F));
       }
 
       renderPart(
          stack, builder, color.fR, color.fG, color.fB, alpha, y, height, radius_1, radius_2, radius_3, radius_4, radius_5, radius_6, radius_7, radius_8, false
       );
       if (!solidBeam) {
-                  //? if >= 26.3 {
-         /*stack.rotate(Axis.XP.rotationDegrees(-180.0F));
-         *///?} else {
-         stack.mulPose(Axis.XP.rotationDegrees(-180.0F));
-         //?}
+         VersionCompatHelper.mulPose(stack, Axis.XP.rotationDegrees(-180.0F));
       }
 
       renderPart(

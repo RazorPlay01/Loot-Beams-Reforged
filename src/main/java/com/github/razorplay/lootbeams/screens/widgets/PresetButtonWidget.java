@@ -2,9 +2,6 @@ package com.github.razorplay.lootbeams.screens.widgets;
 
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.helpers.RenderHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -12,7 +9,6 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 public class PresetButtonWidget extends Button {
@@ -54,7 +50,7 @@ public class PresetButtonWidget extends Button {
    }
 
    //? if <= 1.21.1 {
-   /*public void renderString(GuiGraphicsExtractor context, Font textRenderer, int color) {
+   /*public void renderString(GuiGraphicsExtractor context, net.minecraft.client.gui.Font textRenderer, int color) {
       this.renderScrollingString(context, textRenderer, TEXT_MARGIN_X, color);
    }
    *///?} else {
@@ -68,7 +64,7 @@ public class PresetButtonWidget extends Button {
       this.extractScrollingStringOverContents(context.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE), message, TEXT_MARGIN_X);
    }
    //?} else {
-   /*public void renderString(GuiGraphicsExtractor context, Font textRenderer, int color) {
+   /*public void renderString(GuiGraphicsExtractor context, net.minecraft.client.gui.Font textRenderer, int color) {
       Component message = this.getMessage();
       if (!this.active) {
          message = message.copy().withStyle(style -> style.withColor(TextColor.fromRgb(color)));
@@ -81,17 +77,17 @@ public class PresetButtonWidget extends Button {
 
    //? if <= 1.21.1 {
    /*protected void renderWidget(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
-      Minecraft minecraftClient = Minecraft.getInstance();
+      net.minecraft.client.Minecraft minecraftClient = net.minecraft.client.Minecraft.getInstance();
       context.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-      RenderSystem.enableBlend();
-      RenderSystem.enableDepthTest();
+      com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+      com.mojang.blaze3d.systems.RenderSystem.enableDepthTest();
       Identifier texture = this.getButtonTextures().get(this.active, this.isHoveredOrFocused());
       RenderHelper.blit(context, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
-      RenderSystem.setShaderTexture(0, texture);
+      com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, texture);
       context.blit(texture, this.getX(), this.getY(), 0, 0.0F, 0.0F, this.getWidth(), this.getHeight(), 76, 19);
       context.setColor(1.0F, 1.0F, 1.0F, 1.0F);
       int i = this.active ? 16777215 : 10526880;
-      this.renderString(context, minecraftClient.font, i | Mth.ceil(this.alpha * 255.0F) << 24);
+      this.renderString(context, minecraftClient.font, i | net.minecraft.util.Mth.ceil(this.alpha * 255.0F) << 24);
    }
    *///?} else {
    //? if >= 26.1.2 {
@@ -106,7 +102,7 @@ public class PresetButtonWidget extends Button {
       Identifier texture = this.getButtonTextures().get(this.active, this.isHoveredOrFocused());
       RenderHelper.blit(context, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
       int i = this.active ? 16777215 : 10526880;
-      this.renderString(context, Minecraft.getInstance().font, i);
+      this.renderString(context, net.minecraft.client.Minecraft.getInstance().font, i);
    }
    *///?}
    //?}

@@ -2,7 +2,6 @@ package com.github.razorplay.lootbeams.screens.widgets;
 
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.helpers.RenderHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -495,7 +494,7 @@ public class PresetTextFieldWidget extends AbstractWidget implements Renderable 
          if (this.drawsBackground()) {
             Identifier texture = TEXTURES.get(this.isActive(), this.isFocused());
             //? if <= 1.21.1 {
-            /*RenderSystem.setShaderTexture(0, texture);
+            /*com.mojang.blaze3d.systems.RenderSystem.setShaderTexture(0, texture);
             *///?}
             RenderHelper.blit(context, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0, 0);
          }

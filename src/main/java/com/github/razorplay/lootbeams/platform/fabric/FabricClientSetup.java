@@ -8,10 +8,7 @@ import com.github.razorplay.lootbeams.helpers.VersionCompatHelper;
 import com.github.razorplay.lootbeams.listeners.ResourceReloadListener;
 import com.github.razorplay.lootbeams.managers.ParticleManager;
 import com.github.razorplay.lootbeams.platform.fabric.shaders.FabricShaderRegister;
-import com.github.razorplay.lootbeams.screens.LootBeamsPresetManagerScreen;
 import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
-import com.github.razorplay.lootbeams.shaders.ShaderRegister;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 //? if >= 26.1.2 {
@@ -47,7 +44,7 @@ public final class FabricClientSetup {
         // 1. Shaders
         //? if <= 1.21.1 {
         /*CoreShaderRegistrationCallback.EVENT.register(context -> {
-            ShaderRegister registrar = new FabricShaderRegister(context);
+            com.github.razorplay.lootbeams.shaders.ShaderRegister registrar = new FabricShaderRegister(context);
             LootBeamShaders.registerCoreShaders(registrar);
             LootBeamShaders.registerDroplightCoreShaders(registrar);
             LootBeamShaders.registerCustomCoreShaders(registrar);
@@ -63,7 +60,7 @@ public final class FabricClientSetup {
         //? if <= 1.21.1 {
         /*keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "lootbeams.keybindings.savePreset",
-                InputConstants.Type.KEYSYM,
+                com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
                 325,
                 "lootbeams.title"));
         *///?} else {
@@ -76,7 +73,7 @@ public final class FabricClientSetup {
         //?} else {
         /*keyBinding = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "lootbeams.keybindings.savePreset",
-                InputConstants.Type.KEYSYM,
+                com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
                 325,
                 KeyMapping.Category.register(ModTemplate.id("lootbeams"))));
         *///?}
@@ -97,13 +94,7 @@ public final class FabricClientSetup {
         // 4. Tick (abrir pantalla con la keybind)
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding.consumeClick()) {
-                //? if >= 26.2 {
-                /*Minecraft.getInstance().gui.setScreen(
-                        new LootBeamsPresetManagerScreen(Minecraft.getInstance().gui.screen()));
-                *///?} else {
-                Minecraft.getInstance().setScreen(
-                        new LootBeamsPresetManagerScreen(Minecraft.getInstance().screen));
-                //?}
+				ClientSetup.openPresetManagerScreen();
             }
         });
 

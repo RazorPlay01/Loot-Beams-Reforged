@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.forge;
 
 //? forge {
 
-/*import com.github.razorplay.lootbeams.lootbeams.ModTemplate;
+/*import com.github.razorplay.lootbeams.ModTemplate;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod(ModTemplate.MOD_ID)

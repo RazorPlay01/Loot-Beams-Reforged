@@ -30,6 +30,44 @@ public final class VersionCompatHelper {
    }
 
    /**
+    * {@code Camera#getPosition()} (1.21.1) paso a {@code Camera#position()} en 1.21.2+.
+    */
+   public static net.minecraft.world.phys.Vec3 cameraPosition(net.minecraft.client.Camera camera) {
+      //? if <= 1.21.1 {
+      /*return camera.getPosition();
+      *///?} else {
+      return camera.position();
+      //?}
+   }
+
+   /**
+    * 26.3 renombro {@code PoseStack#mulPose(Quaternionf)} a {@code PoseStack#rotate(Quaternionf)}.
+    */
+   public static void mulPose(com.mojang.blaze3d.vertex.PoseStack stack, org.joml.Quaternionf quaternion) {
+      //? if >= 26.3 {
+      /*stack.rotate(quaternion);
+      *///?} else {
+      stack.mulPose(quaternion);
+      //?}
+   }
+
+   /**
+    * Rotacion de la camara en cada version: 26.2+ usa {@code mainCamera().rotation()}, 1.21.2-26.1
+    * {@code getMainCamera().rotation()} y 1.21.1 {@code EntityRenderDispatcher#cameraOrientation()}.
+    */
+   public static org.joml.Quaternionf cameraRotation(net.minecraft.client.Minecraft client) {
+      //? if >= 26.2 {
+      /*return client.gameRenderer.mainCamera().rotation();
+      *///?} else {
+      //? if <= 1.21.1 {
+      /*return client.getEntityRenderDispatcher().cameraOrientation();
+      *///?} else {
+      return client.gameRenderer.getMainCamera().rotation();
+      //?}
+      //?}
+   }
+
+   /**
     * 26.2 renombro {@code GameRenderer#getMainCamera()} a {@code GameRenderer#mainCamera()}.
     */
    public static net.minecraft.client.Camera mainCamera(net.minecraft.client.renderer.GameRenderer gameRenderer) {

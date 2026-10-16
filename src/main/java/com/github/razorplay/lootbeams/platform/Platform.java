@@ -7,8 +7,6 @@ public interface Platform {
 
 	ModLoader loader();
 
-	String mcVersion();
-
 	boolean isDevelopmentEnvironment();
 
 	Path getConfigDir();

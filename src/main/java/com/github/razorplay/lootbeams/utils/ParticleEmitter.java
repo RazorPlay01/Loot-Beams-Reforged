@@ -15,7 +15,6 @@ import java.util.WeakHashMap;
 
 public class ParticleEmitter {
     private ParticleEmitter() {
-        /* This utility class should not be instantiated */
     }
 
     private static final Random RANDOM = new Random();

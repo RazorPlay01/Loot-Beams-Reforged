@@ -1,6 +1,7 @@
 package com.github.razorplay.lootbeams.shaders;
 
 import com.github.razorplay.lootbeams.ModTemplate;
+import com.github.razorplay.lootbeams.helpers.StringHelper;
 import com.github.razorplay.lootbeams.render.CustomVertexFormats;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 //? if >= 26.3 {
@@ -94,14 +95,6 @@ public class LootBeamShaders {
 		}
 	}
 
-	public static String getFormattedName(String path) {
-		String result = path;
-		if (result.contains(".")) {
-			result = result.substring(path.lastIndexOf(47) + 1, path.lastIndexOf(46));
-		}
-		return result.toUpperCase();
-	}
-
 	public static void onCustomShadersReload(ShaderRegister registrar, ResourceManager resourceManager) {
 		CustomShader.clearDynamicValues();
 		//? if <= 1.21.1 {
@@ -115,7 +108,7 @@ public class LootBeamShaders {
 		);
 
 		for (Identifier shaderId : resourceShaderMap.keySet()) {
-			CustomShader newShader = CustomShader.addValue(getFormattedName(shaderId.getPath()));
+			CustomShader newShader = CustomShader.addValue(StringHelper.getFormattedName(shaderId.getPath()));
 			String registryShaderName = newShader.name().toLowerCase();
 			if (registrar != null) {
 				registerCustomShader(registrar, newShader, "custom/" + registryShaderName,
@@ -135,7 +128,7 @@ public class LootBeamShaders {
 		);
 
 		for (Identifier shaderId : resourceShaderMap.keySet()) {
-			CustomShader.addValue(LootBeamPipelines.getFormattedName(shaderId.getPath()));
+			CustomShader.addValue(StringHelper.getFormattedName(shaderId.getPath()));
 		}
 
 		LootBeamPipelines.reloadCustomShaders(resourceManager);

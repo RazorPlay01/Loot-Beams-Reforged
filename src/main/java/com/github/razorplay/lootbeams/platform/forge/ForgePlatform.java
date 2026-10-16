@@ -2,7 +2,7 @@ package com.github.razorplay.lootbeams.platform.forge;
 
 //? forge {
 
-/*import com.github.razorplay.lootbeams.lootbeams.platform.Platform;
+/*import com.github.razorplay.lootbeams.platform.Platform;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 
@@ -18,11 +18,6 @@ public class ForgePlatform implements Platform {
 	@Override
 	public ModLoader loader() {
 		return ModLoader.FORGE;
-	}
-
-	@Override
-	public String mcVersion() {
-		return "";
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.github.razorplay.lootbeams.dconfig;
 
 import com.github.razorplay.lootbeams.dconfig.events.ConfigEvents;
 import com.github.razorplay.lootbeams.dconfig.interfaces.DynamicConfigAdapter;
+import com.github.razorplay.lootbeams.helpers.StringHelper;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.annotation.ElementType;
@@ -60,7 +61,7 @@ public class DynamicConfig {
          return this.adapter.getConfigFilePath();
       }
 
-      public <T> void printConfig(T config) throws IllegalAccessException {
+      public void printConfig(Object config) throws IllegalAccessException {
          java.lang.reflect.Field[] classFields = config.getClass().getDeclaredFields();
 
          for (java.lang.reflect.Field field : classFields) {
@@ -307,17 +308,13 @@ public class DynamicConfig {
 
          public Field(String modId, String key, Category category, Class<?> type, Type[] typeArguments, Object defaultValue) {
             this.key = key;
-            this.saveKey = this.camelToSnake(key);
+            this.saveKey = StringHelper.camelToSnake(key);
             this.category = category;
             this.name = MessageFormat.format("{0}.config.{1}.{2}", modId, category.key, key);
             this.description = MessageFormat.format("{0}.config.{1}.{2}.description", modId, category.key, key);
             this.type = type;
             this.typeArguments = typeArguments;
             this.defaultValue = defaultValue;
-         }
-
-         private String camelToSnake(String str) {
-            return str.replaceAll("([a-z0-9])([A-Z])", "$1_$2").replaceAll("([A-Z])([A-Z][a-z])", "$1_$2").toLowerCase();
          }
 
          public Field setMin(Object minValue) {

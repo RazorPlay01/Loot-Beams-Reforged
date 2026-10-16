@@ -99,16 +99,8 @@ public class ViewHelper {
 
    public static Vector3f worldToScreenSpace(Vec3 pos, float partialTicks) {
       Minecraft mc = Minecraft.getInstance();
-      //? if >= 26.2 {
-      /*Camera camera = mc.gameRenderer.mainCamera();
-      *///?} else {
-      Camera camera = mc.gameRenderer.getMainCamera();
-      //?}
-      //? if <= 1.21.1 {
-      /*Vec3 cameraPosition = camera.getPosition();
-      *///?} else {
-      Vec3 cameraPosition = camera.position();
-      //?}
+      Camera camera = VersionCompatHelper.mainCamera(mc.gameRenderer);
+      Vec3 cameraPosition = VersionCompatHelper.cameraPosition(camera);
       Vector3f position = new Vector3f(
          (float)(cameraPosition.x - pos.x),
          (float)(cameraPosition.y - pos.y),

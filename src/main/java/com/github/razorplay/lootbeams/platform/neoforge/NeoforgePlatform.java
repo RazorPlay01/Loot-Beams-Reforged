@@ -6,7 +6,6 @@ package com.github.razorplay.lootbeams.platform.neoforge;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.fml.loading.VersionInfo;
 
 import java.nio.file.Path;
 
@@ -20,11 +19,6 @@ public class NeoforgePlatform implements Platform {
 	@Override
 	public ModLoader loader() {
 		return ModLoader.NEOFORGE;
-	}
-
-	@Override
-	public String mcVersion() {
-		return "";
 	}
 
 	@Override

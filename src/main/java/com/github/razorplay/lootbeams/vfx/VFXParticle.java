@@ -31,7 +31,7 @@ import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 //?} else {
 /*import net.minecraft.client.renderer.state.QuadParticleRenderState;
 *///?}
-//? if >= 26.1.2 && < 26.2 {
+//? if < 26.2 {
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.renderer.RenderPipelines;
 //?}
@@ -404,13 +404,8 @@ public class VFXParticle extends SingleQuadParticle {
     *///?} else {
     @Override
     protected SingleQuadParticle.Layer getLayer() {
-        // 26.1.2 escribe SIEMPRE los vertices de particula con DefaultVertexFormat.PARTICLE
-        // (QuadParticleRenderState usa ese formato fijo) y dibuja cada capa con
-        // RenderSystem.getModelViewMatrix() + el slice de DynamicTransforms que calcula el motor para
-        // todo el lote. Con un pipeline propio el motor no reproduce ese enlace, asi que la capa usa
-        // el pipeline de particulas de vanilla hasta 26.2, que es el unico garantizado compatible.
-        // 26.2+ construye cada capa con el formato y el pipeline de la capa, y ahi si se conserva el
-        // shader configurado en el item.
+        // Hasta 26.2 la capa usa el pipeline de particulas de vanilla (compatible con el formato fijo
+        // de QuadParticleRenderState); 26.2+ usa el pipeline/shaders configurados en el item.
         //? if >= 26.2 {
         var pipeline = this.config.particleColorMode != null
                 ? LootBeamPipelines.getShader(this.config.particleColorMode)

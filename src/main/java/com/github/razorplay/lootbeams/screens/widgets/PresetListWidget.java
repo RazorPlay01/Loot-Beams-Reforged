@@ -2,7 +2,6 @@ package com.github.razorplay.lootbeams.screens.widgets;
 
 import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.helpers.RenderHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -10,15 +9,10 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
-//? if >= 1.21.11 {
-import net.minecraft.client.input.MouseButtonEvent;
-//?}
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class PresetListWidget extends ContainerObjectSelectionList<PresetListWidget.PresetEntry> {
    private PresetEntry selectedEntry;
@@ -111,13 +105,13 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
 
    protected void renderItem(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, int index, int x, int y, int entryWidth, int entryHeight) {
       PresetEntry entry = (PresetEntry)this.getEntry(index);
-      entry.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, Objects.equals(this.hoveredEntry, entry), delta);
+      entry.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, java.util.Objects.equals(this.hoveredEntry, entry), delta);
       if (this.isSelectedItem(index)) {
          int i = this.isFocused() ? -1 : -8355712;
          this.renderSelection(context, y, entryWidth, entryHeight, i, -16777216);
       }
 
-      entry.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, Objects.equals(this.hoveredEntry, entry), delta);
+      entry.render(context, index, y, x, entryWidth, entryHeight, mouseX, mouseY, java.util.Objects.equals(this.hoveredEntry, entry), delta);
    }
    *///?}
 
@@ -152,20 +146,20 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
       if (this.scrollbarVisible()) {
          int i = this.getScrollbarPosition();
          int j = (int)((float)(this.height * this.height) / this.getMaxPosition());
-         j = Mth.clamp(j, 32, this.height - 8);
+         j = net.minecraft.util.Mth.clamp(j, 32, this.height - 8);
          int k = (int)this.getScrollAmount() * (this.height - j) / this.getMaxScroll() + this.getY();
          if (k < this.getY()) {
             k = this.getY();
          }
 
-         RenderSystem.enableBlend();
+         com.mojang.blaze3d.systems.RenderSystem.enableBlend();
          RenderHelper.blit(context, SCROLLER_BACKGROUND_TEXTURE, i, this.getY() - 1, 6, this.getHeight() + 2, 0, 0);
          this.renderScroller(context, i, k - 1, 6, j + 2);
-         RenderSystem.disableBlend();
+         com.mojang.blaze3d.systems.RenderSystem.disableBlend();
       }
 
       this.renderDecorations(context, mouseX, mouseY);
-      RenderSystem.disableBlend();
+      com.mojang.blaze3d.systems.RenderSystem.disableBlend();
    }
    *///?} else {
    //? if >= 26.1.2 {
@@ -276,10 +270,10 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
 
    private int getScrollbarHeight() {
       int j = (int)((float)(this.height * this.height) / this.getMaxPosition());
-      return Mth.clamp(j, 32, this.height - 8);
+      return net.minecraft.util.Mth.clamp(j, 32, this.height - 8);
    }
    *///?} else {
-   public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+   public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent event, double deltaX, double deltaY) {
       if (!this.isScrolling) {
          return false;
       } else if (event.y() >= this.getY() && event.y() <= this.getBottom()) {
@@ -293,7 +287,7 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
       }
    }
 
-   public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+   public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
       if (event.button() == 0) {
          int scrollbarY = this.getScrollbarY();
          int scrollbarHeight = this.scrollerHeight();
@@ -310,7 +304,7 @@ public class PresetListWidget extends ContainerObjectSelectionList<PresetListWid
       return super.mouseClicked(event, doubleClick);
    }
 
-   public boolean mouseReleased(MouseButtonEvent event) {
+   public boolean mouseReleased(net.minecraft.client.input.MouseButtonEvent event) {
       if (event.button() == 0) {
          this.isScrolling = false;
       }

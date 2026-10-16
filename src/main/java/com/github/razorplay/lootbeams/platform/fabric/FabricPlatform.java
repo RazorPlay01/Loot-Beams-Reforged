@@ -20,11 +20,6 @@ public class FabricPlatform implements Platform {
 	}
 
 	@Override
-	public String mcVersion() {
-		return FabricLoader.getInstance().getRawGameVersion();
-	}
-
-	@Override
 	public boolean isDevelopmentEnvironment() {
 		return FabricLoader.getInstance().isDevelopmentEnvironment();
 	}

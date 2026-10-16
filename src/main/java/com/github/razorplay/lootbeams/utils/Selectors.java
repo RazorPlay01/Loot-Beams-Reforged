@@ -33,36 +33,32 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 
 public class Selectors {
-    private static final Map<String, Rarity> rarities = new HashMap<>() {
-        {
-            this.put("common", Rarity.COMMON);
-            this.put("uncommon", Rarity.UNCOMMON);
-            this.put("rare", Rarity.RARE);
-            this.put("epic", Rarity.EPIC);
-        }
-    };
-    private static Map<String, BiPredicate<Tag, String>> nbtComparators = new HashMap<>() {
-        {
-            this.put("=", (tag, value) -> tagAsString(tag).contentEquals(value));
-            this.put("!=", (tag, value) -> !tagAsString(tag).contentEquals(value));
-            this.put(">", (tag, value) -> {
+    private static final Map<String, Rarity> rarities = Map.of(
+            "common", Rarity.COMMON,
+            "uncommon", Rarity.UNCOMMON,
+            "rare", Rarity.RARE,
+            "epic", Rarity.EPIC
+    );
+    private static final Map<String, BiPredicate<Tag, String>> nbtComparators = Map.of(
+            "=", (tag, value) -> tagAsString(tag).contentEquals(value),
+            "!=", (tag, value) -> !tagAsString(tag).contentEquals(value),
+            ">", (tag, value) -> {
                 try {
                     double parsedValue = Double.valueOf(value);
                     return tag instanceof NumericTag ? numericValue(tag) > parsedValue : false;
                 } catch (Exception var4) {
                     return false;
                 }
-            });
-            this.put("<", (tag, value) -> {
+            },
+            "<", (tag, value) -> {
                 try {
                     double parsedValue = Double.valueOf(value);
                     return tag instanceof NumericTag ? numericValue(tag) < parsedValue : false;
                 } catch (Exception var4) {
                     return false;
                 }
-            });
-        }
-    };
+            }
+    );
 
     private static String tagAsString(Tag tag) {
         //? if <= 1.21.1 {
@@ -371,7 +367,6 @@ public class Selectors {
             try {
                 lines = item.getTooltipLines(Item.TooltipContext.EMPTY, mc.player, TooltipFlag.ADVANCED);
             } catch (Exception var8) {
-               // []
             }
 
             if (lines != null && !lines.isEmpty()) {

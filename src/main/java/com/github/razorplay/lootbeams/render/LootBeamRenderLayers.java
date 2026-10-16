@@ -35,7 +35,6 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 public class LootBeamRenderLayers {
    private LootBeamRenderLayers() {
-      /* This utility class should not be instantiated */
    }
 
    //? if <= 1.21.1 {

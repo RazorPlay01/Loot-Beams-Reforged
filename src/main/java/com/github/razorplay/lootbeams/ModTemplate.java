@@ -62,11 +62,7 @@ public class ModTemplate {
 	}
 
 	public static Identifier id(String path) {
-		//? >1.19.2 {
-		return Identifier.fromNamespaceAndPath(MOD_ID, path);
-		//?} <=1.19.2 {
-		/*return new Identifier(MOD_ID, path);
-		 *///?}
+		return id(MOD_ID, path);
 	}
 
 	public static Identifier id(String namespace, String path) {
