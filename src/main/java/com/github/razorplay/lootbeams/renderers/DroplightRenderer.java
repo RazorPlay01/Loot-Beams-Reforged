@@ -57,10 +57,10 @@ public class DroplightRenderer {
       if (itemConfig.renderBeam) {
          Minecraft minecraft = Minecraft.getInstance();
          //? if >= 26.2 {
-         Camera camera = minecraft.gameRenderer.mainCamera();
-         //?} else {
-         /*Camera camera = minecraft.gameRenderer.getMainCamera();
-         *///?}
+         /*Camera camera = minecraft.gameRenderer.mainCamera();
+         *///?} else {
+         Camera camera = minecraft.gameRenderer.getMainCamera();
+         //?}
          boolean updatedShadersLoaded = IrisCompat.isShaderPackInUse();
          if (updatedShadersLoaded != SHADERS_LOADED) {
             SHADERS_LOADED = updatedShadersLoaded;
@@ -103,10 +103,10 @@ public class DroplightRenderer {
          matrixStack.translate(0.0, 0.015, 0.0);
          matrixStack.pushPose();
          //? if >= 26.3 {
-         matrixStack.rotate(Axis.YP.rotationDegrees(-VersionCompatHelper.cameraYaw(camera)));
-         //?} else {
-         /*matrixStack.mulPose(Axis.YP.rotationDegrees(-VersionCompatHelper.cameraYaw(camera)));
-         *///?}
+         /*matrixStack.rotate(Axis.YP.rotationDegrees(-VersionCompatHelper.cameraYaw(camera)));
+         *///?} else {
+         matrixStack.mulPose(Axis.YP.rotationDegrees(-VersionCompatHelper.cameraYaw(camera)));
+         //?}
          final float droplightGlowAlpha = SHADERS_LOADED ? beamAlpha / 2.0F : beamAlpha;
          final float droplightGlowY = yOffset;
          final float droplightGlowWidth = beamWidth;

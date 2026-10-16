@@ -25,7 +25,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 //? if <= 1.21.1 {
 /^import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 ^///?}
@@ -86,8 +86,8 @@ public class NeoforgeClientEventSubscriber {
 	}
 
 	@SubscribeEvent
-	public static void onAddReloadListeners(RegisterClientReloadListenersEvent event) {
-		event.registerReloadListener(new ResourceReloadListener());
+	public static void onAddReloadListeners(AddClientReloadListenersEvent event) {
+		event.addListener(ModTemplate.id("reload_resources"), new ResourceReloadListener());
 	}
 
 	@SubscribeEvent

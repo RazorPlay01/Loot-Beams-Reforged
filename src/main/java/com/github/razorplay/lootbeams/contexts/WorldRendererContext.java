@@ -8,10 +8,10 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 //? if >= 26.1.2 {
 //? if >= 26.3 {
-import com.mojang.renderpearl.api.textures.GpuTextureView;
-//?} else {
-/*import com.mojang.blaze3d.textures.GpuTextureView;
-*///?}
+/*import com.mojang.renderpearl.api.textures.GpuTextureView;
+*///?} else {
+import com.mojang.blaze3d.textures.GpuTextureView;
+//?}
 //?} else {
 /*import net.minecraft.client.renderer.LightTexture;
 *///?}

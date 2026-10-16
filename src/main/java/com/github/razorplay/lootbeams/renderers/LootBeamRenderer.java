@@ -81,10 +81,10 @@ public class LootBeamRenderer {
          matrixStack.pushPose();
          float rotation = (float)Math.floorMod(worldtime, 40L) + pticks;
                   //? if >= 26.3 {
-         matrixStack.rotate(Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
-         //?} else {
-         /*matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
-         *///?}
+         /*matrixStack.rotate(Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
+         *///?} else {
+         matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * 2.25F - 45.0F));
+         //?}
          final float beamHeightSnapshot = beamHeight;
          final float beamRadiusSnapshot = beamRadius;
          final float beamGlowRadiusSnapshot = beamGlowRadius;
@@ -187,10 +187,10 @@ public class LootBeamRenderer {
       if (!solidBeam) {
          stack.translate(0.0F, halfHeight, 0.0F);
                   //? if >= 26.3 {
-         stack.rotate(Axis.XP.rotationDegrees(180.0F));
-         //?} else {
-         /*stack.mulPose(Axis.XP.rotationDegrees(180.0F));
-         *///?}
+         /*stack.rotate(Axis.XP.rotationDegrees(180.0F));
+         *///?} else {
+         stack.mulPose(Axis.XP.rotationDegrees(180.0F));
+         //?}
       }
 
       renderPart(
@@ -198,10 +198,10 @@ public class LootBeamRenderer {
       );
       if (!solidBeam) {
                   //? if >= 26.3 {
-         stack.rotate(Axis.XP.rotationDegrees(-180.0F));
-         //?} else {
-         /*stack.mulPose(Axis.XP.rotationDegrees(-180.0F));
-         *///?}
+         /*stack.rotate(Axis.XP.rotationDegrees(-180.0F));
+         *///?} else {
+         stack.mulPose(Axis.XP.rotationDegrees(-180.0F));
+         //?}
       }
 
       renderPart(

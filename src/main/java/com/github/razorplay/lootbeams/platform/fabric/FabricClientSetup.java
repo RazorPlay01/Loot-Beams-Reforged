@@ -98,12 +98,12 @@ public final class FabricClientSetup {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (keyBinding.consumeClick()) {
                 //? if >= 26.2 {
-                Minecraft.getInstance().gui.setScreen(
+                /*Minecraft.getInstance().gui.setScreen(
                         new LootBeamsPresetManagerScreen(Minecraft.getInstance().gui.screen()));
-                //?} else {
-                /*Minecraft.getInstance().setScreen(
+                *///?} else {
+                Minecraft.getInstance().setScreen(
                         new LootBeamsPresetManagerScreen(Minecraft.getInstance().screen));
-                *///?}
+                //?}
             }
         });
 

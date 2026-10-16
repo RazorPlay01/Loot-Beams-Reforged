@@ -2,17 +2,17 @@ package com.github.razorplay.lootbeams.render;
 
 import com.github.razorplay.lootbeams.compat.iris.IrisCompat;
 //? if >= 26.3 {
-import com.mojang.renderpearl.api.GpuFormat;
+/*import com.mojang.renderpearl.api.GpuFormat;
 import com.mojang.renderpearl.api.vertex.VertexFormat;
 import com.mojang.renderpearl.api.vertex.VertexFormatElement;
-//?} elif >= 26.2 {
+*///?} elif >= 26.2 {
 /*import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 *///?} else {
-/*import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-*///?}
+//?}
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 public class CustomVertexFormats {
    //? if >= 26.2 {
    
-   // 26.2 sustituye el registro global de VertexFormatElement (register/byId/Type/Usage) por
+   /*// 26.2 sustituye el registro global de VertexFormatElement (register/byId/Type/Usage) por
    // VertexFormat.builder(stepRate) + addAttribute(nombre, GpuFormat). Los nombres semanticos se
    // mantienen identicos para que los shaders del mod sigan leyendo los mismos atributos.
    public static VertexFormat POSITION_TEX_COLOR0_COLOR1_CUSTOM;
@@ -57,8 +57,8 @@ public class CustomVertexFormats {
       return -1;
    }
    
-   //?} else {
-   /*public static VertexFormatElement COLOR1;
+   *///?} else {
+   public static VertexFormatElement COLOR1;
    public static VertexFormatElement UV_CENTER;
    public static VertexFormatElement UV_SIZE;
    public static VertexFormatElement CUSTOM_DATA;
@@ -86,11 +86,11 @@ public class CustomVertexFormats {
       UV_SIZE = VertexFormatElement.register(getAvailableIndex(), 0, VertexFormatElement.Type.FLOAT, false, 2);
       CUSTOM_DATA = VertexFormatElement.register(getAvailableIndex(), 0, VertexFormatElement.Type.FLOAT, false, 4);
       //?} else {
-      /^COLOR1 = VertexFormatElement.register(getAvailableIndex(), 0, VertexFormatElement.Type.UBYTE, VertexFormatElement.Usage.COLOR, 4);
+      /*COLOR1 = VertexFormatElement.register(getAvailableIndex(), 0, VertexFormatElement.Type.UBYTE, VertexFormatElement.Usage.COLOR, 4);
       UV_CENTER = VertexFormatElement.register(getAvailableIndex(), 0, VertexFormatElement.Type.FLOAT, VertexFormatElement.Usage.UV, 2);
       UV_SIZE = VertexFormatElement.register(getAvailableIndex(), 0, VertexFormatElement.Type.FLOAT, VertexFormatElement.Usage.UV, 2);
       CUSTOM_DATA = VertexFormatElement.register(getAvailableIndex(), 0, VertexFormatElement.Type.FLOAT, VertexFormatElement.Usage.GENERIC, 4);
-      ^///?}
+      *///?}
       POSITION_TEX_COLOR0_COLOR1_CUSTOM = VertexFormat.builder()
          .add("Position", VertexFormatElement.POSITION)
          .add("UV0", VertexFormatElement.UV0)
@@ -108,5 +108,5 @@ public class CustomVertexFormats {
          .add("GradientBounds", CUSTOM_DATA)
          .build();
    }
-   *///?}
+   //?}
 }

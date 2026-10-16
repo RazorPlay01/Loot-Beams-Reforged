@@ -26,10 +26,10 @@ public class RarityHelper {
 
       String translatableKey = "lootbeams.rarity." + rarity;
       //? if >= 26.2 {
-      return Language.getInstance().has(translatableKey) ? I18n.get(translatableKey, new Object[0]) : rarity;
-      //?} else {
-      /*return I18n.exists(translatableKey) ? I18n.get(translatableKey, new Object[0]) : rarity;
-      *///?}
+      /*return Language.getInstance().has(translatableKey) ? I18n.get(translatableKey, new Object[0]) : rarity;
+      *///?} else {
+      return I18n.exists(translatableKey) ? I18n.get(translatableKey, new Object[0]) : rarity;
+      //?}
    }
 
    public static boolean rarityCheck(ItemStack itemStack, boolean isRare) {

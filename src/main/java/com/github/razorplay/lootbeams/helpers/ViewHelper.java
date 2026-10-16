@@ -45,7 +45,7 @@ public class ViewHelper {
    }
 
    //? if >= 26.2 {
-   public static boolean shouldRenderCrosshair(Minecraft client) {
+   /*public static boolean shouldRenderCrosshair(Minecraft client) {
       return ModTemplate.config.renderTooltipsInThirdPersonView
          ? (
                client.options.getCameraType() == CameraType.THIRD_PERSON_FRONT
@@ -55,8 +55,8 @@ public class ViewHelper {
             && !client.gui.hud.isHidden()
          : client.options.getCameraType().isFirstPerson() && !client.gui.hud.isHidden();
    }
-   //?} else {
-   /*public static boolean shouldRenderCrosshair(Minecraft client) {
+   *///?} else {
+   public static boolean shouldRenderCrosshair(Minecraft client) {
       return ModTemplate.config.renderTooltipsInThirdPersonView
          ? (
                client.options.getCameraType() == CameraType.THIRD_PERSON_FRONT
@@ -66,7 +66,7 @@ public class ViewHelper {
             && !client.options.hideGui
          : client.options.getCameraType().isFirstPerson() && !client.options.hideGui;
    }
-   *///?}
+   //?}
 
    public static void cancelBobView(Vector3f position, float partialTicks) {
       Minecraft mc = Minecraft.getInstance();
@@ -100,10 +100,10 @@ public class ViewHelper {
    public static Vector3f worldToScreenSpace(Vec3 pos, float partialTicks) {
       Minecraft mc = Minecraft.getInstance();
       //? if >= 26.2 {
-      Camera camera = mc.gameRenderer.mainCamera();
-      //?} else {
-      /*Camera camera = mc.gameRenderer.getMainCamera();
-      *///?}
+      /*Camera camera = mc.gameRenderer.mainCamera();
+      *///?} else {
+      Camera camera = mc.gameRenderer.getMainCamera();
+      //?}
       //? if <= 1.21.1 {
       /*Vec3 cameraPosition = camera.getPosition();
       *///?} else {

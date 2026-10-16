@@ -198,10 +198,10 @@ public class Trail {
             Vector3f bottomOffset = new Vector3f(0.0F, -(width / 2.0F), 0.0F);
             if (this.billboard) {
                //? if >= 26.2 {
-               Vec3 cameraPos = Minecraft.getInstance().gameRenderer.mainCamera().position();
-               //?} else {
-               /*Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera()/^? <= 1.21.1 {^/ /^.getPosition() ^//^?} else {^/ .position() /^?} ^/;
-               *///?}
+               /*Vec3 cameraPos = Minecraft.getInstance().gameRenderer.mainCamera().position();
+               *///?} else {
+               Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera()/*? <= 1.21.1 {*/ /*.getPosition() *//*?} else {*/ .position() /*?} */;
+               //?}
                Vec3 directionToCamera = cameraPos.subtract(scaledPoint).normalize();
                Vec3 dirToNext = this.points[Math.min(i + this.frequency, this.points.length - 1)].subtract(this.points[i]).normalize();
                Vector3f dirToNextPoint = new Vector3f((float)dirToNext.x, (float)dirToNext.y, (float)dirToNext.z);

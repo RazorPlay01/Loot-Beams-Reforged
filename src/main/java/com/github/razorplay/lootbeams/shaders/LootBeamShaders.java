@@ -4,10 +4,10 @@ import com.github.razorplay.lootbeams.ModTemplate;
 import com.github.razorplay.lootbeams.render.CustomVertexFormats;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 //? if >= 26.3 {
-import com.mojang.renderpearl.api.vertex.VertexFormat;
-//?} else {
-/*import com.mojang.blaze3d.vertex.VertexFormat;
-*///?}
+/*import com.mojang.renderpearl.api.vertex.VertexFormat;
+*///?} else {
+import com.mojang.blaze3d.vertex.VertexFormat;
+//?}
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderManager;
 import net.minecraft.resources.Identifier;

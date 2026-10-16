@@ -156,16 +156,16 @@ public class PresetManager {
       Minecraft client = Minecraft.getInstance();
 
       //? if >= 26.2 {
-      SystemToast.add(
+      /*SystemToast.add(
          client.gui.toastManager(),
          SystemToast.SystemToastId.NARRATOR_TOGGLE,
          Component.nullToEmpty("LootBeams"),
          Component.translatable("lootbeams.notification.savePreset.text", getPresetFormattedName(presetName))
       );
-      //?} else {
-      /*//? if <= 1.21.1 {
-      /^client.getToasts()
-      ^///?} else {
+      *///?} else {
+      //? if <= 1.21.1 {
+      /*client.getToasts()
+      *///?} else {
       client.getToastManager()
       //?}
          .addToast(
@@ -176,7 +176,7 @@ public class PresetManager {
                Component.translatable("lootbeams.notification.savePreset.text", getPresetFormattedName(presetName))
             )
          );
-      *///?}
+      //?}
    }
 
    public static boolean tryApplyPreset(String presetName) {
@@ -205,16 +205,16 @@ public class PresetManager {
       if (tryApplyPreset(presetName)) {
          Minecraft client = Minecraft.getInstance();
       //? if >= 26.2 {
-      SystemToast.add(
+      /*SystemToast.add(
          client.gui.toastManager(),
          SystemToast.SystemToastId.NARRATOR_TOGGLE,
          Component.nullToEmpty("LootBeams"),
          Component.translatable("lootbeams.notification.loadPreset.text", presetName)
       );
-      //?} else {
-      /*//? if <= 1.21.1 {
-      /^client.getToasts()
-      ^///?} else {
+      *///?} else {
+      //? if <= 1.21.1 {
+      /*client.getToasts()
+      *///?} else {
       client.getToastManager()
       //?}
             .addToast(
@@ -225,7 +225,7 @@ public class PresetManager {
                   Component.translatable("lootbeams.notification.loadPreset.text", presetName)
                )
             );
-      *///?}
+      //?}
 		  ModTemplate.configManager.save();
          PresetEvents.APPLY_PRESET.invoker().onApplyPreset(presetName);
       }

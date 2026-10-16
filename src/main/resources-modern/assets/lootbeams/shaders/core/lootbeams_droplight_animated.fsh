@@ -1,7 +1,6 @@
 #version 330
 
 #moj_import <minecraft:dynamictransforms.glsl>
-#moj_import <minecraft:globals.glsl>
 
 #moj_import <minecraft:projection.glsl>
 

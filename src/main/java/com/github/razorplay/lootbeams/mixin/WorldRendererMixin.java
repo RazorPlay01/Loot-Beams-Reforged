@@ -87,7 +87,7 @@ public class WorldRendererMixin {
             method = "renderLevel(Lnet/minecraft/client/DeltaTracker;ZLnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/GameRenderer;Lnet/minecraft/client/renderer/LightTexture;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/particle/ParticleEngine;render(Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/culling/Frustum;Ljava/util/function/Predicate;)V"
+                    target = "__LOOTBEAMS_PARTICLE_RENDER_TARGET__"
             )
     )
 	^///?}
@@ -133,15 +133,17 @@ public class WorldRendererMixin {
     }
 }
 *///?} else {
-//? if >= 26.2 {
+//? if >= 26.1.2 {
 import com.github.razorplay.lootbeams.contexts.WorldRendererContext;
 import com.github.razorplay.lootbeams.events.RenderEvents;
+import com.github.razorplay.lootbeams.helpers.VersionCompatHelper;
 import com.github.razorplay.lootbeams.render.LootBeamBuffer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.util.profiling.Profiler;
 import org.joml.Matrix4f;
@@ -152,10 +154,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-// 26.2 elimina MultiBufferSource y sustituye el render inmediato por "submit nodes": LevelRenderer
-// ya no expone renderLevel y recolecta la geometria del mundo en submitEntities(poseStack, state,
-// collector). El mod se engancha al final de esa fase para someter sus vigas con el collector del
-// frame (mismo collector y mismo orden que las entidades).
+// 26.1.2 introduce los "submit nodes": la geometria del mundo se recolecta en
+// submitEntities(poseStack, state, collector) y MultiBufferSource deja de volcar. El mod se engancha
+// al final de esa fase para someter sus vigas con el collector del frame (mismo collector y mismo
+// orden que las entidades).
 @Mixin(LevelRenderer.class)
 public class WorldRendererMixin {
     @Unique
@@ -172,8 +174,16 @@ public class WorldRendererMixin {
             CallbackInfo ci
     ) {
         Minecraft minecraft = Minecraft.getInstance();
-        // PoseStack identidad: la convencion del mod es "camara en el origen" y RenderManager
-        // aplica el desplazamiento por la posicion de la camara antes de dibujar.
+        // 26.1.2 recolecta la geometria del mundo igual que 26.2/26.3: submitEntities recibe un
+        // PoseStack en IDENTIDAD y las entidades se someten con coordenadas relativas a la camara
+        // (vanilla usa state.x - camX, ver LevelRenderer.submitEntities). El engine aplica despues la
+        // modelview del frame (CameraRenderState.viewRotationMatrix) al dibujar los nodos, asi que la
+        // pose debe quedarse en identidad: bakear aqui la rotacion o la posicion de la camara haria
+        // que se aplicasen dos veces y la geometria acabaria fuera del frustum (nada visible).
+        // RenderManager sigue aportando el desplazamiento por la posicion de la camara.
+        CameraRenderState cameraState = renderState.cameraRenderState;
+        Matrix4f projectionMatrix = new Matrix4f(cameraState.projectionMatrix);
+        Matrix4f modelViewMatrix = new Matrix4f(cameraState.viewRotationMatrix);
         PoseStack matrixStack = new PoseStack();
 
         this.lootbeams$context
@@ -181,11 +191,11 @@ public class WorldRendererMixin {
                         (LevelRenderer) (Object) this,
                         minecraft.getDeltaTracker(),
                         false,
-                        minecraft.gameRenderer.mainCamera(),
+                        VersionCompatHelper.mainCamera(minecraft.gameRenderer),
                         minecraft.gameRenderer,
                         minecraft.gameRenderer.lightmap(),
-                        new Matrix4f(),
-                        new Matrix4f(),
+                        projectionMatrix,
+                        modelViewMatrix,
                         LootBeamBuffer.of(collector),
                         Profiler.get(),
                         false,

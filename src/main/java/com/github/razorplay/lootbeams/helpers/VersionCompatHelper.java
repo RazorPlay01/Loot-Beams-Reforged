@@ -30,14 +30,25 @@ public final class VersionCompatHelper {
    }
 
    /**
+    * 26.2 renombro {@code GameRenderer#getMainCamera()} a {@code GameRenderer#mainCamera()}.
+    */
+   public static net.minecraft.client.Camera mainCamera(net.minecraft.client.renderer.GameRenderer gameRenderer) {
+      //? if >= 26.2 {
+      /*return gameRenderer.mainCamera();
+      *///?} else {
+      return gameRenderer.getMainCamera();
+      //?}
+   }
+
+   /**
     * 26.3 renombro {@code InputConstants.Type.KEYSYM} a {@code KEYBOARD} (solo quedan KEYBOARD y MOUSE).
     * Se centraliza aqui para no necesitar condicionales anidados en los call sites de cada loader.
     */
    //? if >= 26.3 {
-   public static final InputConstants.Type KEY_TYPE = InputConstants.Type.KEYBOARD;
-   //?} else {
-   /*public static final InputConstants.Type KEY_TYPE = InputConstants.Type.KEYSYM;
-   *///?}
+   /*public static final InputConstants.Type KEY_TYPE = InputConstants.Type.KEYBOARD;
+   *///?} else {
+   public static final InputConstants.Type KEY_TYPE = InputConstants.Type.KEYSYM;
+   //?}
 
    /**
     * 1.21.11 cambio la categoria del keybind de {@code String} a {@code KeyMapping.Category}.

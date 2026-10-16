@@ -47,24 +47,24 @@ public class NameTagRenderer {
                     matrixStack.pushPose();
                     matrixStack.translate(0.0, Math.min(1.0, Minecraft.getInstance().player.distanceToSqr(itemEntity) * 0.025) + yOffset, 0.0);
                     //? if >= 26.2 {
-                    Quaternionf entityRotationQuaternion = Minecraft.getInstance().gameRenderer.mainCamera().rotation();
-                    //?} else {
-                    /*//? if <= 1.21.1 {
-                    /^Quaternionf entityRotationQuaternion = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
-                    ^///?} else {
+                    /*Quaternionf entityRotationQuaternion = Minecraft.getInstance().gameRenderer.mainCamera().rotation();
+                    *///?} else {
+                    //? if <= 1.21.1 {
+                    /*Quaternionf entityRotationQuaternion = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
+                    *///?} else {
                     Quaternionf entityRotationQuaternion = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
                     //?}
-                    *///?}
+                    //?}
                                         //? if >= 26.3 {
-                    matrixStack.rotate(entityRotationQuaternion);
-                    //?} else {
-                    /*matrixStack.mulPose(entityRotationQuaternion);
-                    *///?}
+                    /*matrixStack.rotate(entityRotationQuaternion);
+                    *///?} else {
+                    matrixStack.mulPose(entityRotationQuaternion);
+                    //?}
                     //? if >= 26.3 {
-                    matrixStack.rotate(new Quaternionf(0.0, Math.toRadians(90.0), 0.0, 0.0));
-                    //?} else {
-                    /*matrixStack.mulPose(new Quaternionf(0.0, Math.toRadians(90.0), 0.0, 0.0));
-                    *///?}
+                    /*matrixStack.rotate(new Quaternionf(0.0, Math.toRadians(90.0), 0.0, 0.0));
+                    *///?} else {
+                    matrixStack.mulPose(new Quaternionf(0.0, Math.toRadians(90.0), 0.0, 0.0));
+                    //?}
                     float nametagScale = itemConfig.nametagScale;
                     float nametagScaleCompensation = 0.25F;
                     matrixStack.scale(
@@ -111,13 +111,13 @@ public class NameTagRenderer {
             float w = -fontRenderer.width(text) / 2.0F;
             int bg = new Color(0, 0, 0, (int) (255.0F * backgroundAlpha)).getRGB();
             Component orderedText = Component.nullToEmpty(text);
-            //? if >= 26.2 {
+            //? if >= 26.1.2 {
             buffer.submitText(stack, w, 0.0F, orderedText.getVisualOrderText(), false, Font.DisplayMode.NORMAL, 15728880, foregroundColor, bg, bg);
             //?} else {
             /*fontRenderer.drawInBatch8xOutline(orderedText.getVisualOrderText(), w, 0.0F, foregroundColor, bg, stack.last().pose(), buffer.source(), 15728880);
             *///?}
         } else {
-            //? if >= 26.2 {
+            //? if >= 26.1.2 {
             buffer.submitText(stack, (float) (-fontRenderer.width(text) / 2.0), 0.0F, Component.nullToEmpty(text).getVisualOrderText(), false, Font.DisplayMode.NORMAL, 15728864, foregroundColor, backgroundColor, backgroundColor);
             //?} else {
             /*fontRenderer.drawInBatch(

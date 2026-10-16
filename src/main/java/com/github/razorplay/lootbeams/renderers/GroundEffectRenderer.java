@@ -48,10 +48,10 @@ public class GroundEffectRenderer {
             float rotation = currentGroundTime * rotationSpeed % 360.0F;
             float rotationDirection = itemConfig.glowRotateClockwise ? -1.0F : 1.0F;
             //? if >= 26.3 {
-            matrixStack.rotate(Axis.YP.rotationDegrees(rotation * rotationDirection));
-            //?} else {
-            /*matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * rotationDirection));
-            *///?}
+            /*matrixStack.rotate(Axis.YP.rotationDegrees(rotation * rotationDirection));
+            *///?} else {
+            matrixStack.mulPose(Axis.YP.rotationDegrees(rotation * rotationDirection));
+            //?}
          }
 
          TextureAtlasSprite glowEffectSprite = itemConfig.glowEffectTexture.getSprite();

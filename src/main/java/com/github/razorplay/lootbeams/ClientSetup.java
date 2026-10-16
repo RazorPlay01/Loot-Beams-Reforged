@@ -37,7 +37,7 @@ public class ClientSetup {
 			CustomLootBeamsConfig.onConfigurationChange();
 			LootBeamRenderer.onConfigurationChange();
 		});
-		PresetEvents.APPLY_PRESET.register(_ -> {
+		PresetEvents.APPLY_PRESET.register(string -> {
 			CustomLootBeamsConfig.onConfigurationChange();
 			LootBeamRenderer.onConfigurationChange();
 		});
@@ -71,9 +71,9 @@ public class ClientSetup {
 	 */
 	public static void openPresetManagerScreen() {
 		//? if >= 26.2 {
-		Minecraft.getInstance().gui.setScreen(new LootBeamsPresetManagerScreen(Minecraft.getInstance().gui.screen()));
-		//?} else {
-		/*Minecraft.getInstance().setScreen(new LootBeamsPresetManagerScreen(Minecraft.getInstance().screen));
-		*///?}
+		/*Minecraft.getInstance().gui.setScreen(new LootBeamsPresetManagerScreen(Minecraft.getInstance().gui.screen()));
+		*///?} else {
+		Minecraft.getInstance().setScreen(new LootBeamsPresetManagerScreen(Minecraft.getInstance().screen));
+		//?}
 	}
 }

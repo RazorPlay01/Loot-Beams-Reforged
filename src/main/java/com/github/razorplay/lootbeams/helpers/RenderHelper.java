@@ -15,10 +15,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 /*import com.mojang.blaze3d.vertex.Tesselator;
 *///?}
 //? if >= 26.3 {
-import com.mojang.renderpearl.api.vertex.VertexFormat;
-//?} else {
-/*import com.mojang.blaze3d.vertex.VertexFormat;
-*///?}
+/*import com.mojang.renderpearl.api.vertex.VertexFormat;
+*///?} else {
+import com.mojang.blaze3d.vertex.VertexFormat;
+//?}
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.GameRenderer;

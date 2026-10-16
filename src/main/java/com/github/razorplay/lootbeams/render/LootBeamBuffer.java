@@ -3,7 +3,7 @@ package com.github.razorplay.lootbeams.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.function.BiConsumer;
-//? if >= 26.2 {
+//? if >= 26.1.2 {
 import net.minecraft.client.gui.Font;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -27,7 +27,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
  * los renderers no cambie entre versiones, {@link #submit} mantiene la misma firma en ambas.
  */
 public final class LootBeamBuffer {
-   //? if >= 26.2 {
+   //? if >= 26.1.2 {
    private final SubmitNodeCollector collector;
 
    private LootBeamBuffer(SubmitNodeCollector collector) {

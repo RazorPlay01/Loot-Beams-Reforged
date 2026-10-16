@@ -320,17 +320,17 @@ public class Selectors {
             try {
                 ChatFormatting format = ChatFormatting.getByCode(rawTitle.charAt(i + 1));
                 //? if >= 26.2 {
-                if (format != null) {
+                /*if (format != null) {
                    TextColor legacyColor = TextColor.fromLegacyFormat(format);
                    if (legacyColor != null) {
                       return legacyColor;
                    }
                 }
-                //?} else {
-                /*if (format != null && format.isColor()) {
+                *///?} else {
+                if (format != null && format.isColor()) {
                     return TextColor.fromLegacyFormat(format);
                 }
-                *///?}
+                //?}
             } catch (StringIndexOutOfBoundsException var4) {
                 return null;
             }
