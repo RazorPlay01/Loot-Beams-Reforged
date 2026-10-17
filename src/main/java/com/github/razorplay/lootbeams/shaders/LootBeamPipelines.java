@@ -69,17 +69,20 @@ public final class LootBeamPipelines {
 	private static final RenderPipeline.Snippet GLOBALS_SNIPPET = RenderPipelines.GLOBALS_SNIPPET;
 	//?}
 
-	// 26.1.2 es la ultima version con la convencion CLASICA de profundidad: vanilla declara sus
-	// pipelines con {@code DepthStencilState.DEFAULT} (menos = mas cerca). A partir de 26.2 el motor
-	// invierte la comparacion y el mod usa GEQUAL sin escritura. Con el estado de 26.2 en 26.1.2 la
-	// geometria solo pasa el test donde hay algo DELANTE, que es exactamente el sintoma de los
-	// efectos que "no se ven" salvo mirando a traves de otra entidad.
+	// 26.1.2 usa la convencion CLASICA de profundidad (menos = mas cerca) pero OJO:
+	// {@code DepthStencilState.DEFAULT} es {@code (LESS_THAN_OR_EQUAL, writeDepth = true)}, es decir
+	// ESCRIBE profundidad. Eso no equivale al {@code withDepthWrite(false)} que el mod usa en 1.21.11
+	// y en 26.2+: con escritura activada los quads translucidos del mod (droplight, glow de suelo,
+	// viga) se ocluyen entre si y con el resto de efectos, y como se dibujan en lotes separados el
+	// resultado depende del orden y de diferencias de profundidad subpixel -> parpadeo constante en
+	// forma de rectangulo. Vanilla reserva la escritura para WEATHER_DEPTH_WRITE; su variante sin
+	// escritura es exactamente {@code new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false)}.
 	//? if >= 26.1.2 {
 	private static DepthStencilState depthState() {
 		//? if >= 26.2 {
 		/*return new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false);
 		*///?} else {
-		return DepthStencilState.DEFAULT;
+		return new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false);
 		//?}
 	}
 	//?}

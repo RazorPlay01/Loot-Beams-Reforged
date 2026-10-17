@@ -6,11 +6,11 @@
 
 in vec3 Position;
 in vec2 UV0;
+in vec4 Color0;
+in vec4 Color1;
 in vec2 CenterUV;
 in vec2 SizeUV;
 in vec4 GradientBounds;
-in vec4 Color0;
-in vec4 Color1;
 
 out vec2 texCoord0;
 out vec2 uvCenter;
