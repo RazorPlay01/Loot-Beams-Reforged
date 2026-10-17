@@ -190,16 +190,16 @@ public class PresetManager {
 
    private static void showToast(Minecraft client, Component message) {
       //? if >= 26.2 {
-      /*SystemToast.add(
+      SystemToast.add(
          client.gui.toastManager(),
          SystemToast.SystemToastId.NARRATOR_TOGGLE,
          Component.nullToEmpty("LootBeams"),
          message
       );
-      *///?} else {
-      //? if <= 1.21.1 {
-      /*client.getToasts()
-      *///?} else {
+      //?} else {
+      /*//? if <= 1.21.1 {
+      /^client.getToasts()
+      ^///?} else {
       client.getToastManager()
       //?}
          .addToast(
@@ -210,7 +210,7 @@ public class PresetManager {
                message
             )
          );
-      //?}
+      *///?}
    }
 
 	public record Preset(PresetType type, String displayName, Identifier identifier, File presetFile) {

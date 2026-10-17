@@ -10,8 +10,8 @@ import com.github.razorplay.lootbeams.render.LootBeamRenderLayers;
 /*import com.github.razorplay.lootbeams.render.ParticleRenderType;
 *///?}
 //? if >= 26.2 {
-/*import net.minecraft.world.phys.shapes.CollisionContext;
-*///?}
+import net.minecraft.world.phys.shapes.CollisionContext;
+//?}
 import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
@@ -32,9 +32,9 @@ import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 /*import net.minecraft.client.renderer.state.QuadParticleRenderState;
 *///?}
 //? if < 26.2 {
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+/*import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.renderer.RenderPipelines;
-//?}
+*///?}
 import net.minecraft.util.RandomSource;
 //?}
 //? if >= 26.1.2 {
@@ -363,12 +363,12 @@ public class VFXParticle extends SingleQuadParticle {
             double dZ = z;
             if (this.hasPhysics && (x != 0.0 || y != 0.0 || z != 0.0)) {
                 //? if >= 26.2 {
-                /*// 26.2 anade una segunda sobrecarga de collideBoundingBox(CollisionContext, ...), asi que
+                // 26.2 anade una segunda sobrecarga de collideBoundingBox(CollisionContext, ...), asi que
                 // hay que desambiguar el null explicito.
                 Vec3 vector3d = Entity.collideBoundingBox(CollisionContext.empty(), new Vec3(x, y, z), this.getBoundingBox(), this.level, List.of());
-                *///?} else {
-                Vec3 vector3d = Entity.collideBoundingBox(null, new Vec3(x, y, z), this.getBoundingBox(), this.level, List.of());
-                //?}
+                //?} else {
+                /*Vec3 vector3d = Entity.collideBoundingBox(null, new Vec3(x, y, z), this.getBoundingBox(), this.level, List.of());
+                *///?}
                 x = vector3d.x;
                 y = vector3d.y;
                 z = vector3d.z;

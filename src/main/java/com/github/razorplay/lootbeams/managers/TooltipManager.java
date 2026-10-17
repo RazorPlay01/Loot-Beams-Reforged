@@ -79,12 +79,12 @@ public class TooltipManager {
    public static boolean canRenderTooltips(ItemStack itemStack) {
       Minecraft client = Minecraft.getInstance();
       //? if >= 26.2 {
-      /*boolean isChatScreen = client.gui.screen() instanceof ChatScreen;
+      boolean isChatScreen = client.gui.screen() instanceof ChatScreen;
       boolean inGame = client.gui.screen() == null;
-      *///?} else {
-      boolean isChatScreen = client.screen instanceof ChatScreen;
+      //?} else {
+      /*boolean isChatScreen = client.screen instanceof ChatScreen;
       boolean inGame = client.screen == null;
-      //?}
+      *///?}
       Configuration itemConfig = CustomLootBeamsConfig.fromItemStack(itemStack);
       return itemConfig.advancedTooltips && (inGame || isChatScreen);
    }

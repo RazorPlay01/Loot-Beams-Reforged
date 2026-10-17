@@ -4,12 +4,12 @@ import com.github.razorplay.lootbeams.extensions.LootbeamsBufferBuilder;
 import com.github.razorplay.lootbeams.render.CustomVertexFormats;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 //? if >= 26.3 {
-/*import com.mojang.renderpearl.api.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 import com.mojang.renderpearl.api.vertex.VertexFormatElement;
-*///?} else {
-import com.mojang.blaze3d.vertex.VertexFormat;
+//?} else {
+/*import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-//?}
+*///?}
 import org.lwjgl.system.MemoryUtil;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.Shadow;
 // BufferBuilder.beginElement pasa a recibir el INDICE del atributo, no el VertexFormatElement.
 // Aqui se busca ese indice por nombre (los mismos que declaran los shaders del mod).
 //? if >= 26.2 {
-/*@Mixin(BufferBuilder.class)
+@Mixin(BufferBuilder.class)
 public abstract class BufferBuilderMixin implements LootbeamsBufferBuilder {
    @Shadow
    private VertexFormatElement[] elements;
@@ -34,7 +34,7 @@ public abstract class BufferBuilderMixin implements LootbeamsBufferBuilder {
    @Shadow
    protected abstract long beginElement(int index);
 
-   /^*
+   /**
     * Busca el offset del atributo indicado dentro del vertice que se esta escribiendo.
     * <p>
     * Primero prueba por las semanticas canonicas (que es lo que mantiene la contabilidad interna de
@@ -43,7 +43,7 @@ public abstract class BufferBuilderMixin implements LootbeamsBufferBuilder {
     * {@link VertexFormat} y devuelve {@code vertexPointer + element.offset()}, porque desde 26.2
     * {@code BufferBuilder#elements} solo contiene las 8 semanticas canonicas y estos atributos
     * quedaban sin escribir (basura en el buffer -> efectos corruptos).
-    ^/
+    */
    private long lootbeams$beginElement(String attributeName) {
       VertexFormatElement[] all = this.elements;
       if (all != null) {
@@ -151,8 +151,8 @@ public abstract class BufferBuilderMixin implements LootbeamsBufferBuilder {
       return this;
    }
 }
-*///?} else {
-@Mixin(BufferBuilder.class)
+//?} else {
+/*@Mixin(BufferBuilder.class)
 public abstract class BufferBuilderMixin implements LootbeamsBufferBuilder {
    @Shadow
    protected abstract long beginElement(VertexFormatElement var1);
@@ -231,4 +231,4 @@ public abstract class BufferBuilderMixin implements LootbeamsBufferBuilder {
       return this;
    }
 }
-//?}
+*///?}

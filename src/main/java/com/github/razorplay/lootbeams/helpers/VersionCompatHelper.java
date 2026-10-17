@@ -45,10 +45,10 @@ public final class VersionCompatHelper {
     */
    public static void mulPose(com.mojang.blaze3d.vertex.PoseStack stack, org.joml.Quaternionf quaternion) {
       //? if >= 26.3 {
-      /*stack.rotate(quaternion);
-      *///?} else {
-      stack.mulPose(quaternion);
-      //?}
+      stack.rotate(quaternion);
+      //?} else {
+      /*stack.mulPose(quaternion);
+      *///?}
    }
 
    /**
@@ -57,14 +57,14 @@ public final class VersionCompatHelper {
     */
    public static org.joml.Quaternionf cameraRotation(net.minecraft.client.Minecraft client) {
       //? if >= 26.2 {
-      /*return client.gameRenderer.mainCamera().rotation();
-      *///?} else {
-      //? if <= 1.21.1 {
-      /*return client.getEntityRenderDispatcher().cameraOrientation();
-      *///?} else {
+      return client.gameRenderer.mainCamera().rotation();
+      //?} else {
+      /*//? if <= 1.21.1 {
+      /^return client.getEntityRenderDispatcher().cameraOrientation();
+      ^///?} else {
       return client.gameRenderer.getMainCamera().rotation();
       //?}
-      //?}
+      *///?}
    }
 
    /**
@@ -72,10 +72,10 @@ public final class VersionCompatHelper {
     */
    public static net.minecraft.client.Camera mainCamera(net.minecraft.client.renderer.GameRenderer gameRenderer) {
       //? if >= 26.2 {
-      /*return gameRenderer.mainCamera();
-      *///?} else {
-      return gameRenderer.getMainCamera();
-      //?}
+      return gameRenderer.mainCamera();
+      //?} else {
+      /*return gameRenderer.getMainCamera();
+      *///?}
    }
 
    /**
@@ -83,10 +83,10 @@ public final class VersionCompatHelper {
     * Se centraliza aqui para no necesitar condicionales anidados en los call sites de cada loader.
     */
    //? if >= 26.3 {
-   /*public static final InputConstants.Type KEY_TYPE = InputConstants.Type.KEYBOARD;
-   *///?} else {
-   public static final InputConstants.Type KEY_TYPE = InputConstants.Type.KEYSYM;
-   //?}
+   public static final InputConstants.Type KEY_TYPE = InputConstants.Type.KEYBOARD;
+   //?} else {
+   /*public static final InputConstants.Type KEY_TYPE = InputConstants.Type.KEYSYM;
+   *///?}
 
    /**
     * 1.21.11 cambio la categoria del keybind de {@code String} a {@code KeyMapping.Category}.

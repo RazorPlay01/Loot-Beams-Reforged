@@ -104,7 +104,7 @@ public class TooltipRenderer {
       /*context.renderTooltip(font, lines, tooltipData, x, y);
       *///?} else {
       //? if >= 26.1.2 && < 26.2 {
-      List<ClientTooltipComponent> components = new ArrayList<>(lines.size() + 1);
+      /*List<ClientTooltipComponent> components = new ArrayList<>(lines.size() + 1);
 
       for (Component line : lines) {
          components.add(ClientTooltipComponent.create(line.getVisualOrderText()));
@@ -112,9 +112,9 @@ public class TooltipRenderer {
 
       tooltipData.ifPresent(component -> components.add(ClientTooltipComponent.create(component)));
       context.tooltip(font, components, x, y, DefaultTooltipPositioner.INSTANCE, null);
-      //?} elif >= 26.2 {
-      /*context.setTooltipForNextFrame(font, lines, tooltipData, x, y);
-      *///?} else {
+      *///?} elif >= 26.2 {
+      context.setTooltipForNextFrame(font, lines, tooltipData, x, y);
+      //?} else {
       /*List<ClientTooltipComponent> components = new ArrayList<>(lines.size() + 1);
 
       for (Component line : lines) {

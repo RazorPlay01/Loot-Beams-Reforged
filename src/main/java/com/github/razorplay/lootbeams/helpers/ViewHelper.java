@@ -45,7 +45,7 @@ public class ViewHelper {
    }
 
    //? if >= 26.2 {
-   /*public static boolean shouldRenderCrosshair(Minecraft client) {
+   public static boolean shouldRenderCrosshair(Minecraft client) {
       return ModTemplate.config.renderTooltipsInThirdPersonView
          ? (
                client.options.getCameraType() == CameraType.THIRD_PERSON_FRONT
@@ -55,8 +55,8 @@ public class ViewHelper {
             && !client.gui.hud.isHidden()
          : client.options.getCameraType().isFirstPerson() && !client.gui.hud.isHidden();
    }
-   *///?} else {
-   public static boolean shouldRenderCrosshair(Minecraft client) {
+   //?} else {
+   /*public static boolean shouldRenderCrosshair(Minecraft client) {
       return ModTemplate.config.renderTooltipsInThirdPersonView
          ? (
                client.options.getCameraType() == CameraType.THIRD_PERSON_FRONT
@@ -66,7 +66,7 @@ public class ViewHelper {
             && !client.options.hideGui
          : client.options.getCameraType().isFirstPerson() && !client.options.hideGui;
    }
-   //?}
+   *///?}
 
    public static void cancelBobView(Vector3f position, float partialTicks) {
       Minecraft mc = Minecraft.getInstance();

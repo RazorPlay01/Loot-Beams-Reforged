@@ -15,14 +15,14 @@ public class InGameHudMixin {
    // 26.2+: extractRenderState(DeltaTracker, boolean, boolean) ya no recibe extractor, asi que el
    // hook del HUD del mod queda desactivado (metodo sin @Inject: valido en todas las versiones).
    //? if >= 26.2 {
-   /*public void render(GuiGraphicsExtractor drawContext, DeltaTracker tickCounter, CallbackInfo callbackInfo) {
+   public void render(GuiGraphicsExtractor drawContext, DeltaTracker tickCounter, CallbackInfo callbackInfo) {
    }
-   *///?} elif >= 26.1.2 {
-   @Inject(method = "extractRenderState", at = @At("TAIL"))
+   //?} elif >= 26.1.2 {
+   /*@Inject(method = "extractRenderState", at = @At("TAIL"))
    public void render(GuiGraphicsExtractor drawContext, DeltaTracker tickCounter, CallbackInfo callbackInfo) {
       RenderEvents.HUD.invoker().onHud(drawContext, tickCounter);
    }
-   //?} else {
+   *///?} else {
    /*@Inject(method = "render", at = @At("TAIL"))
    public void render(GuiGraphicsExtractor drawContext, DeltaTracker tickCounter, CallbackInfo callbackInfo) {
       RenderEvents.HUD.invoker().onHud(drawContext, tickCounter);

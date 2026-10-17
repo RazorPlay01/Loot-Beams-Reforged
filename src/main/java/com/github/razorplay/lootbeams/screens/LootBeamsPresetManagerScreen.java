@@ -89,10 +89,10 @@ public class LootBeamsPresetManagerScreen extends Screen {
       PresetButtonWidget cancelButton = PresetButtonWidget.customBuilder(
             Component.translatable("lootbeams.screen.presets.button.cancel"), btn -> {
                //? if >= 26.2 {
-               /*Minecraft.getInstance().gui.setScreen(this.parent);
-               *///?} else {
-               Minecraft.getInstance().setScreen(this.parent);
-               //?}
+               Minecraft.getInstance().gui.setScreen(this.parent);
+               //?} else {
+               /*Minecraft.getInstance().setScreen(this.parent);
+               *///?}
             })
          .position(rightPos - 83, bottomPos - 27)
          .size(76, 19)
@@ -109,24 +109,24 @@ public class LootBeamsPresetManagerScreen extends Screen {
 
    private void showToast(Component message) {
       //? if >= 26.2 {
-      /*SystemToast.add(
+      SystemToast.add(
          this.minecraft.gui.toastManager(), SystemToast.SystemToastId.WORLD_ACCESS_FAILURE, Component.nullToEmpty("LootBeams"), message
       );
-      *///?} else {
-      //? if <= 1.21.1 {
-      /*this.minecraft
+      //?} else {
+      /*//? if <= 1.21.1 {
+      /^this.minecraft
          .getToasts()
          .addToast(
             SystemToast.multiline(this.minecraft, SystemToast.SystemToastId.WORLD_ACCESS_FAILURE, Component.nullToEmpty("LootBeams"), message)
          );
-      *///?} else {
+      ^///?} else {
       this.minecraft
          .getToastManager()
          .addToast(
             SystemToast.multiline(this.minecraft, SystemToast.SystemToastId.WORLD_ACCESS_FAILURE, Component.nullToEmpty("LootBeams"), message)
          );
       //?}
-      //?}
+      *///?}
    }
 
    //? if <= 1.21.1 {
@@ -182,9 +182,9 @@ public class LootBeamsPresetManagerScreen extends Screen {
 
    public void onClose() {
       //? if >= 26.2 {
-      /*this.minecraft.gui.setScreen(this.parent);
-      *///?} else {
-      this.minecraft.setScreen(this.parent);
-      //?}
+      this.minecraft.gui.setScreen(this.parent);
+      //?} else {
+      /*this.minecraft.setScreen(this.parent);
+      *///?}
    }
 }

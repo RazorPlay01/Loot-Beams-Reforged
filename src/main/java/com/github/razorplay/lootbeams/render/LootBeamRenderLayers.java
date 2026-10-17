@@ -4,10 +4,10 @@ import com.github.razorplay.lootbeams.compat.iris.IrisCompat;
 import com.github.razorplay.lootbeams.shaders.LootBeamShaders;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 //? if >= 26.3 {
-/*import com.mojang.renderpearl.api.vertex.VertexFormat;
-*///?} else {
-import com.mojang.blaze3d.vertex.VertexFormat;
-//?}
+import com.mojang.renderpearl.api.vertex.VertexFormat;
+//?} else {
+/*import com.mojang.blaze3d.vertex.VertexFormat;
+*///?}
 import net.minecraft.resources.Identifier;
 
 //? <= 1.21.1 {
@@ -20,14 +20,14 @@ import net.minecraft.client.renderer.ShaderManager;
 import com.github.razorplay.lootbeams.mixin.RenderTypeMixin;
 import com.github.razorplay.lootbeams.shaders.LootBeamPipelines;
 //? if >= 26.3 {
-/*import com.mojang.renderpearl.api.pipeline.RenderPipeline;
-*///?} else {
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-//?}
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+//?} else {
+/*import com.mojang.blaze3d.pipeline.RenderPipeline;
+*///?}
 import net.minecraft.client.renderer.RenderPipelines;
 //? if < 26.3 {
-import net.minecraft.client.renderer.rendertype.OutputTarget;
-//?}
+/*import net.minecraft.client.renderer.rendertype.OutputTarget;
+*///?}
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -93,16 +93,16 @@ public class LootBeamRenderLayers {
       return RenderType.create("loot_beam_center", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 1536, false, true, state);
       *///?} else {
       //? if >= 26.3 {
-      /*return RenderTypeMixin.lootbeams$create(
+      return RenderTypeMixin.lootbeams$create(
          "loot_beam_center",
          RenderSetup.builder(RenderPipelines.LIGHTNING).createRenderSetup()
       );
-      *///?} else {
-      return RenderTypeMixin.lootbeams$create(
+      //?} else {
+      /*return RenderTypeMixin.lootbeams$create(
          "loot_beam_center",
          RenderSetup.builder(RenderPipelines.LIGHTNING).setOutputTarget(OutputTarget.WEATHER_TARGET).createRenderSetup()
       );
-      //?}
+      *///?}
       //?}
    }
 
@@ -125,10 +125,10 @@ public class LootBeamRenderLayers {
       *///?} else {
       if (IrisCompat.isShaderPackInUse()) {
          //? if >= 26.3 {
-         /*return RenderTypes.entityTranslucentEmissive(texture);
-         *///?} else {
-         return RenderTypes.entityTranslucentEmissive(texture, false);
-         //?}
+         return RenderTypes.entityTranslucentEmissive(texture);
+         //?} else {
+         /*return RenderTypes.entityTranslucentEmissive(texture, false);
+         *///?}
       }
 
       return RenderTypeMixin.lootbeams$create(
@@ -192,10 +192,10 @@ public class LootBeamRenderLayers {
       *///?} else {
       if (IrisCompat.isShaderPackInUse()) {
          //? if >= 26.3 {
-         /*return RenderTypes.entityTranslucentEmissive(texture);
-         *///?} else {
-         return RenderTypes.entityTranslucentEmissive(texture, false);
-         //?}
+         return RenderTypes.entityTranslucentEmissive(texture);
+         //?} else {
+         /*return RenderTypes.entityTranslucentEmissive(texture, false);
+         *///?}
       }
 
       RenderPipeline pipeline;
@@ -228,10 +228,10 @@ public class LootBeamRenderLayers {
       return RenderType.create("loot_beam_translucent", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, false, true, state);
       *///?} else {
       //? if >= 26.3 {
-      /*return RenderTypes.entityTranslucentEmissive(texture);
-      *///?} else {
-      return RenderTypes.entityTranslucentEmissive(texture, false);
-      //?}
+      return RenderTypes.entityTranslucentEmissive(texture);
+      //?} else {
+      /*return RenderTypes.entityTranslucentEmissive(texture, false);
+      *///?}
       //?}
    }
 }
