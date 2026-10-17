@@ -1,10 +1,11 @@
 loomx.loom_version = "1.18-SNAPSHOT"
 
+
 [mod]
 id = "lootbeams"
 name = "Loot Beams Reforged"
 group = "com.github.razorplay"
-version = "1.0.0"
+version = "1.1.0"
 channel_tag = ""
 description = "Renders highly configurable colored beams on dropped items!"
 authors = ["RazorPlay01"]
@@ -16,7 +17,7 @@ license.dist = "repo"
 sources_url = "https://github.com/RazorPlay01/Loot-Beams-Reforged"
 homepage_url = "https://github.com/RazorPlay01/Loot-Beams-Reforged"
 issues_url = "https://github.com/RazorPlay01/Loot-Beams-Reforged/issues"
-discord_url = ""
+discord_url = "https://discord.gg/YP3wDfqkRt"
 environment = "client_only"
 dev_jvm_args = [
 	"-XX:+IgnoreUnrecognizedVMOptions",
