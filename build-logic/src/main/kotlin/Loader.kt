@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+ @file:Suppress("unused")
 
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.buildJsonObject
@@ -58,6 +58,7 @@ sealed class Loader(val id: String) {
 				entrypoints = mapOf(
 					"main" to listOf("${ctx.modGroup}.${ctx.modId}.platform.fabric.FabricEntrypoint"),
 					"client" to listOf("${ctx.modGroup}.${ctx.modId}.platform.fabric.FabricClientEntrypoint"),
+					"modmenu" to listOf("${ctx.modGroup}.${ctx.modId}.compat.modmenu.LootBeamsModMenuEntry"),
 					"fabric-datagen" to listOf("${ctx.modGroup}.${ctx.modId}.platform.fabric.datagen.FabricDataGeneratorEntrypoint")
 				),
 				mixins = listOf("${ctx.modId}.mixins.json"),
